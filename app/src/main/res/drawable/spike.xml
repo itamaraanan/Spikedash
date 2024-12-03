@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="50dp"
+    android:viewportWidth="100"
+    android:viewportHeight="50">
+
+    <!-- Draw a triangle spike -->
+    <path
+        android:fillColor="#808080"
+        android:pathData="M0,50 L50,0 L50,50 Z" />
+</vector>
