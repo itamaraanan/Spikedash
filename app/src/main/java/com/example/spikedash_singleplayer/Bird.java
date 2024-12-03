@@ -13,6 +13,7 @@ public class Bird extends Entity {
     }
     @Override
     public void draw(Canvas canvas) {
+        canvas.drawBitmap(bitmap, x, y, null);
 
     }
 

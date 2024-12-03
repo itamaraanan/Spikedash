@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 public class GameActivity extends AppCompatActivity {
 
     FrameLayout frm;
+    GameController gameController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,8 @@ public class GameActivity extends AppCompatActivity {
         if (hasFocus) {
             int w = frm.getWidth();
             int h = frm.getHeight();
-            Log.d("GameActivity", "Width: " + w + " Height: " + h);
+
+            gameController = new GameController(this, w, h);
         }
     }
 
