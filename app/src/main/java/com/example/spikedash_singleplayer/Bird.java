@@ -11,11 +11,13 @@ public class Bird extends Entity {
         y = ScreenHeight / 2;
 
     }
+
     @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, x, y, null);
+    public void move() {
+        x+= 20;
+        if (x > ScreenWidth){
+            x = 0;
+        }
 
     }
-
-
 }

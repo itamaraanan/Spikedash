@@ -17,6 +17,7 @@ public abstract class Entity {
     }
 
     public void draw(Canvas canvas) {
+        canvas.drawBitmap(bitmap, x, y, null);
 
     }
 

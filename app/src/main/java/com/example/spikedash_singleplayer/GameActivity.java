@@ -21,7 +21,7 @@ public class GameActivity extends AppCompatActivity {
         frm = findViewById(R.id.frm);
 
         View rootLayout = findViewById(R.id.root_layout);
-        rootLayout.setOnTouchListener(new View.OnTouchListener() {
+        /*rootLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -30,9 +30,8 @@ public class GameActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        }); */
     }
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -41,6 +40,7 @@ public class GameActivity extends AppCompatActivity {
             int h = frm.getHeight();
 
             gameController = new GameController(this, w, h);
+            frm.addView(gameController);
         }
     }
 
