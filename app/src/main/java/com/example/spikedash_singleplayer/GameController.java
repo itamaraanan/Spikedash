@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -34,7 +35,20 @@ public class GameController extends SurfaceView  implements  Runnable{
         thread = new Thread(this);
         thread.start();
 
+
+
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            // Make the bird jump
+            bird.jump();
+            return true;
+        }
+        return false;
+    }
+
 
     public void drawSurface() {
         if (holder.getSurface().isValid()) {
@@ -53,4 +67,8 @@ public class GameController extends SurfaceView  implements  Runnable{
         }
 
     }
+
+
+
+
 }

@@ -21,16 +21,7 @@ public class GameActivity extends AppCompatActivity {
         frm = findViewById(R.id.frm);
 
         View rootLayout = findViewById(R.id.root_layout);
-        /*rootLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d("ScreenTouch", "Screen was touched!");
-                    return true;
-                }
-                return false;
-            }
-        }); */
+
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -43,5 +34,10 @@ public class GameActivity extends AppCompatActivity {
             frm.addView(gameController);
         }
     }
+
+    public void jump(View view){
+
+    }
+
 
 }
