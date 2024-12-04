@@ -28,21 +28,19 @@ public class GameController extends SurfaceView  implements  Runnable{
         bg = new Paint();
         bg.setARGB(218, 218, 218, 218); //grey
 
-        bitmapBird = BitmapFactory.decodeResource(getResources(), R.drawable.bird);
+        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bird);
+        bitmapBird = Bitmap.createScaledBitmap(originalBitmap, 144, 100, false);
         bird = new Bird (screenWidth, screenHeight,bitmapBird);
 
         holder = getHolder();
         thread = new Thread(this);
         thread.start();
 
-
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            // Make the bird jump
             bird.jump();
             return true;
         }
