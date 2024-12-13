@@ -1,7 +1,9 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Entitys;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+
+import com.example.spikedash_singleplayer.Entitys.Entity;
 
 public class Bird extends Entity {
     private float velocity;

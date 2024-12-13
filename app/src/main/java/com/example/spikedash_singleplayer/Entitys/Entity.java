@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Entitys;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
