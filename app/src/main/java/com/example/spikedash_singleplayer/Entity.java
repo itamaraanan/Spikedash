@@ -20,9 +20,6 @@ public abstract class Entity {
         canvas.drawBitmap(bitmap, x, y, null);
 
     }
-
-    public void move() {
-
-    }
+    public abstract void move();
 
 }
