@@ -11,6 +11,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.spikedash_singleplayer.Entitys.Bird;
+import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
+import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
 
 public class GameController extends SurfaceView  implements  Runnable{
@@ -18,7 +20,6 @@ public class GameController extends SurfaceView  implements  Runnable{
     private int screenHeight;
     private Canvas canvas;
     private Bird bird;
-
     private Walls walls;
     private Bitmap bitmapBird;
     private Bitmap spikeBitmap;
@@ -71,16 +72,39 @@ public class GameController extends SurfaceView  implements  Runnable{
     public void run() {
         while (true) {
             drawSurface();
+
+            // Check for bird-spike collisions
+            if (walls.isLeftWallActive()) {
+                for (MovingSpike_left spike : walls.left_spikes) {
+                    if (bird.collidesWith(spike.getX(), spike.getY(), spike.getWidth(), spike.getHeight())) {
+                        handleCollision(); // Handle collision
+                    }
+                }
+            } else {
+                for (MovingSpike_right spike : walls.right_spikes) {
+                    if (bird.collidesWith(spike.getX(), spike.getY(), spike.getWidth(), spike.getHeight())) {
+                        handleCollision(); // Handle collision
+                    }
+                }
+            }
+
             // Check if bird touches the left or right wall
             if (bird.getX() <= 0 && walls.isLeftWallActive()) {
                 walls.switchWall(); // Switch to the right wall
-
             } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
                 walls.switchWall(); // Switch to the left wall
             }
+
             bird.move();
         }
     }
+
+    private void handleCollision() {
+        Log.e("GameController", "Collision detected!");
+        // Additional logic: Restart the game, reduce health, etc.
+    }
+
+
 
 
 

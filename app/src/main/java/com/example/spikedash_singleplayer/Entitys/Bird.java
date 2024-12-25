@@ -66,10 +66,19 @@ public class Bird extends Entity {
 
 
 
+
     public void jump() {
         // Set the upward velocity for the jump
         velocity = jumpStrength;
     }
+
+    public boolean collidesWith(int otherX, int otherY, int otherWidth, int otherHeight) {
+        return (x < otherX + otherWidth &&
+                x + bitmap.getWidth() > otherX &&
+                y < otherY + otherHeight &&
+                y + bitmap.getHeight() > otherY);
+    }
+
 
 
 

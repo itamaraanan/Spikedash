@@ -7,6 +7,21 @@ public class MovingSpike_right extends MovingSpike {
         x = ScreenWidth;
         y = ScreenHeight;
     }
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWidth() {
+        return bitmap.getWidth(); // Get width of the bitmap
+    }
+
+    public int getHeight() {
+        return bitmap.getHeight(); // Get height of the bitmap
+    }
 
     @Override
     public void move() {
