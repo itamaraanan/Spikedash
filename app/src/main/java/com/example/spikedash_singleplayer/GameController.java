@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -68,12 +69,19 @@ public class GameController extends SurfaceView  implements  Runnable{
 
     @Override
     public void run() {
-        while(true){
+        while (true) {
             drawSurface();
+            // Check if bird touches the left or right wall
+            if (bird.getX() <= 0 && walls.isLeftWallActive()) {
+                walls.switchWall(); // Switch to the right wall
+
+            } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
+                walls.switchWall(); // Switch to the left wall
+            }
             bird.move();
         }
-
     }
+
 
 
 
