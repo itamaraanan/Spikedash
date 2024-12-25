@@ -21,7 +21,6 @@ public class GameActivity extends AppCompatActivity {
         frm = findViewById(R.id.frm);
 
         View rootLayout = findViewById(R.id.root_layout);
-
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {

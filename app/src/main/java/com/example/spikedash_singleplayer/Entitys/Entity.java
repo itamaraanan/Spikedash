@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Entitys;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,8 +21,12 @@ public abstract class Entity {
 
     }
 
-    public void move() {
-
+    public int getX() {
+        return x;
     }
+    public int getY() {
+        return y;
+    }
+    public abstract void move();
 
 }
