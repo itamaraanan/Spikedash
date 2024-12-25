@@ -30,7 +30,7 @@ public class Walls {
 
     private void generateLeft() {
         left_spikes.clear();
-        int numSpikes = 10;
+        int numSpikes = 7;
         int spikeSpacing = screen_height / numSpikes; // Evenly space spikes
         int starting_point = 0;
 
@@ -44,9 +44,9 @@ public class Walls {
 
     private void generateRight() {
         right_spikes.clear();
-        int numSpikes = 10;
+        int numSpikes = 7;
         int spikeSpacing = screen_height / numSpikes;
-        int starting_point = -20;
+        int starting_point = 0;
 
         for (int i = 0; i < numSpikes; i++) { // 10 spikes for right wall
             if (Math.random() < 0.5) { // 50% chance to generate a spike
