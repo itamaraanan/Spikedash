@@ -10,12 +10,7 @@
     android:id="@+id/root_layout"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/frm"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-      <!--
+    <!--
      <ImageView
         android:layout_width="250dp"
         android:layout_height="250dp"
@@ -23,11 +18,36 @@
         android:layout_centerInParent="true"
         android:src="@drawable/white_circle" /> -->
 
+
+    <FrameLayout
+        android:id="@+id/frm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_alignParentTop="true"
         android:src="@drawable/spikes_base" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Score: 0"
+        android:textSize="40dp"
+        android:gravity="center"
+        android:layout_marginBottom="700dp"
+        android:id="@+id/tvScore"
+        android:textColor="@color/material_dynamic_neutral20"
+        android:fontFamily="@font/futura"/>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/pause"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/imbPause" />
 
     <ImageView
         android:layout_width="match_parent"
