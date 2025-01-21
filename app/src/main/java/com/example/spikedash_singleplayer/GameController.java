@@ -11,6 +11,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.spikedash_singleplayer.Entitys.Bird;
+import com.example.spikedash_singleplayer.Entitys.Candy;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
@@ -20,9 +21,11 @@ public class GameController extends SurfaceView  implements  Runnable{
     private int screenHeight;
     private Canvas canvas;
     private Bird bird;
+    private Candy candy;
     private Walls walls;
     private Bitmap bitmapBird;
     private Bitmap spikeBitmap;
+    private Bitmap candyBitmap;
     private SurfaceHolder holder;
     private Paint bg;
     private Thread thread;
@@ -36,11 +39,14 @@ public class GameController extends SurfaceView  implements  Runnable{
         bg = new Paint();
         bg.setARGB(218, 218, 218, 218); //grey
 
-        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bird);
+        Bitmap originalBirdBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bird);
+        candyBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.candy96);
         spikeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.left_spike);
         walls = new Walls(screenWidth, screenHeight, spikeBitmap);
-        bitmapBird = Bitmap.createScaledBitmap(originalBitmap, 144, 100, false);
+        bitmapBird = Bitmap.createScaledBitmap(originalBirdBitmap, 144, 100, false);
         bird = new Bird (screenWidth, screenHeight,bitmapBird);
+        candyBitmap = Bitmap.createScaledBitmap(candyBitmap, 96, 96, false);
+        candy = new Candy(screenWidth, screenHeight, candyBitmap);
 
         holder = getHolder();
         thread = new Thread(this);
@@ -64,6 +70,8 @@ public class GameController extends SurfaceView  implements  Runnable{
             canvas.drawPaint(bg);
             bird.draw(canvas);
             walls.draw(canvas);
+            candy.move();
+            candy.draw(canvas);
             holder.unlockCanvasAndPost(canvas);
         }
     }
@@ -72,30 +80,49 @@ public class GameController extends SurfaceView  implements  Runnable{
     public void run() {
         while (true) {
             drawSurface();
-
-            // Check for bird-spike collisions
-            if (walls.isLeftWallActive()) {
-                for (MovingSpike_left spike : walls.left_spikes) {
-                    if (bird.collidesWith(spike.getX(), spike.getY(), spike.getWidth(), spike.getHeight())) {
-                        handleCollision(); // Handle collision
-                    }
-                }
-            } else {
-                for (MovingSpike_right spike : walls.right_spikes) {
-                    if (bird.collidesWith(spike.getX(), spike.getY(), spike.getWidth(), spike.getHeight())) {
-                        handleCollision(); // Handle collision
-                    }
-                }
+            eatCandies();
+            if(!handleCollisions()) {
+                gameOver();
+                //break;
             }
-
-            // Check if bird touches the left or right wall
-            if (bird.getX() <= 0 && walls.isLeftWallActive()) {
-                walls.switchWall(); // Switch to the right wall
-            } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
-                walls.switchWall(); // Switch to the left wall
-            }
-
             bird.move();
+        }
+    }
+
+    public void gameOver(){
+
+    }
+
+    public boolean  handleCollisions(){
+        // Check for bird-spike collisions
+        boolean isCollide = false;
+        if (walls.isLeftWallActive()) {
+            for (MovingSpike_left spike : walls.left_spikes) {
+                if (bird.collidesWith(spike.getX(), spike.getY(), spike.getWidth(), spike.getHeight())) {
+                    handleCollision(); // Handle collision
+                    isCollide = true;
+                }
+            }
+        } else {
+            for (MovingSpike_right spike : walls.right_spikes) {
+                if (bird.collidesWith(spike.getX(), spike.getY(), spike.getWidth(), spike.getHeight())) {
+                    handleCollision(); // Handle collision
+                    isCollide = true;
+                }
+            }
+        }
+
+        // Check if bird touches the left or right wall
+        if (bird.getX() <= 0 && walls.isLeftWallActive()) {
+            walls.switchWall(); // Switch to the right wall
+        } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
+            walls.switchWall(); // Switch to the left wall
+        }
+        return isCollide;
+    }
+    public void eatCandies(){
+        if(bird.collidesWith(candy.getX(), candy.getY(), candy.getWidth(), candy.getHeight())){
+            candy.takesCandy();
         }
     }
 
