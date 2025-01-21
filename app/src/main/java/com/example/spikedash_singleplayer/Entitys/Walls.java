@@ -35,7 +35,7 @@ public class Walls {
         int starting_point = 50;
 
         for (int i = 0; i < numSpikes - 2; i++) { // 8 spikes for left wall
-            if (Math.random() < 0.5) { // 50% chance to generate a spike
+            if (Math.random() < 0.7) { // 50% chance to generate a spike
                 left_spikes.add(new MovingSpike_left(-20, starting_point, spikeBitmap)); // Offset slightly for better alignment
             }
             starting_point += spikeSpacing;
@@ -49,7 +49,7 @@ public class Walls {
         int starting_point = 50;
 
         for (int i = 0; i < numSpikes; i++) { // 10 spikes for right wall
-            if (Math.random() < 0.5) { // 50% chance to generate a spike
+            if (Math.random() < 0.7) { // 50% chance to generate a spike
                 right_spikes.add(new MovingSpike_right(screen_width - spikeBitmap.getWidth()+20, starting_point, spikeBitmap)); // Align to right wall
             }
             starting_point += spikeSpacing;

@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.spikedash_singleplayer.Entitys.Bird;
 import com.example.spikedash_singleplayer.Entitys.Candy;
@@ -16,9 +19,11 @@ import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
 
-public class GameController extends SurfaceView  implements  Runnable{
+public class GameController extends SurfaceView implements Runnable, View.OnClickListener {
+    private TextView score;
     private int screenWidth;
     private int screenHeight;
+    private ImageButton pause;
     private Canvas canvas;
     private Bird bird;
     private Candy candy;
@@ -28,11 +33,12 @@ public class GameController extends SurfaceView  implements  Runnable{
     private Bitmap candyBitmap;
     private SurfaceHolder holder;
     private Paint bg;
+    private int candies;
     private Thread thread;
 
-    public GameController(Context context, int screenWidth, int screenHeight) {
+    public GameController(Context context, int screenWidth, int screenHeight, TextView score) {
         super(context);
-
+        this.score = score;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
 
@@ -47,6 +53,11 @@ public class GameController extends SurfaceView  implements  Runnable{
         bird = new Bird (screenWidth, screenHeight,bitmapBird);
         candyBitmap = Bitmap.createScaledBitmap(candyBitmap, 96, 96, false);
         candy = new Candy(screenWidth, screenHeight, candyBitmap);
+        score  = findViewById(R.id.tvScore);
+
+        pause = findViewById(R.id.imbPause);
+        candies =0;
+        //pause.setOnClickListener(this);
 
         holder = getHolder();
         thread = new Thread(this);
@@ -123,7 +134,9 @@ public class GameController extends SurfaceView  implements  Runnable{
     public void eatCandies(){
         if(bird.collidesWith(candy.getX(), candy.getY(), candy.getWidth(), candy.getHeight())){
             candy.takesCandy();
-        }
+            candies++;
+            score.setText("Score: " + String.valueOf(candies));
+            }
     }
 
     private void handleCollision() {
@@ -132,9 +145,8 @@ public class GameController extends SurfaceView  implements  Runnable{
     }
 
 
+    @Override
+    public void onClick(View v) {
 
-
-
-
-
+    }
 }

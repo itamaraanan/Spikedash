@@ -6,7 +6,6 @@ import java.util.*;
 
 public class Candy extends Entity {
 
-    private int score;
     private Random random;
     private float floatOffset;
     private float floatSpeed;
@@ -15,10 +14,9 @@ public class Candy extends Entity {
 
     public Candy(int ScreenWidth, int ScreenHeight, Bitmap bitmap) {
         super(ScreenWidth, ScreenHeight, bitmap);
-        score = 0;
         random = new Random();
-        x = 20 + random.nextInt(1060);
-        y = 100 + random.nextInt(2300);
+        x = 75 + random.nextInt(ScreenWidth - 150);
+        y = 275 + random.nextInt(ScreenHeight - 550);
 
         floatOffset = 0;
         floatSpeed = 0.05f;
@@ -26,9 +24,6 @@ public class Candy extends Entity {
         counter = 0;
     }
 
-    public int getScore() {
-        return score;
-    }
 
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y + floatOffset, null);
@@ -43,9 +38,9 @@ public class Candy extends Entity {
     }
 
     public void takesCandy() {
-        score++;
-        x = 40 + random.nextInt(1080 - 80);
-        y = 100 + random.nextInt(1920 - 200);
+        x = 75 + random.nextInt(ScreenWidth - 150);
+        y = 275 + random.nextInt(ScreenHeight - 550);
+
     }
 
     public void move() {
