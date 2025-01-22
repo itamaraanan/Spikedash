@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.spikedash_singleplayer.Entitys.Bird;
 import com.example.spikedash_singleplayer.Entitys.Candy;
+import com.example.spikedash_singleplayer.Entitys.Plus;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
@@ -27,10 +28,12 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
     private Canvas canvas;
     private Bird bird;
     private Candy candy;
+    private Plus plus;
     private Walls walls;
     private Bitmap bitmapBird;
     private Bitmap spikeBitmap;
     private Bitmap candyBitmap;
+    private Bitmap plusBitmap;
     private SurfaceHolder holder;
     private Paint bg;
     private int candies;
@@ -48,11 +51,16 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
         Bitmap originalBirdBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bird);
         candyBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.candy96);
         spikeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.left_spike);
+        plusBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.plus);
         walls = new Walls(screenWidth, screenHeight, spikeBitmap);
         bitmapBird = Bitmap.createScaledBitmap(originalBirdBitmap, 144, 100, false);
         bird = new Bird (screenWidth, screenHeight,bitmapBird);
         candyBitmap = Bitmap.createScaledBitmap(candyBitmap, 96, 96, false);
         candy = new Candy(screenWidth, screenHeight, candyBitmap);
+        plusBitmap = Bitmap.createScaledBitmap(plusBitmap, 600, 600, false);
+        plus = new Plus(screenWidth, screenHeight, plusBitmap);
+        plus.setX(candy.getX());
+        plus.setY(candy.getY());
         score  = findViewById(R.id.tvScore);
 
         pause = findViewById(R.id.imbPause);
@@ -81,8 +89,8 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
             canvas.drawPaint(bg);
             bird.draw(canvas);
             walls.draw(canvas);
-            candy.move();
             candy.draw(canvas);
+            plus.draw(canvas);
             holder.unlockCanvasAndPost(canvas);
         }
     }
@@ -96,7 +104,11 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
                 gameOver();
                 //break;
             }
+            candy.move();
             bird.move();
+            if (plus.isActive()) {
+                plus.move();
+            }
         }
     }
 
@@ -123,21 +135,27 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
             }
         }
 
-        // Check if bird touches the left or right wall
         if (bird.getX() <= 0 && walls.isLeftWallActive()) {
-            walls.switchWall(); // Switch to the right wall
+            walls.switchWall();
         } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
-            walls.switchWall(); // Switch to the left wall
+            walls.switchWall();
         }
         return isCollide;
     }
-    public void eatCandies(){
-        if(bird.collidesWith(candy.getX(), candy.getY(), candy.getWidth(), candy.getHeight())){
+    public void eatCandies() {
+        if (bird.collidesWith(candy.getX(), candy.getY(), candy.getWidth(), candy.getHeight())) {
+            int candyX = candy.getX();
+            int candyY = candy.getY();
             candy.takesCandy();
             candies++;
-            score.setText("Score: " + String.valueOf(candies));
-            }
+            score.setText("Score: " + candies);
+            plus.activate(candyX + candy.getWidth() / 2 - plus.getBitmapWidth() / 2,
+                    candyY + candy.getHeight() / 2 - plus.getBitmapHeight() / 2);
+        }
     }
+
+
+
 
     private void handleCollision() {
         Log.e("GameController", "Collision detected!");
