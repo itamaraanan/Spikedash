@@ -7,7 +7,7 @@ import com.example.spikedash_singleplayer.Entitys.Entity;
 
 public class Bird extends Entity {
     private float velocity;
-    private final float gravity = 0.75f;
+    private final float gravity = 0.7f;
     private final float jumpStrength = -17.5f;
 
     boolean Right = true;
@@ -22,8 +22,8 @@ public class Bird extends Entity {
     @Override
     public void move() {
         if (Right) {
-            x += 10; // Move right
-            velocity += gravity; // Apply gravity
+            x += 10;
+            velocity += gravity;
 
             if (x > ScreenWidth - 144) { // Adjust boundary condition
                 x = ScreenWidth - 144; // Keep bird within the right boundary

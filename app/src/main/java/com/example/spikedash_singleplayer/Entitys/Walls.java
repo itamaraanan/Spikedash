@@ -52,7 +52,7 @@ public class Walls {
             if (Math.random() < 0.7) { // 50% chance to generate a spike
                 right_spikes.add(new MovingSpike_right(screen_width - spikeBitmap.getWidth()+20, starting_point, spikeBitmap)); // Align to right wall
             }
-            starting_point += spikeSpacing;
+            starting_point += spikeSpacing + 20;
         }
     }
 
