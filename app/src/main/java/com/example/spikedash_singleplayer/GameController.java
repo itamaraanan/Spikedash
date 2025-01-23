@@ -1,9 +1,11 @@
 package com.example.spikedash_singleplayer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,6 +25,7 @@ import com.example.spikedash_singleplayer.Entitys.Walls;
 public class GameController extends SurfaceView implements Runnable, View.OnClickListener {
     private TextView score;
     private int screenWidth;
+    private boolean isRunning;
     private int screenHeight;
     private ImageButton pause;
     private Canvas canvas;
@@ -62,9 +65,9 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
         plus.setX(candy.getX());
         plus.setY(candy.getY());
         score  = findViewById(R.id.tvScore);
-
         pause = findViewById(R.id.imbPause);
         candies =0;
+        isRunning = true;
         //pause.setOnClickListener(this);
 
         holder = getHolder();
@@ -75,6 +78,7 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        score.setText("Score: " + candies);
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             bird.jump();
             return true;
@@ -97,7 +101,8 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
 
     @Override
     public void run() {
-        while (true) {
+        while (isRunning) {
+            Log.d("GameController", "Bird position - X: " + bird.getX() + ", Y: " + bird.getY());
             drawSurface();
             eatCandies();
             if(!handleCollisions()) {
@@ -140,6 +145,13 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
         } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
             walls.switchWall();
         }
+
+        if (bird.getY() > 1675 || bird.getY() < 250) {
+            isCollide = true;
+            handleCollision();
+        }
+
+
         return isCollide;
     }
     public void eatCandies() {
@@ -158,8 +170,10 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
 
 
     private void handleCollision() {
-        Log.e("GameController", "Collision detected!");
-        // Additional logic: Restart the game, reduce health, etc.
+
+        isRunning = false;
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        getContext().startActivity(intent);
     }
 
 
