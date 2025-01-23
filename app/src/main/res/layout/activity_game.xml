@@ -34,7 +34,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Score: 0"
+        android:text="Tap to start"
         android:textSize="40dp"
         android:gravity="center"
         android:layout_marginBottom="700dp"
