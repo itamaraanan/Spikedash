@@ -1,5 +1,6 @@
 package com.example.spikedash_singleplayer;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,16 +8,22 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.spikedash_singleplayer.Entitys.Bird;
 import com.example.spikedash_singleplayer.Entitys.Candy;
+import com.example.spikedash_singleplayer.Entitys.CountDown;
 import com.example.spikedash_singleplayer.Entitys.Plus;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
@@ -27,7 +34,7 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
     private int screenWidth;
     private boolean isRunning;
     private int screenHeight;
-    private ImageButton pause;
+    private ImageButton btnPause;
     private Canvas canvas;
     private Bird bird;
     private Candy candy;
@@ -41,12 +48,20 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
     private Paint bg;
     private int candies;
     private Thread thread;
+    private CountDown currentNumber;
+    private boolean isCountingDown;
+    private long countdownStartTime;
+    private int currentCount;
+    Dialog d;
 
-    public GameController(Context context, int screenWidth, int screenHeight, TextView score) {
+    public GameController(Context context, int screenWidth, int screenHeight, TextView score, ImageButton btnPause) {
         super(context);
         this.score = score;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.btnPause = btnPause;
+        this.btnPause.setOnClickListener(this);
+        this.btnPause.setVisibility(View.INVISIBLE);
 
         bg = new Paint();
         bg.setARGB(218, 218, 218, 218); //grey
@@ -64,11 +79,8 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
         plus = new Plus(screenWidth, screenHeight, plusBitmap);
         plus.setX(candy.getX());
         plus.setY(candy.getY());
-        score  = findViewById(R.id.tvScore);
-        pause = findViewById(R.id.imbPause);
         candies =0;
         isRunning = true;
-        //pause.setOnClickListener(this);
 
         holder = getHolder();
         thread = new Thread(this);
@@ -78,6 +90,10 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(!bird.gameSrarted) {
+            bird.gameSrarted = true;
+            btnPause.setVisibility(View.VISIBLE);
+        }
         score.setText("Score: " + candies);
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             bird.jump();
@@ -85,6 +101,7 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
         }
         return false;
     }
+
 
 
     public void drawSurface() {
@@ -102,23 +119,63 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
     @Override
     public void run() {
         while (isRunning) {
-            Log.d("GameController", "Bird position - X: " + bird.getX() + ", Y: " + bird.getY());
-            drawSurface();
-            eatCandies();
-            if(!handleCollisions()) {
-                gameOver();
-                //break;
+            if (isCountingDown) {
+                count();
             }
-            candy.move();
-            bird.move();
-            if (plus.isActive()) {
-                plus.move();
+            else {
+                drawSurface();
+                eatCandies();
+                if (!handleCollisions()) {
+                    gameOver();
+                }
+                candy.move();
+                bird.move();
+                if (plus.isActive()) {
+                    plus.move();
+                }
             }
         }
     }
 
     public void gameOver(){
 
+    }
+
+    private void count() {
+        long currentTime = System.currentTimeMillis();
+
+        if (currentNumber != null && currentNumber.isFinished()) {
+            currentNumber = null;
+        }
+        if (currentTime - countdownStartTime > 1000) {
+            currentCount--;
+            if (currentCount > 0) {
+                currentNumber = new CountDown(screenWidth, screenHeight, null, currentCount);
+                countdownStartTime = currentTime;
+            } else {
+                isCountingDown = false;
+            }
+        }
+
+        if (currentNumber != null && !currentNumber.isFinished()) {
+            currentNumber.move();
+            drawCountdown();
+        }
+    }
+
+    private void drawCountdown() {
+        if (holder.getSurface().isValid()) {
+            canvas = holder.lockCanvas();
+            canvas.drawPaint(bg);
+            bird.draw(canvas);
+            walls.draw(canvas);
+            candy.draw(canvas);
+            plus.draw(canvas);
+            if (currentNumber != null && !currentNumber.isFinished()) {
+                currentNumber.draw(canvas);
+            }
+            holder.unlockCanvasAndPost(canvas);
+        }
     }
 
     public boolean  handleCollisions(){
@@ -146,7 +203,7 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
             walls.switchWall();
         }
 
-        if (bird.getY() > 1675 || bird.getY() < 250) {
+        if (bird.getY() > 1675 || bird.getY() < 250) { //where the bottom and top of the screen is
             isCollide = true;
             handleCollision();
         }
@@ -168,9 +225,7 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
 
 
 
-
     private void handleCollision() {
-
         isRunning = false;
         Intent intent = new Intent(getContext(), MainActivity.class);
         getContext().startActivity(intent);
@@ -179,6 +234,62 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
 
     @Override
     public void onClick(View v) {
+        if(v == btnPause) {
+            isRunning = false;
+            createDialog();  // Fixed typo in method name
+        }
+    }
 
+    private void createDialog() {
+        d = new Dialog(this.getContext());
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        d.setContentView(R.layout.pause_dialog);
+
+        LinearLayout btnResume = d.findViewById(R.id.btn_resume);
+        LinearLayout btnRestart = d.findViewById(R.id.btn_replay);
+        LinearLayout btnHome = d.findViewById(R.id.btn_home);
+
+        SeekBar skBgm = d.findViewById(R.id.skBgm);
+        SeekBar skSound = d.findViewById(R.id.skSound);
+        Switch swVibration = d.findViewById(R.id.swVibration);
+
+        btnResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+                resumeGame();  // Fixed typo in method name
+            }
+        });
+
+        btnRestart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                getContext().startActivity(intent);
+            }
+        });
+
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                getContext().startActivity(intent);
+            }
+        });
+
+        d.show();
+    }
+
+    private void resumeGame() {
+        isCountingDown = true;
+        currentCount = 3;
+        // Pass null for bitmap since we're not using it
+        currentNumber = new CountDown(screenWidth, screenHeight, null, currentCount);
+        countdownStartTime = System.currentTimeMillis();
+        isRunning = true;
+        thread = new Thread(this);
+        thread.start();
     }
 }
