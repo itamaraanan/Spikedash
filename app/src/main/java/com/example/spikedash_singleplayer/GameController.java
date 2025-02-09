@@ -257,7 +257,7 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
             @Override
             public void onClick(View v) {
                 d.dismiss();
-                resumeGame();  // Fixed typo in method name
+                resumeGame();
             }
         });
 
@@ -285,7 +285,6 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
     private void resumeGame() {
         isCountingDown = true;
         currentCount = 3;
-        // Pass null for bitmap since we're not using it
         currentNumber = new CountDown(screenWidth, screenHeight, null, currentCount);
         countdownStartTime = System.currentTimeMillis();
         isRunning = true;
