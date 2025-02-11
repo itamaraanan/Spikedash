@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#BABABA"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:fontFamily="@font/futura"
+        android:text="SELECT DIFFICULTY"
+        android:textColor="#4096FF"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <!-- making it possible to use backgrounds on the buttons -->
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/easyButton"
+        android:layout_width="280dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="24dp"
+        android:text="EASY"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/easy_button"
+        android:fontFamily="@font/futura"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mediumButton"
+        android:layout_width="280dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="24dp"
+        android:text="MEDIUM"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/meduim_button"
+        android:fontFamily="@font/futura"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatButton
+
+    android:id="@+id/hardButton"
+        android:layout_width="280dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="24dp"
+        android:text="HARD"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/hard_button"
+        android:fontFamily="@font/futura"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/insaneButton"
+        android:layout_width="280dp"
+        android:layout_height="70dp"
+        android:text="INSANE"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/insane_button"
+        android:textStyle="bold" />
+
+</LinearLayout>

@@ -9,8 +9,8 @@ public class Bird extends Entity {
 
     public boolean gameSrarted;
     private float velocity;
-    private final float gravity = 0.7f;
-    private final float jumpStrength = -17.5f;
+    private final float gravity = 0.75f;
+    private final float jumpStrength = -17f;
     private float floatOffset;
     private float floatSpeed;
     private int floatAmplitude;
