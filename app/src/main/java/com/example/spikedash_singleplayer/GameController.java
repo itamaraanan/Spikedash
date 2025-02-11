@@ -227,8 +227,41 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
 
     private void handleCollision() {
         isRunning = false;
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        getContext().startActivity(intent);
+        ((GameActivity)getContext()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                creatGameOverDialog();
+            }
+        });
+    }
+
+    private void creatGameOverDialog() {
+        d = new Dialog(this.getContext());
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        d.setContentView(R.layout.over_dialog);
+
+        LinearLayout btnRestart = d.findViewById(R.id.replayButton);
+        LinearLayout btnHome = d.findViewById(R.id.homeButton);
+
+        btnRestart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+                Intent intent = new Intent(getContext(), GameActivity.class);
+                getContext().startActivity(intent);
+            }
+        });
+
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                getContext().startActivity(intent);
+            }
+        });
+
+        d.show();
     }
 
 
@@ -236,11 +269,11 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
     public void onClick(View v) {
         if(v == btnPause) {
             isRunning = false;
-            createDialog();  // Fixed typo in method name
+            creatPauseDialog();
         }
     }
 
-    private void createDialog() {
+    private void creatPauseDialog() {
         d = new Dialog(this.getContext());
         d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         d.setContentView(R.layout.pause_dialog);
@@ -265,7 +298,7 @@ public class GameController extends SurfaceView implements Runnable, View.OnClic
             @Override
             public void onClick(View v) {
                 d.dismiss();
-                Intent intent = new Intent(getContext(), MainActivity.class);
+                Intent intent = new Intent(getContext(), GameActivity.class);
                 getContext().startActivity(intent);
             }
         });
