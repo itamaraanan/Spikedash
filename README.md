@@ -40,6 +40,8 @@ Spike Dash is an exciting single-player mobile game where players control a bird
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/e5375688-38b3-4115-9219-6f73dc5d7a72)
 ![image](https://github.com/user-attachments/assets/d9e728d3-9743-4f75-8718-4ef08a287310)
+![image](https://github.com/user-attachments/assets/5cbc5eb1-46c1-40e0-8db9-4979681c250a)
+
 
 ## Installation
 1. Clone the repository
