@@ -22,7 +22,7 @@
         android:fontFamily="@font/futura"
         android:text="SPIKE\nDASH"
         android:gravity="center"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="64sp"
         android:textStyle="bold" />
 

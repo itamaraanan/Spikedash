@@ -1,0 +1,5 @@
+<!-- drawable/square_button_background_dark_red.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#6C0000" />
+    <corners android:radius="4dp" />
+</shape>
