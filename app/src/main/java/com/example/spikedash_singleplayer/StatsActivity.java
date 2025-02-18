@@ -15,6 +15,7 @@ public class StatsActivity extends AppCompatActivity implements View.OnClickList
 
     ImageButton btnReturn;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
