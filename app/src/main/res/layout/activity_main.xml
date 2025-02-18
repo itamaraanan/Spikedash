@@ -5,14 +5,12 @@
     android:layout_height="match_parent"
     android:background="#BABABA">
 
-    <!-- Top Spikes -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_alignParentTop="true"
         android:src="@drawable/spikes_base" />
 
-    <!-- Game Title -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -26,7 +24,6 @@
         android:textSize="64sp"
         android:textStyle="bold" />
 
-    <!-- Bird Image -->
     <ImageView
         android:id="@+id/birdImage"
         android:layout_width="144dp"
@@ -36,7 +33,6 @@
         android:layout_marginTop="40dp"
         android:src="@drawable/bird" />
 
-    <!-- Main Center Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,7 +41,6 @@
         android:layout_marginTop="60dp"
         android:orientation="vertical">
 
-        <!-- Play Button -->
         <LinearLayout
             android:id="@+id/btnStart"
             android:layout_width="match_parent"
@@ -73,7 +68,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Left Side Circular Buttons -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,8 +75,6 @@
         android:layout_alignParentStart="true"
         android:orientation="vertical"
         android:layout_marginStart="16dp">
-
-        <!-- Settings Button -->
 
         <ImageButton
             android:id="@+id/btnSettings"
@@ -92,10 +84,7 @@
             android:src="@drawable/ic_settings"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:elevation="2dp"
-            android:contentDescription="Store"/>
-
-        <!-- gift Button -->
+            android:elevation="2dp" />
 
         <ImageButton
             android:id="@+id/btnGift"
@@ -105,35 +94,26 @@
             android:src="@drawable/ic_gift"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:elevation="2dp"
-            android:contentDescription="Gift"/>
+            android:elevation="2dp" />
 
-
-        <!-- Store Button -->
         <ImageButton
             android:id="@+id/btnStore"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
-            android:src="@drawable/ic_store"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:elevation="2dp"
-            android:contentDescription="Store"/>
-
-        <!-- 1v1 Button -->
-        <ImageButton
-            android:id="@+id/btn1v1"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:background="@drawable/circle_button_background"
             android:src="@drawable/ic_1v1"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:elevation="2dp"
-            android:contentDescription="1v1 Mode"/>
-
-        <!-- Leaderboard Button -->
+            android:elevation="2dp"/>
+        <ImageButton
+            android:id="@+id/btnShop"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/circle_button_background"
+            android:src="@drawable/ic_store"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"/>/
         <ImageButton
             android:id="@+id/btnLeaderboard"
             android:layout_width="60dp"
@@ -141,11 +121,9 @@
             android:background="@drawable/circle_button_background"
             android:src="@drawable/ic_trophy"
             android:padding="12dp"
-            android:elevation="2dp"
-            android:contentDescription="Leaderboard"/>
+            android:elevation="2dp"/>
     </LinearLayout>
 
-    <!-- Right Side Circular Buttons -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -154,20 +132,16 @@
         android:orientation="vertical"
         android:layout_marginEnd="16dp">
 
-        <!-- Profile Button -->
 
         <ImageButton
-            android:id="@+id/btnProfile"
+            android:id="@+id/btnStats"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:background="@drawable/circle_button_background"
             android:src="@drawable/ic_stats"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:elevation="2dp"
-            android:contentDescription="Inventory"/>
-
-        <!-- Inventory Button -->
+            android:elevation="2dp"/>
 
         <ImageButton
             android:id="@+id/btnInventory"
@@ -177,10 +151,8 @@
             android:src="@drawable/ic_inventory"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:elevation="2dp"
-            android:contentDescription="Bot Mode"/>
+            android:elevation="2dp"/>
 
-        <!-- Bot Mode Button -->
         <ImageButton
             android:id="@+id/btnBotMode"
             android:layout_width="60dp"
@@ -189,10 +161,8 @@
             android:src="@drawable/ic_bot"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:elevation="2dp"
-            android:contentDescription="Bot Mode"/>
+            android:elevation="2dp"/>
 
-        <!-- Game Mode Button -->
         <ImageButton
             android:id="@+id/btnMode"
             android:layout_width="60dp"
@@ -201,10 +171,7 @@
             android:src="@drawable/ic_mode"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:elevation="2dp"
-            android:contentDescription="Game Modes"/>
-
-        <!-- Difficulty Button -->
+            android:elevation="2dp"/>
         <ImageButton
             android:id="@+id/btnDifficulty"
             android:layout_width="60dp"
@@ -212,11 +179,9 @@
             android:background="@drawable/circle_button_background"
             android:src="@drawable/ic_difficulty"
             android:padding="12dp"
-            android:elevation="2dp"
-            android:contentDescription="Difficulty"/>
+            android:elevation="2dp"/>
     </LinearLayout>
 
-    <!-- Bottom Spikes -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="100dp"
