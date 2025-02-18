@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#BABABA">
 
-    <!-- Top Spikes  -->
+    <!-- Top Spikes -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="100dp"
