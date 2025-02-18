@@ -9,18 +9,20 @@ import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     LinearLayout btnStart;
-    ImageButton btnDifficulty, btnGift, btnSettings;
+    ImageButton btnDifficulty, btnGift, btnSettings, btnStats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        btnStats = findViewById(R.id.btnStats);
         btnStart = findViewById(R.id.btnStart);
         btnDifficulty = findViewById(R.id.btnDifficulty);
         btnGift = findViewById(R.id.btnGift);
         btnSettings = findViewById(R.id.btnSettings);
 
+        btnStats.setOnClickListener(this);
         btnDifficulty.setOnClickListener(this);
         btnStart.setOnClickListener(this);
         btnGift.setOnClickListener(this);
@@ -43,6 +45,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v == btnSettings){
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        if(v == btnStats){
+            Intent intent = new Intent(MainActivity.this, StatsActivity.class);
             startActivity(intent);
         }
 
