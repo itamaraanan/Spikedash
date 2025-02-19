@@ -30,7 +30,6 @@ import com.example.spikedash_singleplayer.Entitys.Plus;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
-
 public class GameActivity extends AppCompatActivity {
     private GameView gameView;
     private FrameLayout frm;
