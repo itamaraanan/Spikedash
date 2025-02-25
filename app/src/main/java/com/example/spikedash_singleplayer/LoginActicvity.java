@@ -26,7 +26,7 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
     private DatabaseReference mDatabase;
     EditText etEmail, etPassword;
     LinearLayout btnLogin;
-    TextView btnGoToSignUp;
+    TextView btnGoToSignUp, btnForgotPassword;
     ImageButton btnBack;
 
     @Override
@@ -42,9 +42,11 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
         btnLogin = findViewById(R.id.btnLogin);
         btnGoToSignUp = findViewById(R.id.btnGoToSignUp);
         btnBack = findViewById(R.id.btnBack);
+        btnForgotPassword = findViewById(R.id.btnForgotPassword);
         btnLogin.setOnClickListener(this);
         btnBack.setOnClickListener(this);
         btnGoToSignUp.setOnClickListener(this);
+        btnForgotPassword.setOnClickListener(this);
 
     }
 
@@ -75,6 +77,10 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
         }
         if(v == btnBack){
             Intent intent = new Intent(LoginActicvity.this, MenuActivity.class);
+            startActivity(intent);
+        }
+        if(v == btnForgotPassword){
+            Intent intent = new Intent(LoginActicvity.this, ForgotActivity.class);
             startActivity(intent);
         }
     }
