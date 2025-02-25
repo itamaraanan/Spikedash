@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.spikedash_singleplayer" />
+                  <option name="mobileSdkAppId" value="1:479975874497:android:8372ef397fb30a3b151940" />
+                  <option name="projectId" value="spikedash-4464a" />
+                  <option name="projectNumber" value="479975874497" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
