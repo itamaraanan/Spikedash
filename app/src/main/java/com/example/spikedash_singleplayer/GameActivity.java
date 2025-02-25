@@ -30,7 +30,6 @@ import com.example.spikedash_singleplayer.Entitys.Plus;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
-//
 public class GameActivity extends AppCompatActivity {
     private GameView gameView;
     private FrameLayout frm;
@@ -265,6 +264,9 @@ public class GameActivity extends AppCompatActivity {
 
             LinearLayout btnRestart = d.findViewById(R.id.replayButton);
             LinearLayout btnHome = d.findViewById(R.id.homeButton);
+            TextView tvScore = d.findViewById(R.id.tvScore);
+            tvScore.setText(String.valueOf(candies));
+
 
             btnRestart.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -307,7 +309,6 @@ public class GameActivity extends AppCompatActivity {
             SeekBar skBgm = d.findViewById(R.id.skBgm);
             SeekBar skSound = d.findViewById(R.id.skSound);
             Switch swVibration = d.findViewById(R.id.swVibration);
-
             btnResume.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

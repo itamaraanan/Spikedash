@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "479975874497",
+    "project_id": "spikedash-4464a",
+    "storage_bucket": "spikedash-4464a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479975874497:android:8372ef397fb30a3b151940",
+        "android_client_info": {
+          "package_name": "com.example.spikedash_singleplayer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCB1Dfdil4fx_T3Xn0qK-g3ewqMjYgrPOE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
