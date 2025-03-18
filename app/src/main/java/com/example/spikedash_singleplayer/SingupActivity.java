@@ -48,7 +48,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                         FirebaseUser user = mAuth.getCurrentUser();
                         writeNewUser(user.getUid(), username, email);
                         startActivity(new Intent(this, MainActivity.class));
-                        finish();
                     } else {
                         Toast.makeText(this, "Authentication failed: " +
                                 task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -57,8 +56,12 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void writeNewUser(String userId, String username, String email) {
-        User user = new User(username, email);
-        mDatabase.child("users").child(userId).setValue(user);
+        String uid = mAuth.getCurrentUser().getUid();
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        mDatabase = mDatabase.push();
+
+        User user = new User(username, email, uid, mDatabase.getKey());
+        mDatabase.setValue(user);
     }
 
 

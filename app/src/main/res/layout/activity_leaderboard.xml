@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#757575">
+
+    <RelativeLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/square_button_background"
+            android:src="@drawable/ic_return_lobby"
+            android:padding="12dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/futura"
+            android:text="LEADERBOARD"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <!-- Tabs Container -->
+    <RelativeLayout
+        android:id="@+id/tabsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headerLayout">
+
+        <!-- Tabs Layout -->
+        <LinearLayout
+            android:id="@+id/tabsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:weightSum="2">
+
+            <!-- wins Tab Container -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/winsTab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/futura"
+                    android:padding="12dp"
+                    android:text="Wins"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"/>
+
+                <View
+                    android:id="@+id/winsIndicator"
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:layout_below="@id/winsTab"
+                    android:layout_alignStart="@id/winsTab"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="-10dp"
+                    android:background="#FFA41E" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/highScoreTab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/futura"
+                    android:padding="12dp"
+                    android:text="High score"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:alpha="0.5"/>
+
+                <View
+                    android:id="@+id/highScoreIndicator"
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:layout_below="@id/highScoreTab"
+                    android:layout_alignStart="@id/highScoreTab"
+                    android:layout_marginStart="37dp"
+                    android:layout_marginTop="-10dp"
+                    android:background="#FFA41E"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/tabsLayout"
+            android:background="#4DFFFFFF"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/contentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tabsContainer"
+        android:layout_marginTop="-191dp" />
+
+</RelativeLayout>
