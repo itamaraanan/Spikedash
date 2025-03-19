@@ -44,5 +44,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
+        if (v == btnLogout){
+            Intent intent = new Intent(this, MenuActivity.class);
+            startActivity(intent);
+        }
+        if (v == btnDeleteAccount){
+            
+        }
     }
 }

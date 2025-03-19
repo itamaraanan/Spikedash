@@ -108,66 +108,21 @@
                 android:gravity="center_vertical"
                 android:layout_marginTop="4dp">
 
-                <TextView
-                    android:id="@+id/tvEmail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/futura"/>
-
-                <ImageButton
-                    android:id="@+id/btnEditUsername"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_edit_24"/>
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/square_button_background"
-            android:padding="16dp"
-            android:layout_marginBottom="12dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:fontFamily="@font/futura"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="4dp">
 
                 <TextView
-                    android:id="@+id/tvPassword"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/futura"
-                    android:text="••••••••"/>
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
 
-                <ImageButton
-                    android:id="@+id/btnShowPassword"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_opened_eye_24"
-                    android:padding="2dp"/>
+
             </LinearLayout>
 
         </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/btnChangePassword"
@@ -199,6 +154,22 @@
                 android:src="@drawable/ic_arrow_right"
                 android:padding="2dp"/>
         </LinearLayout>
+
+        <!-- New Confirm Changes Button -->
+        <Button
+            android:id="@+id/btnConfirmChanges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/futura"
+            android:backgroundTint="#03A9F4"
+            android:padding="16dp"
+            android:text="CONFIRM CHANGES"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
 
     </LinearLayout>
 </FrameLayout>
