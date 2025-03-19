@@ -24,8 +24,7 @@ import org.w3c.dom.Text;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
     ImageButton btnBack;
-    String username;
-    String email;
+    User user;
     TextView tvEmail;
     EditText etUsername;
     Button btnConfirm;
@@ -36,12 +35,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
-        username = getIntent().getStringExtra("username");
-        email = getIntent().getStringExtra("email");
+        user = getIntent().getParcelableExtra("user");
         etUsername = findViewById(R.id.editUsername);
-        etUsername.setText(username);
         tvEmail = findViewById(R.id.etEmail);
-        tvEmail.setText(email);
         btnConfirm = findViewById(R.id.btnConfirmChanges);
         btnConfirm.setOnClickListener(this);
 
@@ -54,40 +50,34 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent);
         }
         if (v == btnConfirm){
-            if (v == btnConfirm) {
-                // Get updated username
-                String updatedUsername = etUsername.getText().toString().trim();
+            String updatedUsername = user.username;
 
-                if (!updatedUsername.isEmpty()) {
-                    // Update username in Firebase
-                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                    if (firebaseUser != null) {
-                        DatabaseReference userRef = FirebaseDatabase.getInstance()
-                                .getReference("users")
-                                .child(firebaseUser.getUid());
+            if (!updatedUsername.isEmpty()) {
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (firebaseUser != null) {
+                    DatabaseReference userRef = FirebaseDatabase.getInstance()
+                            .getReference("users")
+                            .child(firebaseUser.getUid());
 
-                        // Update the username
-                        userRef.child("username").setValue(updatedUsername)
-                                .addOnSuccessListener(aVoid -> {
-                                    // Success
-                                    Toast.makeText(ProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                    userRef.child("username").setValue(updatedUsername)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(ProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
 
-                                    // Return to main activity
-                                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                })
-                                .addOnFailureListener(e -> {
-                                    // Failed
-                                    Toast.makeText(ProfileActivity.this, "Failed to update profile: " + e.getMessage(),
-                                            Toast.LENGTH_SHORT).show();
-                                });
-                    } else {
-                        Toast.makeText(ProfileActivity.this, "User not authenticated", Toast.LENGTH_SHORT).show();
-                    }
+                                // Return to main activity
+                                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                // Failed
+                                Toast.makeText(ProfileActivity.this, "Failed to update profile: " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                            });
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Username cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "User not authenticated", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(ProfileActivity.this, "Username cannot be empty", Toast.LENGTH_SHORT).show();
             }
         }
 

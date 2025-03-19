@@ -1,6 +1,9 @@
 package com.example.spikedash_singleplayer;
 
-public class User {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class User implements Parcelable {
     public String username;
     public String email;
     private String uid;
@@ -20,6 +23,44 @@ public class User {
         this.wins =0;
         this.highScore =0;
     }
+
+    protected User(Parcel in) {
+        username = in.readString();
+        email = in.readString();
+        uid = in.readString();
+        AccountID = in.readString();
+        balance = in.readInt();
+        wins = in.readInt();
+        highScore = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(username);
+        dest.writeString(email);
+        dest.writeString(uid);
+        dest.writeString(AccountID);
+        dest.writeInt(balance);
+        dest.writeInt(wins);
+        dest.writeInt(highScore);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public void add(int amount) {
         this.balance += amount;

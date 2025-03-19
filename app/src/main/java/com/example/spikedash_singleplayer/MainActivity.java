@@ -82,11 +82,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(v == btnProfile){
             if (currentUser != null) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                intent.putExtra("email", currentUser.email);
-                intent.putExtra("username", currentUser.username);
+                intent.putExtra("user", currentUser);
                 startActivity(intent);
             } else {
-                // Handle the case when user data isn't loaded yet
                 // Maybe show a loading indicator or toast message
                 Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
             }
