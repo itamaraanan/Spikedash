@@ -64,16 +64,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
         if(v == btnGift){
-            Intent intent = new Intent(MainActivity.this, GiftActivity.class);
-            startActivity(intent);
+            if (currentUser != null) {
+                Intent intent = new Intent(MainActivity.this, GiftActivity.class);
+                intent.putExtra("user", currentUser);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            }
         }
         if(v == btnSettings){
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
         }
         if(v == btnStats){
-            Intent intent = new Intent(MainActivity.this, StatsActivity.class);
-            startActivity(intent);
+            if (currentUser != null) {
+                Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+                intent.putExtra("user", currentUser);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            }
         }
         if(v == btnShop){
             Intent intent = new Intent(MainActivity.this, ShopActicity.class);
@@ -85,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("user", currentUser);
                 startActivity(intent);
             } else {
-                // Maybe show a loading indicator or toast message
                 Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
             }
 
@@ -105,13 +114,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         String uid = firebaseUser.getUid();
-
-        // If database doesn't allow access, at least get basic info from FirebaseUser
         currentUser = new User();
         currentUser.setUid(uid);
         currentUser.setEmail(firebaseUser.getEmail());
 
-        // Then try to get full details from database
         DatabaseReference userRef = ref.child(uid);
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -123,20 +129,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         isAccountFound = true;
                     }
                 } else {
-                    // Create a new user record if it doesn't exist
-                    if (currentUser.getUsername() == null) {
-                        currentUser.setUsername(firebaseUser.getDisplayName() != null ?
-                                firebaseUser.getDisplayName() : "User");
-                        userRef.setValue(currentUser);
+
+                    String username = firebaseUser.getDisplayName();
+                    if (username == null || username.isEmpty()) {
+
+                        String email = firebaseUser.getEmail();
+                        username = email != null ? email.split("@")[0] : "User" + uid.substring(0, 5);
                     }
+
+                    currentUser.setUsername(username);
+                    userRef.setValue(currentUser);
+                    isAccountFound = true;
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Log error instead of throwing exception
                 Log.e("Firebase", "Database error: " + databaseError.getMessage());
-                // Continue with basic user info from FirebaseUser
             }
         });
     }

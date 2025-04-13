@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.bluehomestudio.luckywheel.LuckyWheel;
 import com.bluehomestudio.luckywheel.OnLuckyWheelReachTheTarget;
 import com.bluehomestudio.luckywheel.WheelItem;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +27,21 @@ public class GiftActivity extends AppCompatActivity implements View.OnClickListe
     Button spinButton;
     ImageButton btnReturnMenu;
     LuckyWheel luckyWheel;
+    Intent intent;
+    User user;
+    String pointsAmount;
     List<WheelItem> wheelItemList = new ArrayList<>();
     String points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = getIntent().getParcelableExtra("user");
         setContentView(R.layout.activity_gift);
         luckyWheel = findViewById(R.id.luckyWheel);
         spinButton = findViewById(R.id.spinButton);
         btnReturnMenu = findViewById(R.id.btnRturnMenu);
+        intent = getIntent();
         btnReturnMenu.setOnClickListener(this);
         spinButton.setOnClickListener(this);
 
@@ -57,10 +64,19 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
             @Override
             public void onReachTarget() {
                 WheelItem itemSelected = wheelItemList.get(Integer.parseInt(points)-1);
-                String pointsAmount = itemSelected.text;
+                pointsAmount = itemSelected.text;
                 Toast.makeText(GiftActivity.this, "You won " + pointsAmount + " points!", Toast.LENGTH_SHORT).show();
                 btnReturnMenu.setVisibility(View.VISIBLE);
                 spinButton.setVisibility(View.INVISIBLE);
+
+                if(pointsAmount != null) {
+                    user.add(Integer.parseInt(pointsAmount));
+
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
+                            .child(user.getUid());
+
+                    userRef.child("points").setValue(user.getBalance());
+                }
             }
         });
 

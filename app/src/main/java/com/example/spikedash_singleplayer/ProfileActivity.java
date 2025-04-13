@@ -36,8 +36,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
         user = getIntent().getParcelableExtra("user");
+
         etUsername = findViewById(R.id.editUsername);
-        tvEmail = findViewById(R.id.etEmail);
+        etUsername.setText(user.getUsername());
+        tvEmail = findViewById(R.id.tvEmail);
+        tvEmail.setText(user.email);
         btnConfirm = findViewById(R.id.btnConfirmChanges);
         btnConfirm.setOnClickListener(this);
 
@@ -49,36 +52,35 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
             startActivity(intent);
         }
-        if (v == btnConfirm){
-            String updatedUsername = user.username;
+        if (v == btnConfirm) {
+            String newUsername = etUsername.getText().toString().trim();
 
-            if (!updatedUsername.isEmpty()) {
-                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (firebaseUser != null) {
-                    DatabaseReference userRef = FirebaseDatabase.getInstance()
-                            .getReference("users")
-                            .child(firebaseUser.getUid());
-
-                    userRef.child("username").setValue(updatedUsername)
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(ProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-
-                                // Return to main activity
-                                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            })
-                            .addOnFailureListener(e -> {
-                                // Failed
-                                Toast.makeText(ProfileActivity.this, "Failed to update profile: " + e.getMessage(),
-                                        Toast.LENGTH_SHORT).show();
-                            });
-                } else {
-                    Toast.makeText(ProfileActivity.this, "User not authenticated", Toast.LENGTH_SHORT).show();
-                }
-            } else {
+            if (newUsername.isEmpty()) {
                 Toast.makeText(ProfileActivity.this, "Username cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
             }
+            if (newUsername.equals(user.username)) {
+                Toast.makeText(ProfileActivity.this, "No changes made", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
+                    .child(user.getUid());
+
+            userRef.child("username").setValue(newUsername)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            user.username = newUsername;
+
+                            Toast.makeText(ProfileActivity.this, "Username updated successfully", Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                            intent.putExtra("user", user);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Failed to update username", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
 
     }

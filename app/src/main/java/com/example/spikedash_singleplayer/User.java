@@ -2,7 +2,6 @@ package com.example.spikedash_singleplayer;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 public class User implements Parcelable {
     public String username;
     public String email;
@@ -11,6 +10,7 @@ public class User implements Parcelable {
     private int balance;
     private int wins;
     private int highScore;
+    private int games;
     public User() {
     }
 
@@ -22,6 +22,7 @@ public class User implements Parcelable {
         this.balance = 0;
         this.wins =0;
         this.highScore =0;
+        this.games =0;
     }
 
     protected User(Parcel in) {
@@ -32,6 +33,7 @@ public class User implements Parcelable {
         balance = in.readInt();
         wins = in.readInt();
         highScore = in.readInt();
+        games = in.readInt();
     }
 
     @Override
@@ -43,6 +45,7 @@ public class User implements Parcelable {
         dest.writeInt(balance);
         dest.writeInt(wins);
         dest.writeInt(highScore);
+        dest.writeInt(games);
     }
 
     @Override
@@ -99,4 +102,7 @@ public class User implements Parcelable {
     public void setEmail(String email) {
         this.email = email;
     }
+    public int getGames() { return games;}
+    public void addGame(){ games++; }
+    public int getHighScore() { return highScore;}
 }

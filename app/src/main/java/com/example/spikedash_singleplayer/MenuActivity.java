@@ -21,7 +21,6 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         btnLogin.setOnClickListener(this);
         btnSingup.setOnClickListener(this);
 
-
     }
 
     @Override
