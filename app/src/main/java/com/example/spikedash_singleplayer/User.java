@@ -76,11 +76,7 @@ public class User implements Parcelable {
     }
     public void addWin(){ wins++; }
     public int getWins(){ return wins;}
-    public void compareScore(int score){ if(score > highScore) highScore = score;}
-
-    public String getUid() {
-        return uid;
-    }
+    public String getUid() { return uid;}
     public void setUid(String uid) {
         this.uid = uid;
     }
@@ -105,4 +101,5 @@ public class User implements Parcelable {
     public int getGames() { return games;}
     public void addGame(){ games++; }
     public int getHighScore() { return highScore;}
+    public void setHighScore(int highScore) { this.highScore = highScore; }
 }

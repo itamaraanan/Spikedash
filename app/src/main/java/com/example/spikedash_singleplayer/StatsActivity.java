@@ -43,6 +43,7 @@ public class StatsActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         if(v == btnReturn){
             Intent intent = new Intent(StatsActivity.this, MainActivity.class);
+            intent.putExtra("user", user);
             startActivity(intent);
         }
     }

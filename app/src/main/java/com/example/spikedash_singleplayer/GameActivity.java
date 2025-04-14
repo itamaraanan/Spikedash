@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,11 +32,16 @@ import com.example.spikedash_singleplayer.Entitys.Plus;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class GameActivity extends AppCompatActivity {
-    private GameView gameView;
-    private FrameLayout frm;
-    private TextView tvScore;
-    private ImageButton btnPause;
+    GameView gameView;
+    FrameLayout frm;
+    TextView tvScore;
+    ImageButton btnPause;
+    User user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +51,16 @@ public class GameActivity extends AppCompatActivity {
         tvScore = findViewById(R.id.tvScore);
         frm = findViewById(R.id.frm);
         btnPause = findViewById(R.id.imbPause);
+        user = getIntent().getParcelableExtra("user");
+        if (user == null) {
+            // Handle the case where user is null
+            Log.e("GameActivity", "User object is null");
+            Toast.makeText(this, "User data is missing", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(GameActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     @Override
@@ -52,7 +69,7 @@ public class GameActivity extends AppCompatActivity {
         if (hasFocus && gameView == null) {
             int w = frm.getWidth();
             int h = frm.getHeight();
-            gameView = new GameView(this, w, h, tvScore, btnPause);
+            gameView = new GameView(this, w, h, tvScore, btnPause, user);
             frm.addView(gameView);
         }
     }
@@ -80,9 +97,10 @@ public class GameActivity extends AppCompatActivity {
         private boolean isCountingDown;
         private long countdownStartTime;
         private int currentCount;
+        private User user;
         Dialog d;
 
-        public GameView(Context context, int screenWidth, int screenHeight, TextView score, ImageButton btnPause) {
+        public GameView(Context context, int screenWidth, int screenHeight, TextView score, ImageButton btnPause,User user) {
             super(context);
             this.score = score;
             this.screenWidth = screenWidth;
@@ -90,6 +108,7 @@ public class GameActivity extends AppCompatActivity {
             this.btnPause = btnPause;
             this.btnPause.setOnClickListener(this);
             this.btnPause.setVisibility(View.INVISIBLE);
+            this.user = user;
 
             initializeGame();
         }
@@ -267,12 +286,21 @@ public class GameActivity extends AppCompatActivity {
             TextView tvScore = d.findViewById(R.id.tvScore);
             tvScore.setText(String.valueOf(candies));
 
+            user.addGame();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
+                    .child(user.getUid());
 
+            if (candies >= user.getHighScore()) {
+                user.setHighScore(candies);
+                userRef.child("highScore").setValue(user.getHighScore());
+            }
+            userRef.child("games").setValue(user.getGames());
             btnRestart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     d.dismiss();
                     Intent intent = new Intent(getContext(), GameActivity.class);
+                    intent.putExtra("user", user);
                     getContext().startActivity(intent);
                 }
             });
@@ -282,6 +310,7 @@ public class GameActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     d.dismiss();
                     Intent intent = new Intent(getContext(), MainActivity.class);
+                    intent.putExtra("user", user);
                     getContext().startActivity(intent);
                 }
             });
@@ -322,6 +351,7 @@ public class GameActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     d.dismiss();
                     Intent intent = new Intent(getContext(), GameActivity.class);
+                    intent.putExtra("user", user);
                     getContext().startActivity(intent);
                 }
             });
@@ -331,6 +361,7 @@ public class GameActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     d.dismiss();
                     Intent intent = new Intent(getContext(), MainActivity.class);
+                    intent.putExtra("user", user);
                     getContext().startActivity(intent);
                 }
             });

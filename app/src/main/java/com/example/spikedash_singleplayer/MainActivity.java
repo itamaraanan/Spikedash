@@ -56,8 +56,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if(v == btnStart) {
-            Intent intent = new Intent(MainActivity.this, GameActivity.class);
-            startActivity(intent);
+            if (currentUser != null) {
+                Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                intent.putExtra("user", currentUser);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            }
         }
         if(v == btnDifficulty){
             Intent intent = new Intent(MainActivity.this, DifficultyActivity.class);
@@ -77,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
         if(v == btnStats){
-            if (currentUser != null) {
+             if (currentUser != null) {
                 Intent intent = new Intent(MainActivity.this, StatsActivity.class);
                 intent.putExtra("user", currentUser);
                 startActivity(intent);
