@@ -52,14 +52,6 @@ public class GameActivity extends AppCompatActivity {
         frm = findViewById(R.id.frm);
         btnPause = findViewById(R.id.imbPause);
         user = getIntent().getParcelableExtra("user");
-        if (user == null) {
-            // Handle the case where user is null
-            Log.e("GameActivity", "User object is null");
-            Toast.makeText(this, "User data is missing", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(GameActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
 
     }
 
