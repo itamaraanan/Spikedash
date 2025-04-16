@@ -29,6 +29,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
     ListView lvPlayerStats;
     ArrayList<PlayerStats> highScoreList = new ArrayList<>();
     ArrayList<PlayerStats> winsList = new ArrayList<>();
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,8 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
         highScoreIndicator = findViewById(R.id.highScoreIndicator);
         highScoreTab = findViewById(R.id.highScoreTab);
         lvPlayerStats = findViewById(R.id.lvPlayerStats);
+        user = getIntent().getParcelableExtra("user");
+
 
         btnBack.setOnClickListener(this);
         winsTab.setOnClickListener(this);
@@ -72,7 +75,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
                 Collections.sort(highScoreList, (a, b) -> Integer.compare(b.getHighScore(), a.getHighScore()));
 
                 // Default to wins list
-                adapter = new PlayerStatsAdapter(LeaderboardActivity.this, 0, 0, winsList, true );
+                adapter = new PlayerStatsAdapter(LeaderboardActivity.this, 0, 0, winsList, true,user.getUid());
                 lvPlayerStats.setAdapter(adapter);
             }
 
@@ -91,7 +94,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
             winsInidcator.setVisibility(View.VISIBLE);
             highScoreIndicator.setVisibility(View.INVISIBLE);
 
-            adapter = new PlayerStatsAdapter(this, 0, 0, winsList,true);
+            adapter = new PlayerStatsAdapter(this, 0, 0, winsList,true, user.getUid());
             lvPlayerStats.setAdapter(adapter);
 
         } else if (v == highScoreTab) {
@@ -100,7 +103,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
             highScoreIndicator.setVisibility(View.VISIBLE);
             winsInidcator.setVisibility(View.INVISIBLE);
 
-            adapter = new PlayerStatsAdapter(this, 0, 0, highScoreList, false);
+            adapter = new PlayerStatsAdapter(this, 0, 0, highScoreList, false, user.getUid());
             lvPlayerStats.setAdapter(adapter);
 
         } else if (v == btnBack) {

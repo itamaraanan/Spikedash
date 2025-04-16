@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,13 +18,16 @@ public class PlayerStatsAdapter extends ArrayAdapter<PlayerStats> {
     Context context;
     List<PlayerStats> statsList;
     boolean showWins;
+    String loggedInUid;
 
-    public PlayerStatsAdapter(@NonNull Context context, int resource, int textViewResourceId, @NonNull List<PlayerStats> statsList, boolean showWins) {
+
+
+    public PlayerStatsAdapter(@NonNull Context context, int resource, int textViewResourceId, @NonNull List<PlayerStats> statsList, boolean showWins, String loggedInUid) {
         super(context, resource, textViewResourceId, statsList);
         this.context = context;
         this.statsList = statsList;
         this.showWins = showWins;
-
+        this.loggedInUid = loggedInUid;
     }
 
     @NonNull @Override
@@ -34,6 +38,8 @@ public class PlayerStatsAdapter extends ArrayAdapter<PlayerStats> {
         TextView tvName = v.findViewById(R.id.tvName);
         TextView tvValue = v.findViewById(R.id.tvValue);
         TextView tvRank = v.findViewById(R.id.tvRank);
+        RelativeLayout root = v.findViewById(R.id.itemRoot);
+
 
         PlayerStats temp = statsList.get(position);
         tvName.setText(temp.getUsername());
@@ -45,6 +51,12 @@ public class PlayerStatsAdapter extends ArrayAdapter<PlayerStats> {
         } else {
             tvValue.setText(String.valueOf(temp.getHighScore()));
         }
+
+        if (temp.getUid() != null && temp.getUid().equals(loggedInUid)) {
+            root.setBackgroundColor(context.getResources().getColor(R.color.highlight_yellow));
+        }
+
+
 
         return v;
     }

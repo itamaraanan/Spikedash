@@ -105,8 +105,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         if (v == btnLeaderBoard){
-            Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
-            startActivity(intent);
+            if (currentUser != null) {
+                Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
+                intent.putExtra("user", currentUser);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
