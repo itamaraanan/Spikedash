@@ -42,26 +42,35 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void createAccount(String email, String password, String username) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        writeNewUser(user.getUid(), username, email);
-                        startActivity(new Intent(this, MainActivity.class));
-                    } else {
-                        Toast.makeText(this, "Authentication failed: " +
-                                task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+        DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
+
+        usernamesRef.child(username).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().exists()) {
+                    Toast.makeText(this, "Username already taken. Try another one.", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(this, authTask -> {
+                                if (authTask.isSuccessful()) {
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    writeNewUser(user.getUid(), username, email);
+                                    usernamesRef.child(username).setValue(user.getUid());
+                                    startActivity(new Intent(this, MainActivity.class));
+                                } else {
+                                    Toast.makeText(this, "Signup failed: " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            } else {
+                Toast.makeText(this, "Error checking username.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void writeNewUser(String userId, String username, String email) {
-        String uid = mAuth.getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
-        mDatabase = mDatabase.push();
-
-        User user = new User(username, email, uid, mDatabase.getKey());
-        mDatabase.setValue(user);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        User user = new User(username, email, userId, userRef.getKey());
+        userRef.setValue(user);
     }
 
 

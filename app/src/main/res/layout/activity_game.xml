@@ -40,7 +40,8 @@
         android:layout_marginBottom="700dp"
         android:id="@+id/tvScore"
         android:textColor="#333333"
-        android:fontFamily="@font/futura"/>
+        android:fontFamily="@font/futura"
+        />
 
     <ImageButton
         android:layout_width="50dp"
