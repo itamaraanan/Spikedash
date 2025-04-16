@@ -17,16 +17,16 @@ public class PlayerStatsAdapter extends ArrayAdapter<PlayerStats> {
 
     Context context;
     List<PlayerStats> statsList;
-    boolean showWins;
+    boolean showGames;
     String loggedInUid;
 
 
 
-    public PlayerStatsAdapter(@NonNull Context context, int resource, int textViewResourceId, @NonNull List<PlayerStats> statsList, boolean showWins, String loggedInUid) {
+    public PlayerStatsAdapter(@NonNull Context context, int resource, int textViewResourceId, @NonNull List<PlayerStats> statsList, boolean showGames, String loggedInUid) {
         super(context, resource, textViewResourceId, statsList);
         this.context = context;
         this.statsList = statsList;
-        this.showWins = showWins;
+        this.showGames = showGames;
         this.loggedInUid = loggedInUid;
     }
 
@@ -46,8 +46,8 @@ public class PlayerStatsAdapter extends ArrayAdapter<PlayerStats> {
         tvRank.setText((position + 1) + ".");
 
 
-        if (showWins) {
-            tvValue.setText(String.valueOf(temp.getWins()));
+        if (showGames) {
+            tvValue.setText(String.valueOf(temp.getGames()));
         } else {
             tvValue.setText(String.valueOf(temp.getHighScore()));
         }

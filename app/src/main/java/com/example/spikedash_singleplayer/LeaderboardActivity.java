@@ -23,12 +23,12 @@ import java.util.Collections;
 public class LeaderboardActivity extends AppCompatActivity implements View.OnClickListener {
 
     ImageButton btnBack;
-    TextView winsTab, highScoreTab;
-    View winsInidcator, highScoreIndicator;
+    TextView gamesTab, highScoreTab;
+    View gamesInidcator, highScoreIndicator;
     PlayerStatsAdapter adapter;
     ListView lvPlayerStats;
     ArrayList<PlayerStats> highScoreList = new ArrayList<>();
-    ArrayList<PlayerStats> winsList = new ArrayList<>();
+    ArrayList<PlayerStats> gamesList = new ArrayList<>();
     User user;
 
     @Override
@@ -37,8 +37,8 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_leaderboard);
 
         btnBack = findViewById(R.id.btnBack);
-        winsTab = findViewById(R.id.winsTab);
-        winsInidcator = findViewById(R.id.winsIndicator);
+        gamesTab = findViewById(R.id.gamesTab);
+        gamesInidcator = findViewById(R.id.gamesIndicator);
         highScoreIndicator = findViewById(R.id.highScoreIndicator);
         highScoreTab = findViewById(R.id.highScoreTab);
         lvPlayerStats = findViewById(R.id.lvPlayerStats);
@@ -46,7 +46,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 
 
         btnBack.setOnClickListener(this);
-        winsTab.setOnClickListener(this);
+        gamesTab.setOnClickListener(this);
         highScoreTab.setOnClickListener(this);
 
         setListView();
@@ -66,16 +66,16 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
                     }
                 }
 
-                // Sort by wins
-                winsList = new ArrayList<>(allPlayers);
-                Collections.sort(winsList, (a, b) -> Integer.compare(b.getWins(), a.getWins()));
+                // Sort by games
+                gamesList = new ArrayList<>(allPlayers);
+                Collections.sort(gamesList, (a, b) -> Integer.compare(b.getGames(), a.getGames()));
 
                 // Sort by highScore
                 highScoreList = new ArrayList<>(allPlayers);
                 Collections.sort(highScoreList, (a, b) -> Integer.compare(b.getHighScore(), a.getHighScore()));
 
-                // Default to wins list
-                adapter = new PlayerStatsAdapter(LeaderboardActivity.this, 0, 0, winsList, true,user.getUid());
+                // Default to games list
+                adapter = new PlayerStatsAdapter(LeaderboardActivity.this, 0, 0, gamesList, true,user.getUid());
                 lvPlayerStats.setAdapter(adapter);
             }
 
@@ -88,20 +88,20 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        if (v == winsTab) {
-            winsTab.setAlpha(1f);
+        if (v == gamesTab) {
+            gamesTab.setAlpha(1f);
             highScoreTab.setAlpha(0.5f);
-            winsInidcator.setVisibility(View.VISIBLE);
+            gamesInidcator.setVisibility(View.VISIBLE);
             highScoreIndicator.setVisibility(View.INVISIBLE);
 
-            adapter = new PlayerStatsAdapter(this, 0, 0, winsList,true, user.getUid());
+            adapter = new PlayerStatsAdapter(this, 0, 0, gamesList,true, user.getUid());
             lvPlayerStats.setAdapter(adapter);
 
         } else if (v == highScoreTab) {
             highScoreTab.setAlpha(1f);
-            winsTab.setAlpha(0.5f);
+            gamesTab.setAlpha(0.5f);
             highScoreIndicator.setVisibility(View.VISIBLE);
-            winsInidcator.setVisibility(View.INVISIBLE);
+            gamesInidcator.setVisibility(View.INVISIBLE);
 
             adapter = new PlayerStatsAdapter(this, 0, 0, highScoreList, false, user.getUid());
             lvPlayerStats.setAdapter(adapter);

@@ -49,22 +49,22 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/winsTab"
+                    android:id="@+id/gamesTab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/futura"
                     android:padding="12dp"
-                    android:text="Wins"
+                    android:text="Games played"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
                 <View
-                    android:id="@+id/winsIndicator"
+                    android:id="@+id/gamesIndicator"
                     android:layout_width="40dp"
                     android:layout_height="2dp"
-                    android:layout_below="@id/winsTab"
-                    android:layout_alignStart="@id/winsTab"
-                    android:layout_marginStart="12dp"
+                    android:layout_below="@id/gamesTab"
+                    android:layout_alignStart="@id/gamesTab"
+                    android:layout_marginStart="42dp"
                     android:layout_marginTop="-10dp"
                     android:background="#FFA41E" />
             </RelativeLayout>

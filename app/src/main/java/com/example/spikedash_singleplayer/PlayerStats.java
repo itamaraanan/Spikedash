@@ -1,23 +1,23 @@
 package com.example.spikedash_singleplayer;
 public class PlayerStats {
     private String username;
-    private int wins;
+    private int games;
     private int highScore;
     private String uid;
 
     public PlayerStats() {}
 
-    public PlayerStats(String username, int wins, int highScore, String uid) {
+    public PlayerStats(String username, int games, int highScore, String uid) {
         this.username = username;
-        this.wins = wins;
+        this.games = games;
         this.highScore = highScore;
         this.uid = uid;
     }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
-    public int getWins() { return wins; }
-    public void setWins(int wins) { this.wins = wins; }
+    public int getGames() { return games; }
+    public void setGames(int games) { this.games = games; }
 
     public int getHighScore() { return highScore; }
     public void setHighScore(int highScore) { this.highScore = highScore; }
