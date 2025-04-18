@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,6 +18,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -34,6 +36,8 @@ import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.w3c.dom.Text;
 
 public class GameActivity extends AppCompatActivity {
     GameView gameView;
@@ -273,9 +277,13 @@ public class GameActivity extends AppCompatActivity {
             d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             d.setContentView(R.layout.over_dialog);
 
+            ImageButton imgLeaderBoard = d.findViewById(R.id.imgLeaderBoard);
+            ImageButton imgStats = d.findViewById(R.id.imgStats);
             LinearLayout btnRestart = d.findViewById(R.id.replayButton);
             LinearLayout btnHome = d.findViewById(R.id.homeButton);
             TextView tvScore = d.findViewById(R.id.tvScore);
+            TextView tvHighScore = d.findViewById(R.id.tvHighScore);
+            TextView tvGames = d.findViewById(R.id.tvGames);
             tvScore.setText(String.valueOf(candies));
 
             user.addGame();
@@ -286,7 +294,12 @@ public class GameActivity extends AppCompatActivity {
                 user.setHighScore(candies);
                 userRef.child("highScore").setValue(user.getHighScore());
             }
+
+
             userRef.child("games").setValue(user.getGames());
+            tvGames.setText("GAMES PLAYED: " + String.valueOf(user.getGames()));
+            tvHighScore.setText("HIGHSCORE: "+ String.valueOf(user.getHighScore()));
+
             btnRestart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -302,6 +315,26 @@ public class GameActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     d.dismiss();
                     Intent intent = new Intent(getContext(), MainActivity.class);
+                    intent.putExtra("user", user);
+                    getContext().startActivity(intent);
+                }
+            });
+
+            imgLeaderBoard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    d.dismiss();
+                    Intent intent = new Intent(getContext(), LeaderboardActivity.class);
+                    intent.putExtra("user", user);
+                    getContext().startActivity(intent);
+                }
+            });
+
+            imgStats.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    d.dismiss();
+                    Intent intent = new Intent(getContext(), StatsActivity.class);
                     intent.putExtra("user", user);
                     getContext().startActivity(intent);
                 }
