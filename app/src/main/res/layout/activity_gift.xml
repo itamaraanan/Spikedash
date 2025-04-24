@@ -33,13 +33,25 @@
         android:elevation="2dp"
         android:contentDescription="Store"/>
 
-
     <com.bluehomestudio.luckywheel.LuckyWheel
         android:id="@+id/luckyWheel"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_centerInParent="true"
-        app:background_color="#FFA41E"></com.bluehomestudio.luckywheel.LuckyWheel>
+        app:background_color="#FFA41E" />
+
+    <TextView
+        android:id="@+id/tvTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/spinButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="COME BACK IN: 24:00:00"
+        android:textSize="25dp"
+        android:textColor="#FFFFFF"
+        android:fontFamily="@font/futura"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/spinButton"
