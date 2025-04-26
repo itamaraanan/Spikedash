@@ -95,6 +95,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
                 Toast.makeText(GiftActivity.this, "You won " + pointsAmount + " points!", Toast.LENGTH_SHORT).show();
                 btnReturnMenu.setVisibility(View.VISIBLE);
                 spinButton.setVisibility(View.INVISIBLE);
+                startCooldown(TWENTY_FOUR_HOURS_MS);
 
                 if(pointsAmount != null) {
                     user.add(Integer.parseInt(pointsAmount));
@@ -126,7 +127,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
                 long secs = seconds % 60;
 
                 String time = String.format("%02d:%02d:%02d", hours, minutes, secs);
-                tvTimer.setText("Come back in: " + time);
+                tvTimer.setText("COME BACK IN: " + time);
             }
 
             @Override
@@ -152,7 +153,6 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
             spinButton.setVisibility(View.INVISIBLE);
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
             userRef.child("lastSpinTime").setValue(System.currentTimeMillis());
-            startCooldown(TWENTY_FOUR_HOURS_MS);
 
         }
         else if (v == btnReturnMenu){
