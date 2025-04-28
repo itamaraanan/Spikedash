@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,7 +21,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     private DatabaseReference mDatabase;
     EditText etEmail, etPassword, etConfirmPassword, etUsername;
     LinearLayout btnSingup;
-    ImageButton btnBack;
+    ImageButton btnBack, btnShowPassword, btnShowConfirmPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        btnShowPassword = findViewById(R.id.btnShowPassword);
+        btnShowConfirmPassword = findViewById(R.id.btnShowConfirmPassword);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
@@ -38,7 +41,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         btnBack = findViewById(R.id.btnBack);
         btnSingup.setOnClickListener(this);
         btnBack.setOnClickListener(this);
-
+        btnShowPassword.setOnClickListener(this);
+        btnShowConfirmPassword.setOnClickListener(this);
     }
 
     private void createAccount(String email, String password, String username) {
@@ -94,9 +98,28 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
             createAccount(email, password, username);
         }
-        if(v == btnBack){
+        else if(v == btnBack){
             Intent intent = new Intent(SingupActivity.this, MenuActivity.class);
             startActivity(intent);
+        }
+        else if(v == btnShowPassword) {
+            if (etPassword.getTransformationMethod() == null) {
+                etPassword.setTransformationMethod(new PasswordTransformationMethod());
+                btnShowPassword.setImageResource(R.drawable.ic_closed_eye_24);
+            } else {
+                etPassword.setTransformationMethod(null);
+                btnShowPassword.setImageResource(R.drawable.ic_opened_eye_24);
+            }
+        }
+
+        else if(v == btnShowConfirmPassword) {
+            if (etConfirmPassword.getTransformationMethod() == null) {
+                etConfirmPassword.setTransformationMethod(new PasswordTransformationMethod());
+                btnShowConfirmPassword.setImageResource(R.drawable.ic_closed_eye_24);
+            } else {
+                etConfirmPassword.setTransformationMethod(null);
+                btnShowConfirmPassword.setImageResource(R.drawable.ic_opened_eye_24);
+            }
         }
 
     }

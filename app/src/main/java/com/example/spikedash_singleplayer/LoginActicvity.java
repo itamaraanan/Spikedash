@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,6 +29,7 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
     LinearLayout btnLogin;
     TextView btnGoToSignUp, btnForgotPassword;
     ImageButton btnBack;
+    ImageButton btnShowPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        btnShowPassword = findViewById(R.id.btnShowPassword);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
@@ -47,6 +50,7 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
         btnBack.setOnClickListener(this);
         btnGoToSignUp.setOnClickListener(this);
         btnForgotPassword.setOnClickListener(this);
+        btnShowPassword.setOnClickListener(this);
 
     }
 
@@ -82,6 +86,15 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
         if(v == btnForgotPassword){
             Intent intent = new Intent(LoginActicvity.this, ForgotActivity.class);
             startActivity(intent);
+        }
+        if(v == btnShowPassword){
+            if (etPassword.getTransformationMethod() == null) {
+                etPassword.setTransformationMethod(new PasswordTransformationMethod());
+                btnShowPassword.setImageResource(R.drawable.ic_closed_eye_24);
+            } else {
+                etPassword.setTransformationMethod(null);
+                btnShowPassword.setImageResource(R.drawable.ic_opened_eye_24);
+            }
         }
     }
 }

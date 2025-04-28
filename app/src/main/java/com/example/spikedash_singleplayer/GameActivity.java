@@ -405,7 +405,6 @@ public class GameActivity extends AppCompatActivity {
         }
 
         private void gameOver() {
-            // Implement game over logic if needed
         }
     }
 }
