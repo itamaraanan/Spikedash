@@ -5,8 +5,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -35,15 +39,15 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     private String base64Pic = "";
     ImageButton btnBack, btnShowPassword, btnShowConfirmPassword,btnAddImage;
     private ImageView ivProfilePicture;
+    Dialog d;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singup);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
-
 
         btnAddImage = findViewById(R.id.btnAddPicture);
         btnShowPassword = findViewById(R.id.btnShowPassword);
@@ -202,11 +206,29 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
         else if (v == btnAddImage){
             //Todo open alert dialog camera/gallery
+            d = new Dialog(this);
+            d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            d.setContentView(R.layout.image_dialog);
+            LinearLayout btnGallery = d.findViewById(R.id.btnGallery);
+            LinearLayout btnCamera = d.findViewById(R.id.btnCamera);
+            ImageButton btnClose = d.findViewById(R.id.btnClose);
 
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            btnCamera.setOnClickListener(view ->{
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraLauncher.launch(cameraIntent);
+                d.dismiss();
+            });
 
-            cameraLauncher.launch(cameraIntent);
+            btnGallery.setOnClickListener(view ->{
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryLauncher.launch(galleryIntent);
+                d.dismiss();
+            });
+
+            btnClose.setOnClickListener(view -> d.dismiss());
+
+            d.show();
+
         }
 
     }
