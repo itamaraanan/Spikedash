@@ -404,7 +404,6 @@ public class GameActivity extends AppCompatActivity {
             thread.start();
         }
 
-        private void gameOver() {
-        }
+        private void gameOver() {}
     }
 }

@@ -11,11 +11,13 @@ public class User implements Parcelable {
     private int wins;
     private int highScore;
     private int games;
+    private String base64Image;
     public User() {
     }
 
     public User(String username, String email, String uid, String AccountID) {
         this.username = username;
+        this.base64Image = null;
         this.email = email;
         this.uid = uid;
         this.AccountID = AccountID;
@@ -25,15 +27,19 @@ public class User implements Parcelable {
         this.games =0;
     }
 
+
+
     protected User(Parcel in) {
         username = in.readString();
         email = in.readString();
         uid = in.readString();
-        AccountID = in.readString();
         balance = in.readInt();
         wins = in.readInt();
         highScore = in.readInt();
         games = in.readInt();
+        AccountID = in.readString();
+        base64Image = in.readString();
+
     }
 
     @Override
@@ -46,6 +52,7 @@ public class User implements Parcelable {
         dest.writeInt(wins);
         dest.writeInt(highScore);
         dest.writeInt(games);
+        dest.writeString(base64Image);
     }
 
     @Override
@@ -64,7 +71,8 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
-
+    public void setBase64Image(String base64Image) {this.base64Image = base64Image;}
+    public String getBase64Image() {return base64Image;}
     public void add(int amount) {
         this.balance += amount;
     }
