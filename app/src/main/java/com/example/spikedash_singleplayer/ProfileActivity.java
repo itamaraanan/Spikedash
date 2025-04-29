@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     User user;
     TextView tvEmail;
     EditText etUsername;
+    ImageView imProfilePicture;
     Button btnConfirm;
 
     @Override
@@ -36,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
         user = getIntent().getParcelableExtra("user");
+        imProfilePicture = findViewById(R.id.profilePicture);
 
         etUsername = findViewById(R.id.editUsername);
         etUsername.setText(user.getUsername());
