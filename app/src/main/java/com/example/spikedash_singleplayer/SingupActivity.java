@@ -100,7 +100,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         }
         else if(v == btnBack){
             Intent intent = new Intent(SingupActivity.this, MenuActivity.class);
-            startActivity(intent);
+            startActivity(intent);//
         }
         else if(v == btnShowPassword) {
             if (etPassword.getTransformationMethod() == null) {
