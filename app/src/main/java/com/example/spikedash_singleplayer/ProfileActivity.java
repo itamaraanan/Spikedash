@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     TextView tvEmail;
     EditText etUsername;
     Button btnConfirm;
+    FirebaseAuth mAuth;
+    ImageView ivProfilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
         user = getIntent().getParcelableExtra("user");
+
+        ivProfilePic = findViewById(R.id.profilePicture);
+        if (user.getBase64Image() == null) {
+            ivProfilePic.setImageResource(R.drawable.ic_profile);
+        } else{ ivProfilePic.setImageBitmap(ImageUtils.convertStringToBitmap(user.getBase64Image()));}
 
         etUsername = findViewById(R.id.editUsername);
         etUsername.setText(user.getUsername());

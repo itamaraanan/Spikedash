@@ -47,6 +47,7 @@ dependencies {
     // Required for reCAPTCHA verification
     implementation("com.google.firebase:firebase-appcheck")
     implementation("com.google.android.recaptcha:recaptcha:18.4.0")
+    implementation("com.google.firebase:firebase-storage:21.0.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

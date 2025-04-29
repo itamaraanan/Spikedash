@@ -3,7 +3,10 @@ package com.example.spikedash_singleplayer;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -30,6 +33,7 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
     TextView btnGoToSignUp, btnForgotPassword;
     ImageButton btnBack;
     ImageButton btnShowPassword;
+    Dialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +59,13 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void login(String email, String password) {
+        showProgressDialog();
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        hideProgressDialog();
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActicvity.this, "Login succeeded.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActicvity.this, MainActivity.class);
@@ -68,6 +75,28 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
                         }
                     }
                 });
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new Dialog(this);
+            progressDialog.setContentView(R.layout.progress_dialog);
+            progressDialog.setCancelable(false);
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        TextView tvMessage = progressDialog.findViewById(R.id.tvMessage);
+        if (tvMessage != null) {
+            tvMessage.setText("Logging in...");
+        }
+
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override

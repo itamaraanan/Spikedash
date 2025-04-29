@@ -1,0 +1,23 @@
+<!-- res/layout/progress_dialog.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/dialog_inner_background">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/progressBar"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:text="Creating account..."
+        android:textColor="@android:color/black" />
+</RelativeLayout>

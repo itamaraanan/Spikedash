@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -36,10 +37,12 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     EditText etEmail, etPassword, etConfirmPassword, etUsername;
     LinearLayout btnSingup;
     private ActivityResultLauncher<Intent> cameraLauncher, galleryLauncher;
-    private String base64Pic = "";
+    private String base64Pic = null;
     ImageButton btnBack, btnShowPassword, btnShowConfirmPassword,btnAddImage;
     private ImageView ivProfilePicture;
+
     Dialog d;
+    Dialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
         initializeCameraAndGallery();
     }
+
 
     private void initializeCameraAndGallery() {
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -126,9 +130,13 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     private void createAccount(String email, String password, String username) {
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
 
+        // Show loading dialog
+        showProgressDialog();
+
         usernamesRef.child(username).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().exists()) {
+                    hideProgressDialog();
                     Toast.makeText(this, "Username already taken. Try another one.", Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth.createUserWithEmailAndPassword(email, password)
@@ -136,14 +144,24 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                                 if (authTask.isSuccessful()) {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     writeNewUser(user.getUid(), username, email);
-                                    usernamesRef.child(username).setValue(user.getUid());
-                                    startActivity(new Intent(this, MainActivity.class));
+                                    usernamesRef.child(username).setValue(user.getUid())
+                                            .addOnCompleteListener(usernameTask -> {
+                                                hideProgressDialog();
+                                                if (usernameTask.isSuccessful()) {
+                                                    Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+                                                    startActivity(new Intent(this, MainActivity.class));
+                                                } else {
+                                                    Toast.makeText(this, "Error registering username.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
                                 } else {
+                                    hideProgressDialog();
                                     Toast.makeText(this, "Signup failed: " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
             } else {
+                hideProgressDialog();
                 Toast.makeText(this, "Error checking username.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -159,6 +177,21 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         userRef.setValue(user);
     }
 
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new Dialog(this);
+            progressDialog.setContentView(R.layout.progress_dialog);
+            progressDialog.setCancelable(false);
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -205,7 +238,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         else if (v == btnAddImage){
-            //Todo open alert dialog camera/gallery
             d = new Dialog(this);
             d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             d.setContentView(R.layout.image_dialog);
@@ -228,8 +260,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
             btnClose.setOnClickListener(view -> d.dismiss());
 
             d.show();
-
         }
-
     }
 }
