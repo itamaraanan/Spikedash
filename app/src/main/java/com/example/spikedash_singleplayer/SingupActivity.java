@@ -35,10 +35,10 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     private DatabaseReference mDatabase;
     EditText etEmail, etPassword, etConfirmPassword, etUsername;
     LinearLayout btnSingup;
-    private ActivityResultLauncher<Intent> cameraLauncher, galleryLauncher;
-    private String base64Pic = null;
+    ActivityResultLauncher<Intent> cameraLauncher, galleryLauncher;
+    String base64Pic = null;
     ImageButton btnBack, btnShowPassword, btnShowConfirmPassword, btnAddImage;
-    private ImageView ivProfilePicture;
+    ImageView ivProfilePicture;
 
     Dialog d;
     Dialog progressDialog;

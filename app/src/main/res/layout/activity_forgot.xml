@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/square_button_background"
+        android:background="@drawable/dialog_inner_background"
         android:src="@drawable/ic_return_lobby"
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"

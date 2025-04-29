@@ -20,7 +20,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/square_button_background"
+                android:background="@drawable/dialog_inner_background"
                 android:src="@drawable/ic_return_lobby"
                 android:padding="12dp"/>
 
