@@ -1,7 +1,11 @@
 package com.example.spikedash_singleplayer;
 
+import static android.opengl.ETC1.decodeImage;
+
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnBack.setOnClickListener(this);
         user = getIntent().getParcelableExtra("user");
         imProfilePicture = findViewById(R.id.profilePicture);
+        uploadImage();
 
         etUsername = findViewById(R.id.editUsername);
         etUsername.setText(user.getUsername());
@@ -47,6 +52,28 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnConfirm = findViewById(R.id.btnConfirmChanges);
         btnConfirm.setOnClickListener(this);
 
+    }
+    private void uploadImage(){
+        if (user != null && user.getBase64Image() != null && !user.getBase64Image().isEmpty()) {
+            try {
+                // Convert base64 string to bitmap using ImageUtils
+                Bitmap profileBitmap = ImageUtils.decodeImage(user.getBase64Image());
+                if (profileBitmap != null) {
+                    // Set the bitmap to the ImageView
+                    imProfilePicture.setImageBitmap(profileBitmap);
+                } else {
+                    // Fallback to default if conversion failed
+                    imProfilePicture.setImageResource(R.drawable.ic_profile);
+                }
+            } catch (Exception e) {
+                // Handle any exceptions and use default image
+                imProfilePicture.setImageResource(R.drawable.ic_profile);
+                Log.e("ProfileActivity", "Error loading profile picture: " + e.getMessage());
+            }
+        } else {
+            // Use default image if no base64 image is available
+            imProfilePicture.setImageResource(R.drawable.ic_profile);
+        }
     }
 
     @Override

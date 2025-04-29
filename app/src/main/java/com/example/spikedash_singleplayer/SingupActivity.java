@@ -71,7 +71,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         initializeCameraAndGallery();
     }
 
-    private void initializeCameraAndGallery() {
+    private void  initializeCameraAndGallery() {
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 Bitmap bitmap = null;
