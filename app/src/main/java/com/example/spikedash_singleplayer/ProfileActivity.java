@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -65,6 +66,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         hasImageChange = true;
         user = getIntent().getParcelableExtra("user");
         imProfilePicture = findViewById(R.id.profilePicture);
+        base64Pic = user.getBase64Image();
         uploadImage();
 
         etUsername = findViewById(R.id.editUsername);
@@ -80,10 +82,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private void uploadImage(){
         if (user != null && user.getBase64Image() != null && !user.getBase64Image().isEmpty()) {
             try {
-                // Convert base64 string to bitmap using ImageUtils
                 Bitmap profileBitmap = ImageUtils.decodeImage(user.getBase64Image());
                 if (profileBitmap != null) {
-                    // Set the bitmap to the ImageView
                     imProfilePicture.setImageBitmap(profileBitmap);
                 } else {
                     // Fallback to default if conversion failed
@@ -192,10 +192,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             if (!newUsername.equals(user.username)) {
                 hasUsernameChange = true;
             }
-
-            if (base64Pic != null) {
+            if ((base64Pic == null && user.getBase64Image() != null) ||
+                    (base64Pic != null && !base64Pic.equals(user.getBase64Image()))) {
                 hasImageChange = true;
+            } else {
+                hasImageChange = false;
             }
+
 
             if (!hasUsernameChange && !hasImageChange) {
                 Toast.makeText(ProfileActivity.this, "No changes made", Toast.LENGTH_SHORT).show();
