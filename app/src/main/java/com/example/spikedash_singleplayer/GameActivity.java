@@ -286,9 +286,13 @@ public class GameActivity extends AppCompatActivity {
             TextView tvGames = d.findViewById(R.id.tvGames);
             tvScore.setText(String.valueOf(candies));
 
-            user.addGame();
+
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
                     .child(user.getUid());
+            user.add(candies);
+            userRef.child("balance").setValue(user.getBalance());
+            user.addGame();
+
 
             if (candies >= user.getHighScore()) {
                 user.setHighScore(candies);

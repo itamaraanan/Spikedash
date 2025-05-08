@@ -84,7 +84,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             user.delete().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show();
-                    // Redirect to login or main screen
                     startActivity(new Intent(this, MenuActivity.class));
                     finish();
                 } else {

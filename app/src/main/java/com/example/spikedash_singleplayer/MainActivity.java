@@ -91,8 +91,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         if(v == btnShop){
-            Intent intent = new Intent(MainActivity.this, ShopActicity.class);
-            startActivity(intent);
+            if (currentUser != null) {
+                Intent intent = new Intent(MainActivity.this, ShopActicity.class);
+                intent.putExtra("user", currentUser);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            }
         }
         if(v == btnProfile){
             if (currentUser != null) {

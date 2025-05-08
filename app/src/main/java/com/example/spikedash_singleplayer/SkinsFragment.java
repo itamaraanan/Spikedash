@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -26,6 +27,41 @@ public class SkinsFragment extends Fragment {
     private List<Skin> skinList = new ArrayList<>();
     private Skin lastSelected;
 
+    private void loadSkins() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    List<String> ownedSkins = (List<String>) userDoc.get("ownedSkins");
+                    if (ownedSkins == null) ownedSkins = new ArrayList<>();
+
+                    List<String> finalOwnedSkins = ownedSkins;
+                    FirebaseFirestore.getInstance()
+                            .collection("skins")
+                            .orderBy("price")
+                            .get()
+                            .addOnSuccessListener(querySnapshots -> {
+                                skinList.clear();
+                                for (DocumentSnapshot doc : querySnapshots) {
+                                    Skin skin = doc.toObject(Skin.class);
+                                    if (skin != null) {
+                                        skin.setSkinId(doc.getId());
+
+                                        if (!finalOwnedSkins.contains(skin.getSkinId())) {
+                                            skinList.add(skin);
+                                        }
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
+                            });
+                });
+    }
+
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -36,27 +72,13 @@ public class SkinsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new SkinAdapter(getContext(), skinList);
+        adapter.setOnSkinRefreshRequest(() -> loadSkins());
         recyclerView.setAdapter(adapter);
-        FirebaseFirestore.getInstance()
-                .collection("skins")
-                .orderBy("price")
-                .get()
-                .addOnSuccessListener(querySnapshots -> {
-                    skinList.clear();
-                    for (DocumentSnapshot doc : querySnapshots) {
-                        Skin skin = doc.toObject(Skin.class);
-                        if (skin != null) {
-                            Log.d("SkinsFragment", "Loaded skin: " + skin.getName());
-                            skinList.add(skin);
-                        } else {
-                            Log.w("SkinsFragment", "Failed to load skin from: " + doc.getId());
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                });
-
-
+        loadSkins();
         return view;
     }
+
+
+
 
 }

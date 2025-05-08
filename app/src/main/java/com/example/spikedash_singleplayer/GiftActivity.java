@@ -99,11 +99,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
 
                 if(pointsAmount != null) {
                     user.add(Integer.parseInt(pointsAmount));
-
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
-                            .child(user.getUid());
-
-                    userRef.child("points").setValue(user.getBalance());
+                    userRef.child("balance").setValue(user.getBalance());
                 }
             }
         });

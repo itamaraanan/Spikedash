@@ -3,7 +3,10 @@ package com.example.spikedash_singleplayer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -12,6 +15,8 @@ import android.widget.TextView;
 public class ShopActicity extends AppCompatActivity implements View.OnClickListener {
     TextView skinsTab, backgroundsTab;
     View skinsIndicator, backgroundsIndicator;
+    TextView tvBalance;
+    User user;
     ImageButton btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +28,9 @@ public class ShopActicity extends AppCompatActivity implements View.OnClickListe
         skinsIndicator = findViewById(R.id.skinsIndicator);
         backgroundsIndicator = findViewById(R.id.backgroundsIndicator);
         btnBack = findViewById(R.id.btnBack);
+        tvBalance = findViewById(R.id.coinBalance);
+        user = getIntent().getParcelableExtra("user");
+        tvBalance.setText(String.valueOf(user.getBalance()));
 
         skinsTab.setOnClickListener(this);
         backgroundsTab.setOnClickListener(this);
@@ -36,6 +44,7 @@ public class ShopActicity extends AppCompatActivity implements View.OnClickListe
                 .beginTransaction()
                 .replace(R.id.contentContainer, fragment)
                 .commit();
+
     }
 
     @Override
