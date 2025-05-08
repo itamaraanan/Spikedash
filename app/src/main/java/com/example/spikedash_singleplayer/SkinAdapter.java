@@ -30,8 +30,7 @@ public class SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder
     private Context context;
     Dialog dialog;
     private OnSkinRefreshRequest refreshListener;
-
-
+    private String loggedInUid;
 
     public SkinAdapter(Context context, List<Skin> skins) {
         this.context = context;
