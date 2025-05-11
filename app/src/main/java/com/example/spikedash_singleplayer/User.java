@@ -72,7 +72,6 @@ public class User implements Parcelable {
         }
     };
 
-    // Getter and setter for base64Image
     public String getBase64Image() {
         return base64Image;
     }
@@ -85,18 +84,9 @@ public class User implements Parcelable {
         this.balance += amount;
     }
 
-    public void subtract(int amount) {
-        this.balance -= amount;
-    }
-
     public int getBalance() {
         return this.balance;
     }
-
-    public void addWin() {
-        wins++;
-    }
-
     public int getWins() {
         return wins;
     }
@@ -107,14 +97,6 @@ public class User implements Parcelable {
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    public String getAccountID() {
-        return AccountID;
-    }
-
-    public void setAccountID(String accountID) {
-        AccountID = accountID;
     }
 
     public String getUsername() {

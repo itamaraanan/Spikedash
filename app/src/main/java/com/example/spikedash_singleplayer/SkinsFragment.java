@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -26,40 +29,35 @@ public class SkinsFragment extends Fragment {
     private SkinAdapter adapter;
     private List<Skin> skinList = new ArrayList<>();
     private Skin lastSelected;
-
     private void loadSkins() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
-        FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(uid)
-                .get()
-                .addOnSuccessListener(userDoc -> {
-                    List<String> ownedSkins = (List<String>) userDoc.get("ownedSkins");
-                    if (ownedSkins == null) ownedSkins = new ArrayList<>();
+        db.child("users").child(uid).child("ownedSkins").get().addOnSuccessListener(snapshot -> {
+            List<String> ownedSkinIds = new ArrayList<>();
+            for (DataSnapshot skinSnap : snapshot.getChildren()) {
+                ownedSkinIds.add(skinSnap.getKey());
+            }
 
-                    List<String> finalOwnedSkins = ownedSkins;
-                    FirebaseFirestore.getInstance()
-                            .collection("skins")
-                            .orderBy("price")
-                            .get()
-                            .addOnSuccessListener(querySnapshots -> {
-                                skinList.clear();
-                                for (DocumentSnapshot doc : querySnapshots) {
-                                    Skin skin = doc.toObject(Skin.class);
-                                    if (skin != null) {
-                                        skin.setSkinId(doc.getId());
-
-                                        if (!finalOwnedSkins.contains(skin.getSkinId())) {
-                                            skinList.add(skin);
-                                        }
-                                    }
+            FirebaseFirestore.getInstance()
+                    .collection("skins")
+                    .orderBy("price")
+                    .get()
+                    .addOnSuccessListener(querySnapshots -> {
+                        skinList.clear();
+                        for (DocumentSnapshot doc : querySnapshots) {
+                            Skin skin = doc.toObject(Skin.class);
+                            if (skin != null) {
+                                skin.setSkinId(doc.getId());
+                                if (!ownedSkinIds.contains(skin.getSkinId())) {
+                                    skinList.add(skin);
                                 }
-                                adapter.notifyDataSetChanged();
-                            });
-                });
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    });
+        });
     }
-
 
 
     @Nullable

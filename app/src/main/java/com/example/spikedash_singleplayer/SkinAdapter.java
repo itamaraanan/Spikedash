@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -47,7 +49,6 @@ public class SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder
         View view = LayoutInflater.from(context).inflate(R.layout.item_skin, parent, false);
         return new SkinViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull SkinViewHolder holder, int position) {
         Skin skin = skins.get(position);
@@ -89,35 +90,26 @@ public class SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder
 
         btnBuy.setOnClickListener(v -> {
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DatabaseReference userRef = FirebaseDatabase.getInstance()
+                    .getReference("users").child(uid);
 
-            db.collection("users").document(uid).get()
-                    .addOnSuccessListener(userDoc -> {
-                        Long balance = userDoc.getLong("balance");
-                        if (balance == null) balance = 0L;
+            userRef.get().addOnSuccessListener(snapshot -> {
+                Long balance = snapshot.child("balance").getValue(Long.class);
+                if (balance == null) balance = 0L;
 
-                        if (balance != null && balance >= (long) skin.getPrice()) {
-                            db.collection("users").document(uid)
-                                    .update(
-                                            "ownedSkins", FieldValue.arrayUnion(skin.getSkinId()),
-                                            "balance", balance - skin.getPrice()
-                                    )
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(context, "Skin purchased!", Toast.LENGTH_SHORT).show();
-                                        if (refreshListener != null) refreshListener.refresh();
-                                        dialog.dismiss();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(context, "Failed to update user data", Toast.LENGTH_SHORT).show();
-                                        dialog.dismiss();
-                                    });
-                        } else {
-                            Toast.makeText(context, "Not enough candies!", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(context, "Failed to check balance", Toast.LENGTH_SHORT).show();
-                    });
+                if (balance >= skin.getPrice()) {
+                    userRef.child("balance").setValue(balance - skin.getPrice());
+                    userRef.child("ownedSkins").child(skin.getSkinId()).setValue(true);
+
+                    Toast.makeText(context, "Skin purchased!", Toast.LENGTH_SHORT).show();
+                    if (refreshListener != null) refreshListener.refresh();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(context, "Not enough candies!", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(e -> {
+                Toast.makeText(context, "Failed to load user data", Toast.LENGTH_SHORT).show();
+            });
         });
 
 
