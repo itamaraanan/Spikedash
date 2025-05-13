@@ -17,7 +17,7 @@
         android:background="#F5F5F5">
 
         <ImageView
-            android:id="@+id/imSkin"
+            android:id="@+id/imBackground"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:scaleType="fitCenter"
@@ -36,7 +36,7 @@
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Skin Name"
+                android:text="Background Name"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#333" />

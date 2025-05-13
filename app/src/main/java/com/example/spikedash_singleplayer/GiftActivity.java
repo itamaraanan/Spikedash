@@ -72,12 +72,12 @@ public class GiftActivity extends AppCompatActivity implements View.OnClickListe
             tvTimer.setVisibility(View.INVISIBLE);
         });
 
-    WheelItem gift1 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_random_skin));
+    WheelItem gift1 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy),"0");
 WheelItem gift2 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "10");
-WheelItem gift3 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "20");
-WheelItem gift4 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_random_background));
-WheelItem gift5 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "40");
-WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "50");
+WheelItem gift3 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "50");
+WheelItem gift4 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "100");
+WheelItem gift5 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "250");
+WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "500");
 
         wheelItemList.add(gift1);
         wheelItemList.add(gift2);
