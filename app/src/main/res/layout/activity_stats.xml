@@ -46,21 +46,21 @@
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/ic_trophy"
+                android:src="@drawable/white_candy"
                 android:padding="4dp"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Winnings"
+                android:text="Balance"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:fontFamily="@font/futura"
                 android:layout_marginStart="12dp"/>
 
             <TextView
-                android:id="@+id/winningsValue"
+                android:id="@+id/balanceValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"

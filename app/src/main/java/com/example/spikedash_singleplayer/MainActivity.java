@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MusicManager.start(this);
         btnShop = findViewById(R.id.btnShop);
         btnLeaderBoard = findViewById(R.id.btnLeaderboard);
         btnProfile = findViewById(R.id.btnProfile);

@@ -16,6 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -23,26 +26,61 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private SeekBar soundSeekBar, bgmSeekBar;
     private Switch vibrationSwitch;
     private LinearLayout btnHowToPlay, btnPrivacySettings, btnLogout, btnDeleteAccount;
-
+    private FirebaseUser user;
+    private DatabaseReference settingsRef;
+    String uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = user.getUid();
+        settingsRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("settings");
         btnBack = findViewById(R.id.btnBack);
-        soundSeekBar = findViewById(R.id.soundSeekBar);
-        bgmSeekBar = findViewById(R.id.bgmSeekBar);
-        vibrationSwitch = findViewById(R.id.vibrationSwitch);
+        soundSeekBar = findViewById(R.id.seekbar_sound);
+        bgmSeekBar = findViewById(R.id.seekbar_bgm);
+        vibrationSwitch = findViewById(R.id.switch_vibrartion);
         btnHowToPlay = findViewById(R.id.btnHowToPlay);
         btnPrivacySettings = findViewById(R.id.btnCredits);
         btnLogout = findViewById(R.id.btnLogout);
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
+
 
         btnBack.setOnClickListener(this);
         btnHowToPlay.setOnClickListener(this);
         btnPrivacySettings.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
         btnDeleteAccount.setOnClickListener(this);
+        soundSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                settingsRef.child("sound").setValue(progress / 100.0);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        bgmSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                settingsRef.child("bgm").setValue(progress / 100.0);
+                MusicManager.setVolume(progress / 100.0f);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        vibrationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            settingsRef.child("vibration").setValue(isChecked);
+        });
+        loadSettings();
     }
 
     @Override
@@ -76,10 +114,24 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     .show();
         }
     }
+    private void loadSettings(){
+        settingsRef.get().addOnCompleteListener(v -> {
+            if (v.isSuccessful() && v.getResult().exists()) {
+                DataSnapshot snapshot = v.getResult();
+
+                double sound = snapshot.child("sound").getValue(Double.class);
+                double bgm = snapshot.child("bgm").getValue(Double.class);
+                boolean vibration = snapshot.child("vibration").getValue(Boolean.class);
+
+                soundSeekBar.setProgress((int) (sound * 100));
+                bgmSeekBar.setProgress((int) (bgm * 100));
+                vibrationSwitch.setChecked(vibration);
+            }
+        });
+    }
 
 
     private void deleteAccount(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             user.delete().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {

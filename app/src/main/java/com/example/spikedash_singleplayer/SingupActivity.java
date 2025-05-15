@@ -174,6 +174,10 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                 userRef.child("ownedSkins").child("default_skin").setValue(true);
                 userRef.child("equippedSkin").setValue("default_skin");
 
+                userRef.child("settings").child("sound").setValue(0.5);
+                userRef.child("settings").child("bgm").setValue(0.5);
+                userRef.child("settings").child("vibration").setValue(true);
+
                 // ✅ Register the username
                 DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
                 usernamesRef.child(username).setValue(userId).addOnCompleteListener(usernameTask -> {

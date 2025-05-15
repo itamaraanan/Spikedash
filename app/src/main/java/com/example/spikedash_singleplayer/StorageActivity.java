@@ -3,6 +3,7 @@ package com.example.spikedash_singleplayer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -61,9 +62,9 @@ public class StorageActivity extends AppCompatActivity implements View.OnClickLi
             loadFragment(new StorageBackFragment());
         }
 
-
         if (v == btnBack) {
-            finish();
+            Intent intent = new Intent(StorageActivity.this, MainActivity.class);
+            startActivity(intent);
         }
     }
 }
