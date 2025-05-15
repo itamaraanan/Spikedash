@@ -143,8 +143,10 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
             btnReturnMenu.setVisibility(View.INVISIBLE);
             spinButton.setVisibility(View.INVISIBLE);
             Random random = new Random();
-            points = String.valueOf(random.nextInt(10));
-            luckyWheel.rotateWheelTo(Integer.parseInt(points));
+            int index = random.nextInt(wheelItemList.size());
+            points = String.valueOf(index + 1);
+            luckyWheel.rotateWheelTo(index + 1);
+
 
             spinButton.setVisibility(View.INVISIBLE);
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
