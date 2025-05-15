@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DatabaseReference ref = db.getReference("users");
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private User currentUser;
-    private ImageView backgroundImage;
+    private ImageView backgroundImage, birdImage;
     private String uid;
     private boolean isAccountFound = false;
 
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSettings = findViewById(R.id.btnSettings);
         btnInventory = findViewById(R.id.btnInventory);
         backgroundImage = findViewById(R.id.backgroundImage);
+        birdImage = findViewById(R.id.birdImage);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
@@ -60,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnInventory.setOnClickListener(this);
 
         currentUser();
-        loadBackground();
-
+        //loadBackground();
+        loadSkin();
     }
 
     @Override
@@ -167,6 +168,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
     }
 
+
+    public void loadSkin() {
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(uid)
+                .child("equippedSkin")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    String equippedId = snapshot.getValue(String.class);
+                    Log.d("SkinDebug", "Equipped ID: " + equippedId);
+
+                    if (equippedId == null) return;
+
+                    FirebaseFirestore.getInstance().collection("skins")
+                            .document(equippedId)
+                            .get()
+                            .addOnSuccessListener(doc -> {
+                                String imageUrl = doc.getString("imageUrl");
+                                Log.d("SkinDebug", "Image URL: " + imageUrl);
+
+                                if (imageUrl != null) {
+                                    Glide.with(this)
+                                            .load(imageUrl)
+                                            .into(birdImage);
+                                }
+                            });
+                });
+    }
 
     public void currentUser() {
         FirebaseUser firebaseUser = auth.getCurrentUser();

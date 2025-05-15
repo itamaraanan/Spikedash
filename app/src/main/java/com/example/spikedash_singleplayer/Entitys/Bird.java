@@ -84,6 +84,10 @@ public class Bird extends Entity {
         }
         velocity = jumpStrength;
     }
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
 
     public boolean collidesWith(int otherX, int otherY, int otherWidth, int otherHeight) {
         float birdCenterX = x + bitmap.getWidth() / 2.0f;

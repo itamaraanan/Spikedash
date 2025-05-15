@@ -63,8 +63,8 @@ public class GameActivity extends AppCompatActivity {
         backgroundImage = findViewById(R.id.backgroundImage);
         user = getIntent().getParcelableExtra("user");
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        backgroundImage = findViewById(R.id.backgroundImage);
         loadGameBackground();
+        loadEquippedSkin();
 
 
     }
@@ -86,7 +86,6 @@ public class GameActivity extends AppCompatActivity {
         private boolean isRunning;
         private int screenHeight;
         private ImageButton btnPause;
-        private ImageView backgroundImage;
         private Canvas canvas;
         private Bird bird;
         private Candy candy;
@@ -435,6 +434,11 @@ public class GameActivity extends AppCompatActivity {
         public void setBackgroundBitmap(Bitmap bitmap) {
             this.backgroundBitmap = Bitmap.createScaledBitmap(bitmap, screenWidth, screenHeight, true);
         }
+        public void setBirdBitmap(Bitmap birdBitmap) {
+            this.bitmapBird = birdBitmap;
+            this.bird.setBitmap(birdBitmap);
+        }
+
 
     }
     private void loadGameBackground() {
@@ -479,6 +483,50 @@ public class GameActivity extends AppCompatActivity {
                             });
                 });
     }
+    private void loadEquippedSkin() {
+        if (uid == null || uid.isEmpty()) return;
+
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(uid)
+                .child("equippedSkin")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    String equippedSkinId = snapshot.getValue(String.class);
+                    if (equippedSkinId == null) return;
+
+                    FirebaseFirestore.getInstance().collection("skins")
+                            .document(equippedSkinId)
+                            .get()
+                            .addOnSuccessListener(doc -> {
+                                String imageUrl = doc.getString("imageUrl");
+                                if (imageUrl != null && !imageUrl.isEmpty()) {
+                                    Glide.with(this)
+                                            .asBitmap()
+                                            .load(imageUrl)
+                                            .into(new com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
+                                                @Override
+                                                public void onResourceReady(Bitmap resource, com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
+                                                    Bitmap scaled = Bitmap.createScaledBitmap(resource, 144, 100, false);
+                                                    if (gameView != null) {
+                                                        gameView.setBirdBitmap(scaled);
+                                                    } else {
+                                                        GameActivity.this.runOnUiThread(() -> {
+                                                            frm.post(() -> {
+                                                                if (gameView != null)
+                                                                    gameView.setBirdBitmap(scaled);
+                                                            });
+                                                        });
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onLoadCleared(android.graphics.drawable.Drawable placeholder) {}
+                                            });
+                                }
+                            });
+                });
+    }
+
 
 
 
