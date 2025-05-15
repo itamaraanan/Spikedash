@@ -33,12 +33,13 @@ public class StorageActivity extends AppCompatActivity implements View.OnClickLi
         skinsTab.setOnClickListener(this);
         backgroundsTab.setOnClickListener(this);
         btnBack.setOnClickListener(this);
+        loadFragment(new StorageSkinFragment());
 
     }
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.storageContentContainer, new StorageBackFragment())
+                .replace(R.id.storageContentContainer, fragment)
                 .commit();
     }
 
