@@ -90,6 +90,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
         luckyWheel.setLuckyWheelReachTheTarget(new OnLuckyWheelReachTheTarget() {
             @Override
             public void onReachTarget() {
+                VibrationManager.vibrate(GiftActivity.this  , 200);
                 WheelItem itemSelected = wheelItemList.get(Integer.parseInt(points)-1);
                 pointsAmount = itemSelected.text;
                 Toast.makeText(GiftActivity.this, "You won " + pointsAmount + " points!", Toast.LENGTH_SHORT).show();
@@ -139,6 +140,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 100);
         if(v == spinButton) {
             btnReturnMenu.setVisibility(View.INVISIBLE);
             spinButton.setVisibility(View.INVISIBLE);

@@ -150,6 +150,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 25);
         if(v == btnBack) {
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
             startActivity(intent);

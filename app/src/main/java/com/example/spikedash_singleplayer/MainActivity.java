@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         backgroundImage = findViewById(R.id.backgroundImage);
         birdImage = findViewById(R.id.birdImage);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        VibrationManager.syncWithFirebase();
 
 
         btnLeaderBoard.setOnClickListener(this);
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 25);
         if(v == btnStart) {
             if (currentUser != null) {
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);

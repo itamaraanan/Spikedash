@@ -70,6 +70,7 @@ public class StorageBackAdapter extends RecyclerView.Adapter<StorageBackAdapter.
                 .into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {
+            VibrationManager.vibrate( context, 25);
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             String selectedBackgroundId = item.getId(); // use ID for storage
 

@@ -78,6 +78,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
         vibrationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            VibrationManager.vibrate(this, 25);
             settingsRef.child("vibration").setValue(isChecked);
         });
         loadSettings();
@@ -85,6 +86,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 25);
         if (v == btnBack) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);

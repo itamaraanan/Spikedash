@@ -27,7 +27,7 @@ public class StatsActivity extends AppCompatActivity {
         gamesValue = findViewById(R.id.gamesValue);
         highScoreValue = findViewById(R.id.highScoreValue);
         btnReturn = findViewById(R.id.btnBack);
-        btnReturn.setOnClickListener(v -> { finish(); });
+        btnReturn.setOnClickListener(v -> {VibrationManager.vibrate(this, 25);finish(); });
         user = getIntent().getParcelableExtra("user");
         init();
     }

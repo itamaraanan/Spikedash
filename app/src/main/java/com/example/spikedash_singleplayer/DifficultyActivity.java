@@ -34,6 +34,7 @@ public class DifficultyActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 25);
         if (v == easyButton) {
             intent = new Intent(this, MainActivity.class);
             intent.putExtra("difficulty", "easy");

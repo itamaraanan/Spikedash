@@ -50,6 +50,7 @@ public class ShopActicity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 25);
         if (v == skinsTab) {
             skinsTab.setAlpha(1f);
             backgroundsTab.setAlpha(0.5f);

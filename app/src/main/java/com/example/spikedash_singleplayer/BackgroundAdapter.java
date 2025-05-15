@@ -55,6 +55,7 @@ public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.Ba
                 .into(holder.image);
 
         holder.itemView.setOnClickListener(v -> {
+            VibrationManager.vibrate(context, 25);
             createBuyDialog(backgrounds.get(position));
         });
     }
@@ -82,6 +83,7 @@ public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.Ba
         tvPrice.setText(background.getPrice() + " candies");
 
         btnBuy.setOnClickListener(v -> {
+            VibrationManager.vibrate(context, 25);
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference userRef = FirebaseDatabase.getInstance()
                     .getReference("users").child(uid);
@@ -106,6 +108,7 @@ public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.Ba
         });
 
         btnCancel.setOnClickListener(v -> {
+            VibrationManager.vibrate(context, 25);
             dialog.dismiss();
         });
 
