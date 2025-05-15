@@ -156,42 +156,46 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
         // Set profile image if available
         if (base64Pic != null) {
-            // Check if base64 image is too large
-            if (base64Pic.length() > 500000) { // If larger than ~500KB
+            if (base64Pic.length() > 500_000) {
                 Toast.makeText(this, "Image is too large. Using default profile picture.", Toast.LENGTH_SHORT).show();
-                // Optional: Consider implementing image compression
-                // base64Pic = ImageUtils.compressImage(base64Pic);
+            } else {
+                user.setBase64Image(base64Pic);
             }
-            user.setBase64Image(base64Pic);
         }
 
-        // Save user data and register username
+        // Save user data
         userRef.setValue(user).addOnCompleteListener(task -> {
-            DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
-            usernamesRef.child(username).setValue(userId).addOnCompleteListener(usernameTask -> {
-                hideProgressDialog();
+            if (task.isSuccessful()) {
+                // ✅ Set default owned and equipped background
+                userRef.child("ownedBackgrounds").child("default_background").setValue(true);
+                userRef.child("equippedBackground").setValue("default_background");
 
-                if (task.isSuccessful() && usernameTask.isSuccessful()) {
-                    Toast.makeText(SingupActivity.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SingupActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    // Handle database write failure
-                    String errorMessage = task.isSuccessful() ?
-                            "Failed to register username." :
-                            "Failed to save user data.";
-                    Toast.makeText(SingupActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                // ✅ Register the username
+                DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
+                usernamesRef.child(username).setValue(userId).addOnCompleteListener(usernameTask -> {
+                    hideProgressDialog();
 
-                    FirebaseUser u = mAuth.getCurrentUser();
-                    if (u != null) {
-                        u.delete();
+                    if (usernameTask.isSuccessful()) {
+                        Toast.makeText(SingupActivity.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SingupActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(SingupActivity.this, "Failed to register username.", Toast.LENGTH_SHORT).show();
+                        FirebaseUser u = mAuth.getCurrentUser();
+                        if (u != null) u.delete();
                     }
-                }
-            });
+                });
+            } else {
+                hideProgressDialog();
+                Toast.makeText(SingupActivity.this, "Failed to save user data.", Toast.LENGTH_SHORT).show();
+                FirebaseUser u = mAuth.getCurrentUser();
+                if (u != null) u.delete();
+            }
         });
     }
+
 
     private void showProgressDialog(String message) {
         if (progressDialog == null) {
