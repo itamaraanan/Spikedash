@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.spikedash_singleplayer.Entitys.Bird;
 import com.example.spikedash_singleplayer.Entitys.Candy;
 import com.example.spikedash_singleplayer.Entitys.CountDown;
@@ -34,8 +35,10 @@ import com.example.spikedash_singleplayer.Entitys.Plus;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
 
@@ -45,6 +48,8 @@ public class GameActivity extends AppCompatActivity {
     TextView tvScore;
     ImageButton btnPause;
     User user;
+    ImageView backgroundImage;
+    String uid;
 
 
     @Override
@@ -55,7 +60,12 @@ public class GameActivity extends AppCompatActivity {
         tvScore = findViewById(R.id.tvScore);
         frm = findViewById(R.id.frm);
         btnPause = findViewById(R.id.imbPause);
+        backgroundImage = findViewById(R.id.backgroundImage);
         user = getIntent().getParcelableExtra("user");
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        backgroundImage = findViewById(R.id.backgroundImage);
+        loadGameBackground();
+
 
     }
 
@@ -76,6 +86,7 @@ public class GameActivity extends AppCompatActivity {
         private boolean isRunning;
         private int screenHeight;
         private ImageButton btnPause;
+        private ImageView backgroundImage;
         private Canvas canvas;
         private Bird bird;
         private Candy candy;
@@ -85,6 +96,8 @@ public class GameActivity extends AppCompatActivity {
         private Bitmap spikeBitmap;
         private Bitmap candyBitmap;
         private Bitmap plusBitmap;
+        private Bitmap backgroundBitmap;
+
         private SurfaceHolder holder;
         private Paint bg;
         private int candies;
@@ -107,6 +120,7 @@ public class GameActivity extends AppCompatActivity {
             this.user = user;
 
             initializeGame();
+
         }
 
         private void initializeGame() {
@@ -129,6 +143,7 @@ public class GameActivity extends AppCompatActivity {
             plus.setY(candy.getY());
             candies = 0;
             isRunning = true;
+            uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             holder = getHolder();
             thread = new Thread(this);
@@ -152,7 +167,13 @@ public class GameActivity extends AppCompatActivity {
         private void drawSurface() {
             if (holder.getSurface().isValid()) {
                 canvas = holder.lockCanvas();
-                canvas.drawPaint(bg);
+
+                if (backgroundBitmap != null) {
+                    canvas.drawBitmap(backgroundBitmap, 0, 0, null);
+                } else {
+                    canvas.drawColor(Color.LTGRAY); // fallback
+                }
+
                 bird.draw(canvas);
                 walls.draw(canvas);
                 candy.draw(canvas);
@@ -160,6 +181,7 @@ public class GameActivity extends AppCompatActivity {
                 holder.unlockCanvasAndPost(canvas);
             }
         }
+
 
         @Override
         public void run() {
@@ -410,5 +432,54 @@ public class GameActivity extends AppCompatActivity {
 
         private void gameOver() {
         }
+        public void setBackgroundBitmap(Bitmap bitmap) {
+            this.backgroundBitmap = Bitmap.createScaledBitmap(bitmap, screenWidth, screenHeight, true);
+        }
+
     }
+    private void loadGameBackground() {
+        if (uid == null || uid.isEmpty()) return;
+
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(uid)
+                .child("equippedBackground")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    String equippedId = snapshot.getValue(String.class);
+                    if (equippedId == null) return;
+
+                    FirebaseFirestore.getInstance().collection("backgrounds")
+                            .document(equippedId)
+                            .get()
+                            .addOnSuccessListener(doc -> {
+                                String imageUrl = doc.getString("imageUrl");
+                                if (imageUrl != null && !imageUrl.isEmpty()) {
+                                    Glide.with(this)
+                                            .asBitmap()
+                                            .load(imageUrl)
+                                            .into(new com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
+                                                @Override
+                                                public void onResourceReady(Bitmap resource, com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
+                                                    if (gameView != null) {
+                                                        gameView.setBackgroundBitmap(resource);
+                                                    } else {
+                                                        GameActivity.this.runOnUiThread(() -> {
+                                                            frm.post(() -> {
+                                                                if (gameView != null)
+                                                                    gameView.setBackgroundBitmap(resource);
+                                                            });
+                                                        });
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onLoadCleared(android.graphics.drawable.Drawable placeholder) {}
+                                            });
+                                }
+                            });
+                });
+    }
+
+
+
 }
