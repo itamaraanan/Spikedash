@@ -36,6 +36,7 @@ import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -62,7 +63,10 @@ public class GameActivity extends AppCompatActivity {
         btnPause = findViewById(R.id.imbPause);
         backgroundImage = findViewById(R.id.backgroundImage);
         user = getIntent().getParcelableExtra("user");
+
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SettingsManager.applySavedBgmVolume(this, uid);
+        SoundManager.init(this);
         loadGameBackground();
         loadEquippedSkin();
 
@@ -157,6 +161,7 @@ public class GameActivity extends AppCompatActivity {
             }
             score.setText("Score: " + candies);
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                SoundManager.play("jump");
                 bird.jump();
                 return true;
             }
@@ -259,7 +264,9 @@ public class GameActivity extends AppCompatActivity {
 
             if (bird.getX() <= 0 && walls.isLeftWallActive()) {
                 walls.switchWall();
+                VibrationManager.vibrate(getContext(), 5);
             } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
+                VibrationManager.vibrate(getContext(), 5);
                 walls.switchWall();
             }
 
@@ -276,6 +283,7 @@ public class GameActivity extends AppCompatActivity {
                 int candyX = candy.getX();
                 int candyY = candy.getY();
                 candy.takesCandy();
+                SoundManager.play("candy");
                 candies++;
                 score.setText("Score: " + candies);
                 plus.activate(candyX + candy.getWidth() / 2 - plus.getBitmapWidth() / 2,
@@ -284,6 +292,9 @@ public class GameActivity extends AppCompatActivity {
         }
 
         private void handleCollision() {
+            SoundManager.play("hit");
+            VibrationManager.vibrate(getContext(), 200);
+
             isRunning = false;
             runOnUiThread(new Runnable() {
                 @Override
@@ -339,6 +350,8 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     d.dismiss();
+                    MusicManager.stop();
+                    MusicManager.release();
                     Intent intent = new Intent(getContext(), MainActivity.class);
                     intent.putExtra("user", user);
                     getContext().startActivity(intent);
@@ -348,6 +361,9 @@ public class GameActivity extends AppCompatActivity {
             imgLeaderBoard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MusicManager.stop();
+                    MusicManager.release();
+                    MusicManager.start(getContext(), R.raw.bgm_music);
                     d.dismiss();
                     Intent intent = new Intent(getContext(), LeaderboardActivity.class);
                     intent.putExtra("user", user);
@@ -358,6 +374,9 @@ public class GameActivity extends AppCompatActivity {
             imgStats.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MusicManager.stop();
+                    MusicManager.release();
+                    MusicManager.start(getContext(), R.raw.bgm_music);
                     d.dismiss();
                     Intent intent = new Intent(getContext(), StatsActivity.class);
                     intent.putExtra("user", user);
@@ -388,36 +407,82 @@ public class GameActivity extends AppCompatActivity {
             SeekBar skBgm = d.findViewById(R.id.skBgm);
             SeekBar skSound = d.findViewById(R.id.skSound);
             Switch swVibration = d.findViewById(R.id.swVibration);
-            btnResume.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    d.dismiss();
-                    resumeGame();
+
+
+
+
+            DatabaseReference settingsRef = FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child(user.getUid())
+                    .child("settings");
+
+            settingsRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().exists()) {
+                    DataSnapshot snapshot = task.getResult();
+                    double sound = snapshot.child("sound").getValue(Double.class) != null ?
+                            snapshot.child("sound").getValue(Double.class) : 1.0;
+                    double bgm = snapshot.child("bgm").getValue(Double.class) != null ?
+                            snapshot.child("bgm").getValue(Double.class) : 1.0;
+                    boolean vibration = snapshot.child("vibration").getValue(Boolean.class) != null &&
+                            snapshot.child("vibration").getValue(Boolean.class);
+
+                    skSound.setProgress((int) (sound * 100));
+                    skBgm.setProgress((int) (bgm * 100));
+                    swVibration.setChecked(vibration);
                 }
             });
 
-            btnRestart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    d.dismiss();
-                    Intent intent = new Intent(getContext(), GameActivity.class);
-                    intent.putExtra("user", user);
-                    getContext().startActivity(intent);
+            skSound.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    float vol = progress / 100f;
+                    settingsRef.child("sound").setValue(vol);
+                    SoundManager.setVolume(vol);
                 }
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
             });
 
-            btnHome.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    d.dismiss();
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra("user", user);
-                    getContext().startActivity(intent);
+            skBgm.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    float vol = progress / 100f;
+                    settingsRef.child("bgm").setValue(vol);
+                    MusicManager.setVolume(vol);
                 }
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
+
+            swVibration.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                VibrationManager.vibrate(getContext(), 25);
+                settingsRef.child("vibration").setValue(isChecked);
+            });
+
+            btnResume.setOnClickListener(v -> {
+                d.dismiss();
+                resumeGame();
+            });
+
+            btnRestart.setOnClickListener(v -> {
+                d.dismiss();
+                Intent intent = new Intent(getContext(), GameActivity.class);
+                intent.putExtra("user", user);
+                getContext().startActivity(intent);
+            });
+
+            btnHome.setOnClickListener(v -> {
+                d.dismiss();
+                MusicManager.stop();
+                MusicManager.release();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.putExtra("user", user);
+                getContext().startActivity(intent);
             });
 
             d.show();
+
+
         }
+
 
         private void resumeGame() {
             isCountingDown = true;
@@ -441,6 +506,7 @@ public class GameActivity extends AppCompatActivity {
 
 
     }
+
     private void loadGameBackground() {
         if (uid == null || uid.isEmpty()) return;
 

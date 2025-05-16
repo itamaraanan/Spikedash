@@ -7,9 +7,9 @@ public class MusicManager {
     public static MediaPlayer mediaPlayer;
     public static boolean isPlaying = false;
 
-    public static void start(Context context){
+    public static void start(Context context, int soundResource) {
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(context.getApplicationContext(), R.raw.bgm_music);
+            mediaPlayer = MediaPlayer.create(context.getApplicationContext(), soundResource);
             mediaPlayer.setLooping(true);
         }
         if (!mediaPlayer.isPlaying()) {
