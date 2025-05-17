@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,11 +35,13 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     private DatabaseReference mDatabase;
     EditText etEmail, etPassword, etConfirmPassword, etUsername;
     LinearLayout btnSingup;
-    private ActivityResultLauncher<Intent> cameraLauncher, galleryLauncher;
-    private String base64Pic = "";
-    ImageButton btnBack, btnShowPassword, btnShowConfirmPassword,btnAddImage;
-    private ImageView ivProfilePicture;
+    ActivityResultLauncher<Intent> cameraLauncher, galleryLauncher;
+    String base64Pic = null;
+    ImageButton btnBack, btnShowPassword, btnShowConfirmPassword, btnAddImage;
+    ImageView ivProfilePicture;
+
     Dialog d;
+    Dialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         btnSingup = findViewById(R.id.btnSignUp);
         btnBack = findViewById(R.id.btnBack);
         ivProfilePicture = findViewById(R.id.profilePicture);
+
         btnSingup.setOnClickListener(this);
         btnBack.setOnClickListener(this);
         btnShowPassword.setOnClickListener(this);
@@ -68,19 +71,17 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         initializeCameraAndGallery();
     }
 
-    private void initializeCameraAndGallery() {
+    private void  initializeCameraAndGallery() {
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-
                 Bitmap bitmap = null;
                 Intent intent = result.getData();
 
                 if (intent.getExtras() != null) {
-                    bitmap = (Bitmap) intent.getExtras().get("data"); //Some devices return a Bitmap
+                    bitmap = (Bitmap) intent.getExtras().get("data");
                 }
 
                 if (bitmap == null && intent.getData() != null) {
-                    //Some devices return a Uri instead
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), intent.getData());
                     } catch (IOException e) {
@@ -89,33 +90,29 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                 }
 
                 if (bitmap != null) {
-                    //Convert to Base64
                     base64Pic = ImageUtils.encodeImage(bitmap);
-                    Log.d("img base64", base64Pic);
+                    Log.d("img base64", "Image encoded successfully");
 
-                    //Show preview
                     ivProfilePicture.setImageBitmap(bitmap);
                 }
             }
         });
 
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                Uri imageUri = result.getData().getData(); //get Uri
+            if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                Uri imageUri = result.getData().getData(); // get Uri
 
-                if(imageUri != null) {
+                if (imageUri != null) {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
 
-                        //Convert to base64
+                        // Convert to base64
                         base64Pic = ImageUtils.encodeImage(bitmap);
-                        Log.d("img base64", base64Pic);
+                        Log.d("img base64", "Image encoded successfully");
 
-                        //Show preview
+                        // Show preview
                         ivProfilePicture.setImageBitmap(bitmap);
-                    }
-
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -124,11 +121,15 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void createAccount(String email, String password, String username) {
+        // Show progress dialog
+        showProgressDialog("Creating account...");
+
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
 
         usernamesRef.child(username).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().exists()) {
+                    hideProgressDialog();
                     Toast.makeText(this, "Username already taken. Try another one.", Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth.createUserWithEmailAndPassword(email, password)
@@ -136,14 +137,14 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                                 if (authTask.isSuccessful()) {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     writeNewUser(user.getUid(), username, email);
-                                    usernamesRef.child(username).setValue(user.getUid());
-                                    startActivity(new Intent(this, MainActivity.class));
                                 } else {
+                                    hideProgressDialog();
                                     Toast.makeText(this, "Signup failed: " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
             } else {
+                hideProgressDialog();
                 Toast.makeText(this, "Error checking username.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -153,16 +154,82 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
         User user = new User(username, email, userId, userRef.getKey());
 
-        if(base64Pic != null)
-            user.setBase64Image(base64Pic);
+        // Set profile image if available
+        if (base64Pic != null) {
+            if (base64Pic.length() > 500_000) {
+                Toast.makeText(this, "Image is too large. Using default profile picture.", Toast.LENGTH_SHORT).show();
+            } else {
+                user.setBase64Image(base64Pic);
+            }
+        }
 
-        userRef.setValue(user);
+        // Save user data
+        userRef.setValue(user).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // ✅ Set default owned and equipped background
+                userRef.child("ownedBackgrounds").child("default_background").setValue(true);
+                userRef.child("equippedBackground").setValue("default_background");
+
+                // ✅ Set default owned and equipped skin
+                userRef.child("ownedSkins").child("default_skin").setValue(true);
+                userRef.child("equippedSkin").setValue("default_skin");
+
+                userRef.child("settings").child("sound").setValue(0.5);
+                userRef.child("settings").child("bgm").setValue(0.5);
+                userRef.child("settings").child("vibration").setValue(true);
+
+                // ✅ Register the username
+                DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
+                usernamesRef.child(username).setValue(userId).addOnCompleteListener(usernameTask -> {
+                    hideProgressDialog();
+
+                    if (usernameTask.isSuccessful()) {
+                        Toast.makeText(SingupActivity.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SingupActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(SingupActivity.this, "Failed to register username.", Toast.LENGTH_SHORT).show();
+                        FirebaseUser u = mAuth.getCurrentUser();
+                        if (u != null) u.delete();
+                    }
+                });
+            } else {
+                hideProgressDialog();
+                Toast.makeText(SingupActivity.this, "Failed to save user data.", Toast.LENGTH_SHORT).show();
+                FirebaseUser u = mAuth.getCurrentUser();
+                if (u != null) u.delete();
+            }
+        });
     }
 
 
+    private void showProgressDialog(String message) {
+        if (progressDialog == null) {
+            progressDialog = new Dialog(this);
+            progressDialog.setContentView(R.layout.progress_dialog);
+            progressDialog.setCancelable(false);
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        TextView tvMessage = progressDialog.findViewById(R.id.tvMessage);
+        if (tvMessage != null && message != null) {
+            tvMessage.setText(message);
+        }
+
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
     @Override
     public void onClick(View v) {
-        if (v == btnSingup){
+        if (v == btnSingup) {
             String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
             String confirmPassword = etConfirmPassword.getText().toString();
@@ -179,12 +246,10 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
             }
 
             createAccount(email, password, username);
-        }
-        else if(v == btnBack){
+        } else if (v == btnBack) {
             Intent intent = new Intent(SingupActivity.this, MenuActivity.class);
             startActivity(intent);
-        }
-        else if(v == btnShowPassword) {
+        } else if (v == btnShowPassword) {
             if (etPassword.getTransformationMethod() == null) {
                 etPassword.setTransformationMethod(new PasswordTransformationMethod());
                 btnShowPassword.setImageResource(R.drawable.ic_closed_eye_24);
@@ -192,9 +257,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                 etPassword.setTransformationMethod(null);
                 btnShowPassword.setImageResource(R.drawable.ic_opened_eye_24);
             }
-        }
-
-        else if(v == btnShowConfirmPassword) {
+        } else if (v == btnShowConfirmPassword) {
             if (etConfirmPassword.getTransformationMethod() == null) {
                 etConfirmPassword.setTransformationMethod(new PasswordTransformationMethod());
                 btnShowConfirmPassword.setImageResource(R.drawable.ic_closed_eye_24);
@@ -202,10 +265,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                 etConfirmPassword.setTransformationMethod(null);
                 btnShowConfirmPassword.setImageResource(R.drawable.ic_opened_eye_24);
             }
-        }
-
-        else if (v == btnAddImage){
-            //Todo open alert dialog camera/gallery
+        } else if (v == btnAddImage) {
             d = new Dialog(this);
             d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             d.setContentView(R.layout.image_dialog);
@@ -213,13 +273,13 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
             LinearLayout btnCamera = d.findViewById(R.id.btnCamera);
             ImageButton btnClose = d.findViewById(R.id.btnClose);
 
-            btnCamera.setOnClickListener(view ->{
+            btnCamera.setOnClickListener(view -> {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 cameraLauncher.launch(cameraIntent);
                 d.dismiss();
             });
 
-            btnGallery.setOnClickListener(view ->{
+            btnGallery.setOnClickListener(view -> {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 galleryLauncher.launch(galleryIntent);
                 d.dismiss();
@@ -228,8 +288,6 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
             btnClose.setOnClickListener(view -> d.dismiss());
 
             d.show();
-
         }
-
     }
 }

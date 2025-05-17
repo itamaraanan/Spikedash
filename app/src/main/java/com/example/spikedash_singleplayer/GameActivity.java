@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.spikedash_singleplayer.Entitys.Bird;
 import com.example.spikedash_singleplayer.Entitys.Candy;
 import com.example.spikedash_singleplayer.Entitys.CountDown;
@@ -34,8 +35,11 @@ import com.example.spikedash_singleplayer.Entitys.Plus;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
 import com.example.spikedash_singleplayer.Entitys.Walls;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
 
@@ -45,6 +49,8 @@ public class GameActivity extends AppCompatActivity {
     TextView tvScore;
     ImageButton btnPause;
     User user;
+    ImageView backgroundImage;
+    String uid;
 
 
     @Override
@@ -55,7 +61,15 @@ public class GameActivity extends AppCompatActivity {
         tvScore = findViewById(R.id.tvScore);
         frm = findViewById(R.id.frm);
         btnPause = findViewById(R.id.imbPause);
+        backgroundImage = findViewById(R.id.backgroundImage);
         user = getIntent().getParcelableExtra("user");
+
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SettingsManager.applySavedBgmVolume(this, uid);
+        SoundManager.init(this);
+        loadGameBackground();
+        loadEquippedSkin();
+
 
     }
 
@@ -85,6 +99,8 @@ public class GameActivity extends AppCompatActivity {
         private Bitmap spikeBitmap;
         private Bitmap candyBitmap;
         private Bitmap plusBitmap;
+        private Bitmap backgroundBitmap;
+
         private SurfaceHolder holder;
         private Paint bg;
         private int candies;
@@ -107,6 +123,7 @@ public class GameActivity extends AppCompatActivity {
             this.user = user;
 
             initializeGame();
+
         }
 
         private void initializeGame() {
@@ -129,6 +146,7 @@ public class GameActivity extends AppCompatActivity {
             plus.setY(candy.getY());
             candies = 0;
             isRunning = true;
+            uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             holder = getHolder();
             thread = new Thread(this);
@@ -143,6 +161,7 @@ public class GameActivity extends AppCompatActivity {
             }
             score.setText("Score: " + candies);
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                SoundManager.play("jump");
                 bird.jump();
                 return true;
             }
@@ -152,7 +171,13 @@ public class GameActivity extends AppCompatActivity {
         private void drawSurface() {
             if (holder.getSurface().isValid()) {
                 canvas = holder.lockCanvas();
-                canvas.drawPaint(bg);
+
+                if (backgroundBitmap != null) {
+                    canvas.drawBitmap(backgroundBitmap, 0, 0, null);
+                } else {
+                    canvas.drawColor(Color.LTGRAY); // fallback
+                }
+
                 bird.draw(canvas);
                 walls.draw(canvas);
                 candy.draw(canvas);
@@ -160,6 +185,7 @@ public class GameActivity extends AppCompatActivity {
                 holder.unlockCanvasAndPost(canvas);
             }
         }
+
 
         @Override
         public void run() {
@@ -238,7 +264,9 @@ public class GameActivity extends AppCompatActivity {
 
             if (bird.getX() <= 0 && walls.isLeftWallActive()) {
                 walls.switchWall();
+                VibrationManager.vibrate(getContext(), 5);
             } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
+                VibrationManager.vibrate(getContext(), 5);
                 walls.switchWall();
             }
 
@@ -255,6 +283,7 @@ public class GameActivity extends AppCompatActivity {
                 int candyX = candy.getX();
                 int candyY = candy.getY();
                 candy.takesCandy();
+                SoundManager.play("candy");
                 candies++;
                 score.setText("Score: " + candies);
                 plus.activate(candyX + candy.getWidth() / 2 - plus.getBitmapWidth() / 2,
@@ -263,6 +292,9 @@ public class GameActivity extends AppCompatActivity {
         }
 
         private void handleCollision() {
+            SoundManager.play("hit");
+            VibrationManager.vibrate(getContext(), 200);
+
             isRunning = false;
             runOnUiThread(new Runnable() {
                 @Override
@@ -286,9 +318,13 @@ public class GameActivity extends AppCompatActivity {
             TextView tvGames = d.findViewById(R.id.tvGames);
             tvScore.setText(String.valueOf(candies));
 
-            user.addGame();
+
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
                     .child(user.getUid());
+            user.add(candies);
+            userRef.child("balance").setValue(user.getBalance());
+            user.addGame();
+
 
             if (candies >= user.getHighScore()) {
                 user.setHighScore(candies);
@@ -314,6 +350,8 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     d.dismiss();
+                    MusicManager.stop();
+                    MusicManager.release();
                     Intent intent = new Intent(getContext(), MainActivity.class);
                     intent.putExtra("user", user);
                     getContext().startActivity(intent);
@@ -323,6 +361,9 @@ public class GameActivity extends AppCompatActivity {
             imgLeaderBoard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MusicManager.stop();
+                    MusicManager.release();
+                    MusicManager.start(getContext(), R.raw.bgm_music);
                     d.dismiss();
                     Intent intent = new Intent(getContext(), LeaderboardActivity.class);
                     intent.putExtra("user", user);
@@ -333,6 +374,9 @@ public class GameActivity extends AppCompatActivity {
             imgStats.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MusicManager.stop();
+                    MusicManager.release();
+                    MusicManager.start(getContext(), R.raw.bgm_music);
                     d.dismiss();
                     Intent intent = new Intent(getContext(), StatsActivity.class);
                     intent.putExtra("user", user);
@@ -363,36 +407,82 @@ public class GameActivity extends AppCompatActivity {
             SeekBar skBgm = d.findViewById(R.id.skBgm);
             SeekBar skSound = d.findViewById(R.id.skSound);
             Switch swVibration = d.findViewById(R.id.swVibration);
-            btnResume.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    d.dismiss();
-                    resumeGame();
+
+
+
+
+            DatabaseReference settingsRef = FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child(user.getUid())
+                    .child("settings");
+
+            settingsRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().exists()) {
+                    DataSnapshot snapshot = task.getResult();
+                    double sound = snapshot.child("sound").getValue(Double.class) != null ?
+                            snapshot.child("sound").getValue(Double.class) : 1.0;
+                    double bgm = snapshot.child("bgm").getValue(Double.class) != null ?
+                            snapshot.child("bgm").getValue(Double.class) : 1.0;
+                    boolean vibration = snapshot.child("vibration").getValue(Boolean.class) != null &&
+                            snapshot.child("vibration").getValue(Boolean.class);
+
+                    skSound.setProgress((int) (sound * 100));
+                    skBgm.setProgress((int) (bgm * 100));
+                    swVibration.setChecked(vibration);
                 }
             });
 
-            btnRestart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    d.dismiss();
-                    Intent intent = new Intent(getContext(), GameActivity.class);
-                    intent.putExtra("user", user);
-                    getContext().startActivity(intent);
+            skSound.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    float vol = progress / 100f;
+                    settingsRef.child("sound").setValue(vol);
+                    SoundManager.setVolume(vol);
                 }
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
             });
 
-            btnHome.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    d.dismiss();
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra("user", user);
-                    getContext().startActivity(intent);
+            skBgm.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    float vol = progress / 100f;
+                    settingsRef.child("bgm").setValue(vol);
+                    MusicManager.setVolume(vol);
                 }
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
+
+            swVibration.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                VibrationManager.vibrate(getContext(), 25);
+                settingsRef.child("vibration").setValue(isChecked);
+            });
+
+            btnResume.setOnClickListener(v -> {
+                d.dismiss();
+                resumeGame();
+            });
+
+            btnRestart.setOnClickListener(v -> {
+                d.dismiss();
+                Intent intent = new Intent(getContext(), GameActivity.class);
+                intent.putExtra("user", user);
+                getContext().startActivity(intent);
+            });
+
+            btnHome.setOnClickListener(v -> {
+                d.dismiss();
+                MusicManager.stop();
+                MusicManager.release();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.putExtra("user", user);
+                getContext().startActivity(intent);
             });
 
             d.show();
+
+
         }
+
 
         private void resumeGame() {
             isCountingDown = true;
@@ -404,6 +494,106 @@ public class GameActivity extends AppCompatActivity {
             thread.start();
         }
 
-        private void gameOver() {}
+        private void gameOver() {
+        }
+        public void setBackgroundBitmap(Bitmap bitmap) {
+            this.backgroundBitmap = Bitmap.createScaledBitmap(bitmap, screenWidth, screenHeight, true);
+        }
+        public void setBirdBitmap(Bitmap birdBitmap) {
+            this.bitmapBird = birdBitmap;
+            this.bird.setBitmap(birdBitmap);
+        }
+
+
     }
+
+    private void loadGameBackground() {
+        if (uid == null || uid.isEmpty()) return;
+
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(uid)
+                .child("equippedBackground")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    String equippedId = snapshot.getValue(String.class);
+                    if (equippedId == null) return;
+
+                    FirebaseFirestore.getInstance().collection("backgrounds")
+                            .document(equippedId)
+                            .get()
+                            .addOnSuccessListener(doc -> {
+                                String imageUrl = doc.getString("imageUrl");
+                                if (imageUrl != null && !imageUrl.isEmpty()) {
+                                    Glide.with(this)
+                                            .asBitmap()
+                                            .load(imageUrl)
+                                            .into(new com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
+                                                @Override
+                                                public void onResourceReady(Bitmap resource, com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
+                                                    if (gameView != null) {
+                                                        gameView.setBackgroundBitmap(resource);
+                                                    } else {
+                                                        GameActivity.this.runOnUiThread(() -> {
+                                                            frm.post(() -> {
+                                                                if (gameView != null)
+                                                                    gameView.setBackgroundBitmap(resource);
+                                                            });
+                                                        });
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onLoadCleared(android.graphics.drawable.Drawable placeholder) {}
+                                            });
+                                }
+                            });
+                });
+    }
+    private void loadEquippedSkin() {
+        if (uid == null || uid.isEmpty()) return;
+
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(uid)
+                .child("equippedSkin")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    String equippedSkinId = snapshot.getValue(String.class);
+                    if (equippedSkinId == null) return;
+
+                    FirebaseFirestore.getInstance().collection("skins")
+                            .document(equippedSkinId)
+                            .get()
+                            .addOnSuccessListener(doc -> {
+                                String imageUrl = doc.getString("imageUrl");
+                                if (imageUrl != null && !imageUrl.isEmpty()) {
+                                    Glide.with(this)
+                                            .asBitmap()
+                                            .load(imageUrl)
+                                            .into(new com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
+                                                @Override
+                                                public void onResourceReady(Bitmap resource, com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
+                                                    Bitmap scaled = Bitmap.createScaledBitmap(resource, 144, 100, false);
+                                                    if (gameView != null) {
+                                                        gameView.setBirdBitmap(scaled);
+                                                    } else {
+                                                        GameActivity.this.runOnUiThread(() -> {
+                                                            frm.post(() -> {
+                                                                if (gameView != null)
+                                                                    gameView.setBirdBitmap(scaled);
+                                                            });
+                                                        });
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onLoadCleared(android.graphics.drawable.Drawable placeholder) {}
+                                            });
+                                }
+                            });
+                });
+    }
+
+
+
+
 }

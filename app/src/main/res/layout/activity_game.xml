@@ -10,13 +10,12 @@
     android:id="@+id/root_layout"
     tools:context=".MainActivity">
 
-    <!--
-     <ImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginTop="200dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/white_circle" /> -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true" />
 
 
     <FrameLayout

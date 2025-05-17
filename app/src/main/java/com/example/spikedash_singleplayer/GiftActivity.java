@@ -72,12 +72,12 @@ public class GiftActivity extends AppCompatActivity implements View.OnClickListe
             tvTimer.setVisibility(View.INVISIBLE);
         });
 
-    WheelItem gift1 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_random_skin));
+    WheelItem gift1 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy),"0");
 WheelItem gift2 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "10");
-WheelItem gift3 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "20");
-WheelItem gift4 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_random_background));
-WheelItem gift5 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "40");
-WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "50");
+WheelItem gift3 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "50");
+WheelItem gift4 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "100");
+WheelItem gift5 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "250");
+WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "500");
 
         wheelItemList.add(gift1);
         wheelItemList.add(gift2);
@@ -90,6 +90,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
         luckyWheel.setLuckyWheelReachTheTarget(new OnLuckyWheelReachTheTarget() {
             @Override
             public void onReachTarget() {
+                VibrationManager.vibrate(GiftActivity.this  , 200);
                 WheelItem itemSelected = wheelItemList.get(Integer.parseInt(points)-1);
                 pointsAmount = itemSelected.text;
                 Toast.makeText(GiftActivity.this, "You won " + pointsAmount + " points!", Toast.LENGTH_SHORT).show();
@@ -99,11 +100,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
 
                 if(pointsAmount != null) {
                     user.add(Integer.parseInt(pointsAmount));
-
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
-                            .child(user.getUid());
-
-                    userRef.child("points").setValue(user.getBalance());
+                    userRef.child("balance").setValue(user.getBalance());
                 }
             }
         });
@@ -143,12 +140,15 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 100);
         if(v == spinButton) {
             btnReturnMenu.setVisibility(View.INVISIBLE);
             spinButton.setVisibility(View.INVISIBLE);
             Random random = new Random();
-            points = String.valueOf(random.nextInt(10));
-            luckyWheel.rotateWheelTo(Integer.parseInt(points));
+            int index = random.nextInt(wheelItemList.size());
+            points = String.valueOf(index + 1);
+            luckyWheel.rotateWheelTo(index + 1);
+
 
             spinButton.setVisibility(View.INVISIBLE);
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());

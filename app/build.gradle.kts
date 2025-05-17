@@ -39,14 +39,16 @@ dependencies {
     implementation("androidx.preference:preference:1.2.0")
     implementation("androidx.activity:activity:1.9.2")
 
-    // Firebase dependencies using the BOM approach
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-auth")
+    implementation ("com.google.firebase:firebase-firestore:24.10.0")
 
-    // Required for reCAPTCHA verification
+
     implementation("com.google.firebase:firebase-appcheck")
     implementation("com.google.android.recaptcha:recaptcha:18.4.0")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

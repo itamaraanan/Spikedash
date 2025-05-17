@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Bitmap;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
 import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
+import com.example.spikedash_singleplayer.GameActivity;
+import com.example.spikedash_singleplayer.VibrationManager;
 
 import java.util.ArrayList;
 

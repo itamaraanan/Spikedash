@@ -25,13 +25,15 @@
         android:id="@+id/btnRturnMenu"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:background="@drawable/circle_button_background"
-        android:src="@drawable/ic_return_lobby"
-        android:padding="12dp"
-        android:layout_margin="5dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/darker_background"
+        android:contentDescription="Store"
         android:elevation="2dp"
-        android:contentDescription="Store"/>
+        android:padding="12dp"
+        android:src="@drawable/ic_return_lobby" />
 
     <com.bluehomestudio.luckywheel.LuckyWheel
         android:id="@+id/luckyWheel"

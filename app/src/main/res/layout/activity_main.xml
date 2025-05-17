@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#BABABA">
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="Background image"/>
+
 
     <ImageView
         android:layout_width="match_parent"
@@ -38,18 +51,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/birdImage"
         android:layout_marginHorizontal="40dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/btnStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/menu_item_selector"
             android:layout_marginTop="140dp"
+            android:background="@drawable/menu_item_selector"
+            android:elevation="2dp"
             android:gravity="center"
-            android:padding="16dp"
-            android:elevation="2dp">
+            android:padding="16dp">
 
             <ImageView
                 android:layout_width="32dp"
@@ -80,7 +93,7 @@
             android:id="@+id/btnSettings"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_settings"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -90,7 +103,7 @@
             android:id="@+id/btnGift"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_gift"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -100,7 +113,7 @@
             android:id="@+id/btnStore"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_1v1"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -109,7 +122,7 @@
             android:id="@+id/btnShop"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_store"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -118,7 +131,7 @@
             android:id="@+id/btnLeaderboard"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_trophy"
             android:padding="12dp"
             android:elevation="2dp"/>
@@ -137,7 +150,7 @@
             android:id="@+id/btnStats"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_stats"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -147,7 +160,7 @@
             android:id="@+id/btnInventory"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_inventory"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -157,7 +170,7 @@
             android:id="@+id/btnBotMode"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_bot"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -167,7 +180,7 @@
             android:id="@+id/btnProfile"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_profile"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -176,7 +189,7 @@
             android:id="@+id/btnDifficulty"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/circle_button_background"
+            android:background="@drawable/darker_background"
             android:src="@drawable/ic_difficulty"
             android:padding="12dp"
             android:elevation="2dp"/>

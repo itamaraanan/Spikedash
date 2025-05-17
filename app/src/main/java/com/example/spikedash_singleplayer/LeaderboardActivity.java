@@ -88,6 +88,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 25);
         if (v == gamesTab) {
             gamesTab.setAlpha(1f);
             highScoreTab.setAlpha(0.5f);

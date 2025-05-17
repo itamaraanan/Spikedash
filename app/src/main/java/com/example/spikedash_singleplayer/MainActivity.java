@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -16,14 +18,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout btnStart;
-    private ImageButton btnLeaderBoard, btnDifficulty,btnProfile, btnGift, btnSettings, btnStats, btnShop;
+    private ImageButton btnLeaderBoard, btnDifficulty,btnProfile, btnGift, btnSettings, btnStats, btnShop, btnInventory;
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference ref = db.getReference("users");
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private User currentUser;
+    private ImageView backgroundImage, birdImage;
+    private String uid;
     private boolean isAccountFound = false;
 
     @Override
@@ -39,6 +44,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDifficulty = findViewById(R.id.btnDifficulty);
         btnGift = findViewById(R.id.btnGift);
         btnSettings = findViewById(R.id.btnSettings);
+        btnInventory = findViewById(R.id.btnInventory);
+        backgroundImage = findViewById(R.id.backgroundImage);
+        birdImage = findViewById(R.id.birdImage);
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SettingsManager.applySavedBgmVolume(this, uid);
+        MusicManager.start(this, R.raw.bgm_music);
+        VibrationManager.syncWithFirebase();
+
 
         btnLeaderBoard.setOnClickListener(this);
         btnShop.setOnClickListener(this);
@@ -48,15 +61,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnStart.setOnClickListener(this);
         btnGift.setOnClickListener(this);
         btnSettings.setOnClickListener(this);
+        btnInventory.setOnClickListener(this);
 
         currentUser();
-
+        //loadBackground();
+        loadSkin();
     }
 
     @Override
     public void onClick(View v) {
+        VibrationManager.vibrate(this, 25);
         if(v == btnStart) {
             if (currentUser != null) {
+                MusicManager.stop();
+                MusicManager.release();
+                MusicManager.start(this, R.raw.game_music);
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);
                 intent.putExtra("user", currentUser);
                 startActivity(intent);
@@ -91,8 +110,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         if(v == btnShop){
-            Intent intent = new Intent(MainActivity.this, ShopActicity.class);
-            startActivity(intent);
+            if (currentUser != null) {
+                Intent intent = new Intent(MainActivity.this, ShopActicity.class);
+                intent.putExtra("user", currentUser);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            }
         }
         if(v == btnProfile){
             if (currentUser != null) {
@@ -113,7 +137,70 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
             }
         }
+        if (v == btnInventory){
+            if (currentUser != null) {
+                Intent intent = new Intent(MainActivity.this, StorageActivity.class);
+                intent.putExtra("user", currentUser);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            }
+        }
 
+    }
+    public void loadBackground() {
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(uid)
+                .child("equippedBackground")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    String equippedId = snapshot.getValue(String.class);
+                    Log.d("BackgroundDebug", "Equipped ID: " + equippedId);
+
+                    if (equippedId == null) return;
+
+                    FirebaseFirestore.getInstance().collection("backgrounds")
+                            .document(equippedId)
+                            .get()
+                            .addOnSuccessListener(doc -> {
+                                String imageUrl = doc.getString("imageUrl");
+                                Log.d("BackgroundDebug", "Image URL: " + imageUrl);
+
+                                if (imageUrl != null) {
+                                    Glide.with(this)
+                                            .load(imageUrl)
+                                            .into(backgroundImage);
+                                }
+                            });
+                });
+    }
+
+
+    public void loadSkin() {
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(uid)
+                .child("equippedSkin")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    String equippedId = snapshot.getValue(String.class);
+                    Log.d("SkinDebug", "Equipped ID: " + equippedId);
+
+                    if (equippedId == null) return;
+
+                    FirebaseFirestore.getInstance().collection("skins")
+                            .document(equippedId)
+                            .get()
+                            .addOnSuccessListener(doc -> {
+                                String imageUrl = doc.getString("imageUrl");
+                                Log.d("SkinDebug", "Image URL: " + imageUrl);
+
+                                if (imageUrl != null) {
+                                    Glide.with(this)
+                                            .load(imageUrl)
+                                            .into(birdImage);
+                                }
+                            });
+                });
     }
 
     public void currentUser() {
@@ -122,8 +209,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             isAccountFound = false;
             return;
         }
-
-        String uid = firebaseUser.getUid();
         currentUser = new User();
         currentUser.setUid(uid);
         currentUser.setEmail(firebaseUser.getEmail());
