@@ -339,6 +339,7 @@ public class GameActivity extends AppCompatActivity {
             btnRestart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SoundManager.play("click");
                     d.dismiss();
                     Intent intent = new Intent(getContext(), GameActivity.class);
                     intent.putExtra("user", user);
@@ -349,6 +350,7 @@ public class GameActivity extends AppCompatActivity {
             btnHome.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SoundManager.play("click");
                     d.dismiss();
                     MusicManager.stop();
                     MusicManager.release();
@@ -361,6 +363,7 @@ public class GameActivity extends AppCompatActivity {
             imgLeaderBoard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SoundManager.play("click");
                     MusicManager.stop();
                     MusicManager.release();
                     MusicManager.start(getContext(), R.raw.bgm_music);
@@ -374,6 +377,7 @@ public class GameActivity extends AppCompatActivity {
             imgStats.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SoundManager.play("click");
                     MusicManager.stop();
                     MusicManager.release();
                     MusicManager.start(getContext(), R.raw.bgm_music);
@@ -458,11 +462,13 @@ public class GameActivity extends AppCompatActivity {
             });
 
             btnResume.setOnClickListener(v -> {
+                SoundManager.play("click");
                 d.dismiss();
                 resumeGame();
             });
 
             btnRestart.setOnClickListener(v -> {
+                SoundManager.play("click");
                 d.dismiss();
                 Intent intent = new Intent(getContext(), GameActivity.class);
                 intent.putExtra("user", user);
@@ -470,6 +476,8 @@ public class GameActivity extends AppCompatActivity {
             });
 
             btnHome.setOnClickListener(v -> {
+                SoundManager.play("click");
+                SoundManager.play("click");
                 d.dismiss();
                 MusicManager.stop();
                 MusicManager.release();
