@@ -97,12 +97,15 @@ public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.Ba
                     userRef.child("ownedBackgrounds").child(background.getBackgroundId()).setValue(true);
 
                     Toast.makeText(context, "Background purchased!", Toast.LENGTH_SHORT).show();
+                    SoundManager.play("win");
                     if (refreshListener != null) refreshListener.refresh();
                     dialog.dismiss();
                 } else {
+                    SoundManager.play("error");
                     Toast.makeText(context, "Not enough candies!", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(e -> {
+                SoundManager.play("error");
                 Toast.makeText(context, "Failed to load user data", Toast.LENGTH_SHORT).show();
             });
         });

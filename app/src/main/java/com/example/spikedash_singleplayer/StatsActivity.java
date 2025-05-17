@@ -29,6 +29,8 @@ public class StatsActivity extends AppCompatActivity {
         btnReturn = findViewById(R.id.btnBack);
         btnReturn.setOnClickListener(v -> {
             VibrationManager.vibrate(this, 25);
+            SoundManager.play("click");
+
             Intent intent = new Intent(StatsActivity.this, MainActivity.class);
             startActivity(intent);
         });

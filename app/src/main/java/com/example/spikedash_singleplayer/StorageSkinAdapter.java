@@ -79,6 +79,7 @@ public class StorageSkinAdapter extends RecyclerView.Adapter<StorageSkinAdapter.
                     .setValue(selectedSkinId)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(context, item.getName() + " equipped!", Toast.LENGTH_SHORT).show();
+                        SoundManager.play("select");
                         setEquippedSkin(selectedSkinId);
                         notifyDataSetChanged();
                     });

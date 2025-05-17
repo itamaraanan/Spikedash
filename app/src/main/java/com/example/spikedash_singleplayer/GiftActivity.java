@@ -68,6 +68,7 @@ public class GiftActivity extends AppCompatActivity implements View.OnClickListe
                 tvTimer.setVisibility(View.INVISIBLE);
             }
         }).addOnFailureListener(e -> {
+            SoundManager.play("error");
             spinButton.setEnabled(true);
             tvTimer.setVisibility(View.INVISIBLE);
         });
@@ -91,6 +92,8 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
             @Override
             public void onReachTarget() {
                 VibrationManager.vibrate(GiftActivity.this  , 200);
+                SoundManager.play("win");
+
                 WheelItem itemSelected = wheelItemList.get(Integer.parseInt(points)-1);
                 pointsAmount = itemSelected.text;
                 Toast.makeText(GiftActivity.this, "You won " + pointsAmount + " points!", Toast.LENGTH_SHORT).show();
@@ -141,6 +144,8 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
     @Override
     public void onClick(View v) {
         VibrationManager.vibrate(this, 100);
+        SoundManager.play("click");
+
         if(v == spinButton) {
             btnReturnMenu.setVisibility(View.INVISIBLE);
             spinButton.setVisibility(View.INVISIBLE);

@@ -151,6 +151,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         VibrationManager.vibrate(this, 25);
+        SoundManager.play("click");
+
         if(v == btnBack) {
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
             startActivity(intent);
@@ -253,6 +255,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             startActivity(intent);
                             finish();
                         } else {
+                            SoundManager.play("error");
                             Toast.makeText(ProfileActivity.this,
                                     "Failed to update profile: " + task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();

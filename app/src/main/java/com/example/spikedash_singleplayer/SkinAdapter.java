@@ -89,6 +89,7 @@ public class SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder
         tvPrice.setText(skin.getPrice() + " candies");
 
         btnBuy.setOnClickListener(v -> {
+            SoundManager.play("click");
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference userRef = FirebaseDatabase.getInstance()
                     .getReference("users").child(uid);
@@ -102,12 +103,15 @@ public class SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder
                     userRef.child("ownedSkins").child(skin.getSkinId()).setValue(true);
 
                     Toast.makeText(context, "Skin purchased!", Toast.LENGTH_SHORT).show();
+                    SoundManager.play("win");
                     if (refreshListener != null) refreshListener.refresh();
                     dialog.dismiss();
                 } else {
+                    SoundManager.play("error");
                     Toast.makeText(context, "Not enough candies!", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(e -> {
+                SoundManager.play("error");
                 Toast.makeText(context, "Failed to load user data", Toast.LENGTH_SHORT).show();
             });
         });
@@ -115,6 +119,7 @@ public class SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder
 
 
         btnCancel.setOnClickListener(v -> {
+            SoundManager.play("click");
             dialog.dismiss();
         });
 

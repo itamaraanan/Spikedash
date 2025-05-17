@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         birdImage = findViewById(R.id.birdImage);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         SettingsManager.applySavedBgmVolume(this, uid);
+        SoundManager.init(this);
         MusicManager.start(this, R.raw.bgm_music);
         VibrationManager.syncWithFirebase();
 
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         VibrationManager.vibrate(this, 25);
+        SoundManager.play("click");
         if(v == btnStart) {
             if (currentUser != null) {
                 MusicManager.stop();

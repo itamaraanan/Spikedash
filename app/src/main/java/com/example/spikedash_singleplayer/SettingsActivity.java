@@ -61,6 +61,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         soundSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) settingsRef.child("sound").setValue(progress / 100.0);
+                SoundManager.setVolume(progress / 100.0f);
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -80,6 +81,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         vibrationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             VibrationManager.vibrate(this, 25);
+            SoundManager.play("click");
             settingsRef.child("vibration").setValue(isChecked);
         });
 
@@ -118,6 +120,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         VibrationManager.vibrate(this, 25);
+        SoundManager.play("click");
+
         if (v == btnBack) {
             startActivity(new Intent(this, MainActivity.class));
             finish();

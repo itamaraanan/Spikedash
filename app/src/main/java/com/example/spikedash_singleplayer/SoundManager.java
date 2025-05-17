@@ -26,6 +26,10 @@ public class SoundManager {
         soundMap.put("jump", soundPool.load(context, R.raw.jump_sound, 1));
         soundMap.put("hit", soundPool.load(context, R.raw.hit_sound, 1));
         soundMap.put("candy", soundPool.load(context, R.raw.candy_sound, 1));
+        soundMap.put("click", soundPool.load(context, R.raw.click_sound, 1));
+        soundMap.put("select", soundPool.load(context, R.raw.select_sound, 1));
+        soundMap.put("error", soundPool.load(context, R.raw.error_sound, 1));
+        soundMap.put("win", soundPool.load(context, R.raw.win_sound, 1));
     }
 
     public static void play(String sound) {
@@ -33,12 +37,7 @@ public class SoundManager {
             soundPool.play(soundMap.get(sound), globalVolume, globalVolume, 1, 0, 1f);
         }
     }
-    public static void release() {
-        if (soundPool != null) {
-            soundPool.release();
-            soundPool = null;
-        }
-    }
+
     public static void setVolume(float volume) {
         globalVolume = Math.max(0f, Math.min(volume, 1f));
     }
