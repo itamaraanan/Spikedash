@@ -48,6 +48,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     ImageView imProfilePicture;
     Button btnConfirm;
     ImageButton btnEditPicture;
+    LinearLayout btnChangePassword;
     ActivityResultLauncher<Intent> cameraLauncher, galleryLauncher;
     Dialog d;
     boolean hasUsernameChange;
@@ -75,6 +76,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         tvEmail.setText(user.email);
         btnConfirm = findViewById(R.id.btnConfirmChanges);
         btnConfirm.setOnClickListener(this);
+        btnChangePassword = findViewById(R.id.btnChangePassword);
+        btnChangePassword.setOnClickListener(this);
         initializeCameraAndGallery();
 
 
@@ -182,6 +185,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             d.show();
         }
+        if (v == btnChangePassword) {
+            Intent intent = new Intent(ProfileActivity.this, ForgotActivity.class);
+            startActivity(intent);
+        }
         if (v == btnConfirm) {
 
             String newUsername = etUsername.getText().toString().trim();
@@ -249,7 +256,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             }
 
                             Toast.makeText(ProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-
+                            SoundManager.play("win");
                             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                             intent.putExtra("user", user);
                             startActivity(intent);

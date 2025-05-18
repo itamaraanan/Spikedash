@@ -55,7 +55,7 @@ public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.Ba
                 .into(holder.image);
 
         holder.itemView.setOnClickListener(v -> {
-            VibrationManager.vibrate(context, 25);
+            SoundManager.play("click");
             createBuyDialog(backgrounds.get(position));
         });
     }

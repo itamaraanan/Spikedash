@@ -30,6 +30,7 @@ public class SoundManager {
         soundMap.put("select", soundPool.load(context, R.raw.select_sound, 1));
         soundMap.put("error", soundPool.load(context, R.raw.error_sound, 1));
         soundMap.put("win", soundPool.load(context, R.raw.win_sound, 1));
+        soundMap.put("spin", soundPool.load(context, R.raw.wheel_sound, 1));
     }
 
     public static void play(String sound) {

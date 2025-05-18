@@ -148,11 +148,7 @@
                 android:fontFamily="@font/futura"
                 android:layout_marginStart="12dp"/>
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_right"
-                android:padding="2dp"/>
+
         </LinearLayout>
 
         <!-- New Confirm Changes Button -->

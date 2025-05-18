@@ -74,11 +74,11 @@ public class GiftActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     WheelItem gift1 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy),"0");
-WheelItem gift2 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "10");
+WheelItem gift2 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "25");
 WheelItem gift3 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "50");
 WheelItem gift4 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "100");
-WheelItem gift5 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "250");
-WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "500");
+WheelItem gift5 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.blue, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "500");
+WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color.orange, null), BitmapFactory.decodeResource(getResources(), R.drawable.ic_candyy), "1000");
 
         wheelItemList.add(gift1);
         wheelItemList.add(gift2);
@@ -144,9 +144,8 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
     @Override
     public void onClick(View v) {
         VibrationManager.vibrate(this, 100);
-        SoundManager.play("click");
-
         if(v == spinButton) {
+            SoundManager.play("spin");
             btnReturnMenu.setVisibility(View.INVISIBLE);
             spinButton.setVisibility(View.INVISIBLE);
             Random random = new Random();
@@ -161,6 +160,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
 
         }
         else if (v == btnReturnMenu){
+            SoundManager.play("click");
             Intent intent = new Intent(GiftActivity.this, MainActivity.class);
             startActivity(intent);
         }

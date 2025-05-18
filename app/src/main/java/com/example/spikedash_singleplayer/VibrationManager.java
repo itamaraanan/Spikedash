@@ -10,41 +10,37 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class VibrationManager {
-    private static boolean vibrationEnabled = true;
+    private static boolean isEnabled = true;
 
     public static void setEnabled(boolean enabled) {
-        vibrationEnabled = enabled;
+        isEnabled = enabled;
     }
 
-    public static void vibrate(Context context, int milliseconds) {
-        if (!vibrationEnabled) return;
+    public static void vibrate(Context context, int durationMs) {
+        if (!isEnabled) return;
 
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-
-        if (vibrator != null) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                vibrator.vibrate(milliseconds);
-            }
+        if (vibrator != null && vibrator.hasVibrator()) {
+            vibrator.vibrate(durationMs);
         }
     }
+
     public static void syncWithFirebase() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
-        DatabaseReference ref = FirebaseDatabase.getInstance()
+        FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(user.getUid())
                 .child("settings")
-                .child("vibration");
-
-        ref.get().addOnSuccessListener(snapshot -> {
-            if (snapshot.exists()) {
-                boolean isEnabled = snapshot.getValue(Boolean.class);
-                setEnabled(isEnabled);
-            }
-        });
+                .child("vibration")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        boolean value = snapshot.getValue(Boolean.class);
+                        setEnabled(value);
+                    }
+                });
     }
-
 }
+

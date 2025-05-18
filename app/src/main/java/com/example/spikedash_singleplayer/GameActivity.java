@@ -387,6 +387,14 @@ public class GameActivity extends AppCompatActivity {
                     getContext().startActivity(intent);
                 }
             });
+            d.setOnCancelListener(dialog -> {
+                d.dismiss();
+                MusicManager.stop();
+                MusicManager.release();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.putExtra("user", user);
+                getContext().startActivity(intent);
+            });
 
             d.show();
         }
@@ -403,7 +411,6 @@ public class GameActivity extends AppCompatActivity {
             d = new Dialog(getContext());
             d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             d.setContentView(R.layout.pause_dialog);
-
             LinearLayout btnResume = d.findViewById(R.id.btn_resume);
             LinearLayout btnRestart = d.findViewById(R.id.btn_replay);
             LinearLayout btnHome = d.findViewById(R.id.btn_home);
@@ -457,7 +464,11 @@ public class GameActivity extends AppCompatActivity {
             });
 
             swVibration.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                VibrationManager.vibrate(getContext(), 25);
+                VibrationManager.setEnabled(isChecked);
+
+                if (isChecked) {
+                    VibrationManager.vibrate(getContext(), 25);
+                }
                 settingsRef.child("vibration").setValue(isChecked);
             });
 
@@ -484,6 +495,10 @@ public class GameActivity extends AppCompatActivity {
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.putExtra("user", user);
                 getContext().startActivity(intent);
+            });
+            d.setOnCancelListener(dialog -> {
+                d.dismiss();
+                resumeGame();
             });
 
             d.show();

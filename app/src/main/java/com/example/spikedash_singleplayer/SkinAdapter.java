@@ -60,6 +60,7 @@ public class SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder
                 .into(holder.image);
 
         holder.itemView.setOnClickListener(v -> {
+            SoundManager.play("click");
             createBuyDialog(skins.get(position));
         });
 

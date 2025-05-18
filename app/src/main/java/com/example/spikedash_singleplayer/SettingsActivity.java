@@ -149,6 +149,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     )
                     .setPositiveButton("OK", null)
                     .show();
+        } else if (v == btnPrivacySettings) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Privacy Settings")
+                    .setMessage(
+                            "1. Your data is stored securely and is not shared with third parties.\n\n" +
+                                    "2. You can delete your account anytime from the settings.\n\n" +
+                                    "3. You can change your password and profile settings however you want."
+                    )
+                    .setPositiveButton("OK", null)
+                    .show();
         }
     }
 }
