@@ -13,6 +13,7 @@ public class Bird extends Entity {
     private float floatSpeed;
     private float floatAmplitude;
     private float counter;
+    private float horizontalSpeed;
 
     boolean Right = true;
 
@@ -24,7 +25,8 @@ public class Bird extends Entity {
 
         floatOffset = 0;
         floatSpeed = 0.06f;
-        floatAmplitude = scaleY(100); // floating animation size
+        floatAmplitude = scaleY(100);
+        horizontalSpeed = scaleX(10);
 
         gameSrarted = false;
     }
@@ -35,18 +37,17 @@ public class Bird extends Entity {
             fly();
             y = ScreenHeight / 2 + (int) floatOffset;
         } else {
-            float speed = scaleX(10);  // horizontal movement per frame
-            float gravityScaled = gravity * scaleY(1); // gravity scaled by screen
+            float gravityScaled = gravity * scaleY(1);
 
             if (Right) {
-                x += speed;
+                x += horizontalSpeed;
                 velocity += gravityScaled;
                 if (x + bitmap.getWidth() > ScreenWidth) {
                     x = ScreenWidth - bitmap.getWidth();
                     Right = false;
                 }
             } else {
-                x -= speed;
+                x -= horizontalSpeed;
                 velocity += gravityScaled;
                 if (x < 0) {
                     x = 0;
@@ -84,18 +85,30 @@ public class Bird extends Entity {
         velocity = jumpStrength;
     }
 
+    public void increaseSpeed() {
+        float maxSpeed = scaleX(20);
+        if (horizontalSpeed < maxSpeed) {
+            horizontalSpeed += scaleX(0.2f);
+        }
+    }
+
+
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
     }
+
     public void setY(int y) {
         this.y = y;
     }
+
     public void setX(int x) {
         this.x = x;
     }
+
     public int getWidth() {
         return bitmap != null ? bitmap.getWidth() : 0;
     }
+
     public int getHeight() {
         return bitmap != null ? bitmap.getHeight() : 0;
     }
@@ -114,6 +127,4 @@ public class Bird extends Entity {
 
         return distance < (birdRadius + otherRadius);
     }
-
-
 }

@@ -116,7 +116,43 @@
             android:textColor="#FFFFFF"
             android:fontFamily="@font/futura"
             android:textSize="16sp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Candy Stats -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/candyIconGameOver"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_candyy"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/candyEarnedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CANDIES EARNED: "
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/futura"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tvCandies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#FFA41E"
+                android:fontFamily="@font/futura"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
 
         <!-- Action Buttons -->
         <LinearLayout

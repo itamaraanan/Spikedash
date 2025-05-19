@@ -46,7 +46,7 @@ import org.w3c.dom.Text;
 public class GameActivity extends AppCompatActivity {
     GameView gameView;
     FrameLayout frm;
-    TextView tvScore;
+    TextView tvScore, tvCandies;
     ImageButton btnPause;
     User user;
     ImageView backgroundImage;
@@ -59,6 +59,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         tvScore = findViewById(R.id.tvScore);
+        tvCandies = findViewById(R.id.tvCandies);
         frm = findViewById(R.id.frm);
         btnPause = findViewById(R.id.imbPause);
         backgroundImage = findViewById(R.id.backgroundImage);
@@ -79,13 +80,13 @@ public class GameActivity extends AppCompatActivity {
         if (hasFocus && gameView == null) {
             int w = frm.getWidth();
             int h = frm.getHeight();
-            gameView = new GameView(this, w, h, tvScore, btnPause, user);
+            gameView = new GameView(this, w, h, tvScore,tvCandies, btnPause, user);
             frm.addView(gameView);
         }
     }
 
     private class GameView extends SurfaceView implements Runnable, View.OnClickListener {
-        private TextView score;
+        private TextView tvCandies, tvScore;
         private int screenWidth;
         private boolean isRunning;
         private int screenHeight;
@@ -104,17 +105,22 @@ public class GameActivity extends AppCompatActivity {
         private SurfaceHolder holder;
         private Paint bg;
         private int candies;
+        private int wallScore;
         private Thread thread;
         private CountDown currentNumber;
         private boolean isCountingDown;
         private long countdownStartTime;
         private int currentCount;
         private User user;
+        private boolean tookCandy;
         Dialog d;
 
-        public GameView(Context context, int screenWidth, int screenHeight, TextView score, ImageButton btnPause,User user) {
+        public GameView(Context context, int screenWidth, int screenHeight, TextView tvScore, TextView tvCandies, ImageButton btnPause,User user) {
             super(context);
-            this.score = score;
+            this.candies = 0;
+            this.wallScore = 0;
+            this.tvScore = tvScore;
+            this.tvCandies = tvCandies;
             this.screenWidth = screenWidth;
             this.screenHeight = screenHeight;
             this.btnPause = btnPause;
@@ -158,6 +164,7 @@ public class GameActivity extends AppCompatActivity {
             plus.setX(candy.getX());
             plus.setY(candy.getY());
             candies = 0;
+            tookCandy = false;
             isRunning = true;
             uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -172,7 +179,7 @@ public class GameActivity extends AppCompatActivity {
                 bird.gameSrarted = true;
                 btnPause.setVisibility(View.VISIBLE);
             }
-            score.setText("Score: " + candies);
+            tvScore.setText("Score: " + wallScore);
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 SoundManager.play("jump");
                 bird.jump();
@@ -278,12 +285,18 @@ public class GameActivity extends AppCompatActivity {
             if (bird.getX() <= 0 && walls.isLeftWallActive()) {
                 walls.switchWall();
                 VibrationManager.vibrate(getContext(), 5);
-            } else if (bird.getX() >= screenWidth - bitmapBird.getWidth() && !walls.isLeftWallActive()) {
+                wallScore++;
+                bird.increaseSpeed();
+                tvScore.setText("Score: " + wallScore);
+            } else if (bird.getX() >= screenWidth - bird.getWidth() && !walls.isLeftWallActive()) {
                 VibrationManager.vibrate(getContext(), 5);
                 walls.switchWall();
-            }
-            if (bird.getY() + bird.getHeight() >= getFloorY()) {
-                bird.setY((int) (getFloorY() - bird.getHeight())); // visually clamp
+                wallScore++;
+                SoundManager.play("select");
+                bird.increaseSpeed();
+                tvScore.setText("Score: " + wallScore);
+            }if (bird.getY() + bird.getHeight() >= getFloorY()) {
+                bird.setY((int) (getFloorY() - bird.getHeight()));
                 isCollide = true;
                 handleCollision();
             } else if (bird.getY() < scaleY(250)) {
@@ -303,11 +316,25 @@ public class GameActivity extends AppCompatActivity {
                 candy.takesCandy();
                 SoundManager.play("candy");
                 candies++;
-                score.setText("Score: " + candies);
+                ((AppCompatActivity) getContext()).runOnUiThread(() -> {
+                    tvCandies.setText(String.valueOf(candies));
+                });
                 plus.activate(candyX + candy.getWidth() / 2 - plus.getBitmapWidth() / 2,
                         candyY + candy.getHeight() / 2 - plus.getBitmapHeight() / 2);
+                tookCandy = false;
             }
-        }
+            else if (wallScore % 5 == 0 && wallScore != 0) {
+                if (!tookCandy) {
+                    candy.takesCandy();
+                    tookCandy = true;
+                }
+            }
+            else {
+                tookCandy = false;
+            }
+
+    }
+
 
         private void handleCollision() {
             SoundManager.play("hit");
@@ -331,10 +358,12 @@ public class GameActivity extends AppCompatActivity {
             ImageButton imgStats = d.findViewById(R.id.imgStats);
             LinearLayout btnRestart = d.findViewById(R.id.replayButton);
             LinearLayout btnHome = d.findViewById(R.id.homeButton);
-            TextView tvScore = d.findViewById(R.id.tvScore);
+            TextView dialogScore = d.findViewById(R.id.tvScore);
+            TextView dialogCandies = d.findViewById(R.id.tvCandies);
+            dialogScore.setText(String.valueOf(wallScore));
+            dialogCandies.setText(String.valueOf(candies));
             TextView tvHighScore = d.findViewById(R.id.tvHighScore);
             TextView tvGames = d.findViewById(R.id.tvGames);
-            tvScore.setText(String.valueOf(candies));
 
 
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
@@ -344,8 +373,8 @@ public class GameActivity extends AppCompatActivity {
             user.addGame();
 
 
-            if (candies >= user.getHighScore()) {
-                user.setHighScore(candies);
+            if (wallScore >= user.getHighScore()) {
+                user.setHighScore(wallScore);
                 userRef.child("highScore").setValue(user.getHighScore());
             }
 
