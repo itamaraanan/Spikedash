@@ -178,6 +178,8 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                 userRef.child("settings").child("bgm").setValue(0.5);
                 userRef.child("settings").child("vibration").setValue(true);
 
+                userRef.child("difficultyMultiplier").setValue(1.0f);
+
                 // ✅ Register the username
                 DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
                 usernamesRef.child(username).setValue(userId).addOnCompleteListener(usernameTask -> {

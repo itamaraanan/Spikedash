@@ -64,8 +64,8 @@ public class GameActivity extends AppCompatActivity {
         btnPause = findViewById(R.id.imbPause);
         backgroundImage = findViewById(R.id.backgroundImage);
         user = getIntent().getParcelableExtra("user");
-
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         SettingsManager.applySavedBgmVolume(this, uid);
         SoundManager.init(this);
         loadGameBackground();
@@ -113,6 +113,7 @@ public class GameActivity extends AppCompatActivity {
         private int currentCount;
         private User user;
         private boolean tookCandy;
+        private float difficultyMultiplier;
         Dialog d;
 
         public GameView(Context context, int screenWidth, int screenHeight, TextView tvScore, TextView tvCandies, ImageButton btnPause,User user) {
@@ -153,10 +154,8 @@ public class GameActivity extends AppCompatActivity {
             candyBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.candy96);
             spikeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.left_spike);
             plusBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.plus);
-
-            walls = new Walls(screenWidth, screenHeight, spikeBitmap);
             bitmapBird = Bitmap.createScaledBitmap(originalBirdBitmap, (int) scaleX(144), (int) scaleY(100), false);
-            bird = new Bird(screenWidth, screenHeight, bitmapBird);
+            walls = new Walls(screenWidth, screenHeight, spikeBitmap);
             candyBitmap = Bitmap.createScaledBitmap(candyBitmap, (int) scaleX(96), (int) scaleY(96), false);
             candy = new Candy(screenWidth, screenHeight, candyBitmap);
             plusBitmap = Bitmap.createScaledBitmap(plusBitmap, (int) scaleX(600), (int) scaleY(600), false);
@@ -166,11 +165,23 @@ public class GameActivity extends AppCompatActivity {
             candies = 0;
             tookCandy = false;
             isRunning = true;
-            uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child(uid)
+                    .child("difficultyMultiplier")
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        float multiplier = 1.0f;
+                        if (snapshot.exists()) {
+                            Float value = snapshot.getValue(Float.class);
+                            if (value != null) multiplier = value;
+                        }
 
-            holder = getHolder();
-            thread = new Thread(this);
-            thread.start();
+                        bird = new Bird(screenWidth, screenHeight, bitmapBird, multiplier);
+                        holder = getHolder();
+                        thread = new Thread(GameView.this);
+                        thread.start();
+                    });
         }
 
         @Override

@@ -19,7 +19,6 @@
         android:textStyle="bold" />
 
     <!-- making it possible to use backgrounds on the buttons -->
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/easyButton"
         android:layout_width="280dp"
@@ -45,8 +44,7 @@
         android:textStyle="bold" />
 
     <androidx.appcompat.widget.AppCompatButton
-
-    android:id="@+id/hardButton"
+        android:id="@+id/hardButton"
         android:layout_width="280dp"
         android:layout_height="70dp"
         android:layout_marginBottom="24dp"
@@ -61,10 +59,24 @@
         android:id="@+id/insaneButton"
         android:layout_width="280dp"
         android:layout_height="70dp"
+        android:layout_marginBottom="40dp"
         android:text="INSANE"
         android:textSize="24sp"
         android:textColor="#FFFFFF"
         android:background="@drawable/insane_button"
+        android:fontFamily="@font/futura"
+        android:textStyle="bold" />
+
+    <!-- Return button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/returnButton"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:text="RETURN"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/menu_item_selector"
+        android:fontFamily="@font/futura"
         android:textStyle="bold" />
 
 </LinearLayout>

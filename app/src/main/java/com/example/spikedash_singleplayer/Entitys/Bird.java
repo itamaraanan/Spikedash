@@ -3,30 +3,33 @@ package com.example.spikedash_singleplayer.Entitys;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.HashMap;
+
 public class Bird extends Entity {
 
     public boolean gameSrarted;
     private float velocity;
     private final float gravity = 0.75f;
-    private final float jumpStrength = -17f;
+    private final float jumpStrength = -18f;
     private float floatOffset;
     private float floatSpeed;
     private float floatAmplitude;
     private float counter;
     private float horizontalSpeed;
-
     boolean Right = true;
+    private  float difficultyMultiplier;
 
-    public Bird(int ScreenWidth, int ScreenHeight, Bitmap bitmap) {
+    public Bird(int ScreenWidth, int ScreenHeight, Bitmap bitmap, float difficultyMultiplier ) {
         super(ScreenWidth, ScreenHeight, bitmap);
 
         x = ScreenWidth / 2 - (int) scaleX(50);
         y = ScreenHeight / 2 + (int) scaleY(50);
 
+        this.difficultyMultiplier = difficultyMultiplier;
         floatOffset = 0;
         floatSpeed = 0.06f;
         floatAmplitude = scaleY(100);
-        horizontalSpeed = scaleX(10);
+        horizontalSpeed = scaleX(10)*difficultyMultiplier;
 
         gameSrarted = false;
     }
