@@ -21,6 +21,15 @@ public abstract class Entity {
 
     }
 
+
+    protected float scaleX(float value) {
+        return value * (ScreenWidth / 1080f);
+    }
+
+    protected float scaleY(float value) {
+        return value * (ScreenHeight / 1920f);
+    }
+
     public int getX() {
         return x;
     }

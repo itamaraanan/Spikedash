@@ -19,7 +19,7 @@ public class Plus extends Entity {
     @Override
     public void move() {
         if (active) {
-            y -= 5;
+            y -= (int) scaleY(5); // upward motion scaled
             alpha -= 7;
             if (alpha <= 0) {
                 alpha = 0;
@@ -38,7 +38,7 @@ public class Plus extends Entity {
 
     public void setX(int x) {
         this.x = x;
-    }//
+    }
 
     public void setY(int y) {
         this.y = y;

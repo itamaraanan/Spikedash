@@ -1,8 +1,10 @@
 package com.example.spikedash_singleplayer.Entitys;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+
 public class CountDown extends Entity {
 
     private int number;
@@ -22,13 +24,13 @@ public class CountDown extends Entity {
 
         paint = new Paint();
         paint.setColor(Color.WHITE);
-        paint.setTextSize(200);
+        paint.setTextSize(scaleY(200)); // base text size
         paint.setTextAlign(Paint.Align.CENTER);
     }
 
     @Override
     public void draw(Canvas canvas) {
-        paint.setTextSize(200 * scale);
+        paint.setTextSize(scaleY(200) * scale); // scalable font
         paint.setAlpha(alpha);
         canvas.drawText(String.valueOf(number), x, y, paint);
     }
@@ -37,7 +39,7 @@ public class CountDown extends Entity {
     public void move() {
         scale += 0.05f;
         alpha -= 5;
-        if(alpha <= 0) {
+        if (alpha <= 0) {
             isFinished = true;
         }
     }
@@ -45,7 +47,4 @@ public class CountDown extends Entity {
     public boolean isFinished() {
         return isFinished;
     }
-
-
-
 }

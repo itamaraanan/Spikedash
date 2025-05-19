@@ -126,6 +126,19 @@ public class GameActivity extends AppCompatActivity {
 
         }
 
+        private float scaleX(float value) {
+            return value * (screenWidth / 1080f);
+        }
+
+        private float scaleY(float value) {
+            return value * (screenHeight / 1920f);
+        }
+        private float getFloorY() {
+            return screenHeight - scaleY(200);
+        }
+
+
+
         private void initializeGame() {
             bg = new Paint();
             bg.setARGB(218, 218, 218, 218);
@@ -136,11 +149,11 @@ public class GameActivity extends AppCompatActivity {
             plusBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.plus);
 
             walls = new Walls(screenWidth, screenHeight, spikeBitmap);
-            bitmapBird = Bitmap.createScaledBitmap(originalBirdBitmap, 144, 100, false);
+            bitmapBird = Bitmap.createScaledBitmap(originalBirdBitmap, (int) scaleX(144), (int) scaleY(100), false);
             bird = new Bird(screenWidth, screenHeight, bitmapBird);
-            candyBitmap = Bitmap.createScaledBitmap(candyBitmap, 96, 96, false);
+            candyBitmap = Bitmap.createScaledBitmap(candyBitmap, (int) scaleX(96), (int) scaleY(96), false);
             candy = new Candy(screenWidth, screenHeight, candyBitmap);
-            plusBitmap = Bitmap.createScaledBitmap(plusBitmap, 600, 600, false);
+            plusBitmap = Bitmap.createScaledBitmap(plusBitmap, (int) scaleX(600), (int) scaleY(600), false);
             plus = new Plus(screenWidth, screenHeight, plusBitmap);
             plus.setX(candy.getX());
             plus.setY(candy.getY());
@@ -265,15 +278,20 @@ public class GameActivity extends AppCompatActivity {
             if (bird.getX() <= 0 && walls.isLeftWallActive()) {
                 walls.switchWall();
                 VibrationManager.vibrate(getContext(), 5);
-            } else if (bird.getX() >= screenWidth - 144 && !walls.isLeftWallActive()) {
+            } else if (bird.getX() >= screenWidth - bitmapBird.getWidth() && !walls.isLeftWallActive()) {
                 VibrationManager.vibrate(getContext(), 5);
                 walls.switchWall();
             }
-
-            if (bird.getY() > 1675 || bird.getY() < 250) {
+            if (bird.getY() + bird.getHeight() >= getFloorY()) {
+                bird.setY((int) (getFloorY() - bird.getHeight())); // visually clamp
+                isCollide = true;
+                handleCollision();
+            } else if (bird.getY() < scaleY(250)) {
                 isCollide = true;
                 handleCollision();
             }
+
+
 
             return !isCollide;
         }

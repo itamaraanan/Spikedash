@@ -9,22 +9,29 @@ public class Candy extends Entity {
     private Random random;
     private float floatOffset;
     private float floatSpeed;
-    private int floatAmplitude;
+    private float floatAmplitude;
     private float counter;
 
     public Candy(int ScreenWidth, int ScreenHeight, Bitmap bitmap) {
         super(ScreenWidth, ScreenHeight, bitmap);
+
         random = new Random();
-        x = 75 + random.nextInt(ScreenWidth - 150);
-        y = 275 + random.nextInt(ScreenHeight - 550);
+
+        // Use scaled margins for X and Y range
+        int marginX = (int) scaleX(75);
+        int marginYTop = (int) scaleY(275);
+        int marginYBottom = (int) scaleY(550);
+
+        x = marginX + random.nextInt(ScreenWidth - 2 * marginX);
+        y = marginYTop + random.nextInt(ScreenHeight - marginYBottom);
 
         floatOffset = 0;
         floatSpeed = 0.05f;
-        floatAmplitude = 10;
+        floatAmplitude = scaleY(10); // Scale float amplitude
         counter = 0;
     }
 
-
+    @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y + floatOffset, null);
     }
@@ -38,11 +45,15 @@ public class Candy extends Entity {
     }
 
     public void takesCandy() {
-        x = 75 + random.nextInt(ScreenWidth - 150);
-        y = 275 + random.nextInt(ScreenHeight - 550);
+        int marginX = (int) scaleX(75);
+        int marginYTop = (int) scaleY(275);
+        int marginYBottom = (int) scaleY(550);
 
+        x = marginX + random.nextInt(ScreenWidth - 2 * marginX);
+        y = marginYTop + random.nextInt(ScreenHeight - marginYBottom);
     }
 
+    @Override
     public void move() {
         counter += floatSpeed;
         floatOffset = (float) (floatAmplitude * Math.sin(counter));
