@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         VibrationManager.vibrate(this, 25);
-        SoundManager.play("click");
         if(v == btnStart) {
             if (currentUser != null) {
                 MusicManager.stop();
@@ -80,77 +79,81 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 MusicManager.start(this, R.raw.game_music);
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);
                 intent.putExtra("user", currentUser);
+                SoundManager.play("start");
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
             }
         }
-        if(v == btnDifficulty){
-            if (currentUser != null) {
-                Intent intent = new Intent(MainActivity.this, DifficultyActivity.class);
-                intent.putExtra("user", currentUser);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+        else{
+            SoundManager.play("click");
+            if(v == btnDifficulty){
+                if (currentUser != null) {
+                    Intent intent = new Intent(MainActivity.this, DifficultyActivity.class);
+                    intent.putExtra("user", currentUser);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
-        if(v == btnGift){
-            if (currentUser != null) {
-                Intent intent = new Intent(MainActivity.this, GiftActivity.class);
-                intent.putExtra("user", currentUser);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            if(v == btnGift){
+                if (currentUser != null) {
+                    Intent intent = new Intent(MainActivity.this, GiftActivity.class);
+                    intent.putExtra("user", currentUser);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
-        if(v == btnSettings){
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
-        }
-        if(v == btnStats){
-             if (currentUser != null) {
-                Intent intent = new Intent(MainActivity.this, StatsActivity.class);
-                intent.putExtra("user", currentUser);
+            if(v == btnSettings){
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
-            } else {
-                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
             }
-        }
-        if(v == btnShop){
-            if (currentUser != null) {
-                Intent intent = new Intent(MainActivity.this, ShopActicity.class);
-                intent.putExtra("user", currentUser);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            if(v == btnStats){
+                 if (currentUser != null) {
+                    Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+                    intent.putExtra("user", currentUser);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
-        if(v == btnProfile){
-            if (currentUser != null) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                intent.putExtra("user", currentUser);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            if(v == btnShop){
+                if (currentUser != null) {
+                    Intent intent = new Intent(MainActivity.this, ShopActicity.class);
+                    intent.putExtra("user", currentUser);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+                }
             }
+            if(v == btnProfile){
+                if (currentUser != null) {
+                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                    intent.putExtra("user", currentUser);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+                }
 
-        }
-        if (v == btnLeaderBoard){
-            if (currentUser != null) {
-                Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
-                intent.putExtra("user", currentUser);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
             }
-        }
-        if (v == btnInventory){
-            if (currentUser != null) {
-                Intent intent = new Intent(MainActivity.this, StorageActivity.class);
-                intent.putExtra("user", currentUser);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            if (v == btnLeaderBoard){
+                if (currentUser != null) {
+                    Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
+                    intent.putExtra("user", currentUser);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+                }
+            }
+            if (v == btnInventory){
+                if (currentUser != null) {
+                    Intent intent = new Intent(MainActivity.this, StorageActivity.class);
+                    intent.putExtra("user", currentUser);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 

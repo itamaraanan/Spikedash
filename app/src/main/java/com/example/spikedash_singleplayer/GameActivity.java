@@ -297,6 +297,7 @@ public class GameActivity extends AppCompatActivity {
                 walls.switchWall();
                 VibrationManager.vibrate(getContext(), 5);
                 wallScore++;
+                SoundManager.play("select");
                 bird.increaseSpeed();
                 tvScore.setText("Score: " + wallScore);
             } else if (bird.getX() >= screenWidth - bird.getWidth() && !walls.isLeftWallActive()) {
