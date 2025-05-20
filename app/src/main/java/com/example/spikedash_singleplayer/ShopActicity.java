@@ -58,6 +58,7 @@ public class ShopActicity extends AppCompatActivity implements View.OnClickListe
             skinsIndicator.setVisibility(View.VISIBLE);
             backgroundsIndicator.setVisibility(View.INVISIBLE);
             loadFragment(new SkinsFragment());
+            tvBalance.setText(String.valueOf(user.getBalance()));
         }
 
         if (v == backgroundsTab) {
@@ -66,6 +67,7 @@ public class ShopActicity extends AppCompatActivity implements View.OnClickListe
             backgroundsIndicator.setVisibility(View.VISIBLE);
             skinsIndicator.setVisibility(View.INVISIBLE);
             loadFragment(new BackgroundsFragment());
+            tvBalance.setText(String.valueOf(user.getBalance()));
         }
 
         if (v == btnBack) {

@@ -29,7 +29,7 @@ public class FriendsActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
 
         btnReturn.setOnClickListener(v -> {
-            finish();
+            onBackPressed();
         });
 
         // Set up ViewPager with adapter

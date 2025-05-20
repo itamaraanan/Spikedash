@@ -57,26 +57,28 @@ public class SearchFragment extends Fragment {
         });
     }
     private void sendFriendRequest(User targetUser) {
-        //sending friend request to another user
-        //adding the current user to the target user's friend request list
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("users")
-                .child(targetUser.getUid())
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+
+        // Add current user to target user's 'friendRequests'
+        usersRef.child(targetUser.getUid())
                 .child("friendRequests")
-                .child(currentUid);
-        //adding onSuccessListener and onFailureListener
-        ref.setValue(true).addOnSuccessListener(unused -> {
-            Toast.makeText(getContext(), "Friend request sent!", Toast.LENGTH_SHORT).show();
-            SoundManager.play("win");
+                .child(currentUid)
+                .setValue(true);
 
-
-        }).addOnFailureListener(e -> {
-            SoundManager.play("error");
-            Toast.makeText(getContext(), "Failed to send request", Toast.LENGTH_SHORT).show();
-        });
-
+        // Add target user to current user's 'sentFriendRequests'
+        usersRef.child(currentUid)
+                .child("sentFriendRequests")
+                .child(targetUser.getUid())
+                .setValue(true)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(getContext(), "Friend request sent!", Toast.LENGTH_SHORT).show();
+                    SoundManager.play("win");
+                })
+                .addOnFailureListener(e -> {
+                    SoundManager.play("error");
+                    Toast.makeText(getContext(), "Failed to send request", Toast.LENGTH_SHORT).show();
+                });
     }
-
 
 
     @Override

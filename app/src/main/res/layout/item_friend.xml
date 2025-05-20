@@ -43,12 +43,6 @@
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnAddFriend"
-            android:layout_width="36dp"
-            android:layout_height="30dp"
-            android:background="@drawable/transparent"
-            android:src="@drawable/ic_add_friend" />
 
     </LinearLayout>
 

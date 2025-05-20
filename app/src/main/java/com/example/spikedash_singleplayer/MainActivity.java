@@ -1,5 +1,8 @@
 package com.example.spikedash_singleplayer;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private User currentUser;
     private ImageView backgroundImage, birdImage;
     private String uid;
+    private ActivityResultLauncher<Intent> gameLauncher;
+
     private boolean isAccountFound = false;
 
     @Override
@@ -66,10 +71,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnInventory.setOnClickListener(this);
         btnFriends.setOnClickListener(this);
 
+        gameLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                    }
+                }
+        );
+
+
         currentUser();
         //loadBackground();
         loadSkin();
     }
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Exit Game")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    finishAffinity();
+                    System.exit(0);
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -82,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);
                 intent.putExtra("user", currentUser);
                 SoundManager.play("start");
+                gameLauncher.launch(intent);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
@@ -93,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, DifficultyActivity.class);
                     intent.putExtra("user", currentUser);
-                    startActivity(intent);
+                    gameLauncher.launch(intent);
                 } else {
                     Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
                 }
@@ -102,20 +132,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, GiftActivity.class);
                     intent.putExtra("user", currentUser);
-                    startActivity(intent);
+                    gameLauncher.launch(intent);
                 } else {
                     Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
                 }
             }
             if(v == btnSettings){
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(intent);
+                gameLauncher.launch(intent);
             }
             if(v == btnStats){
                  if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, StatsActivity.class);
                     intent.putExtra("user", currentUser);
-                    startActivity(intent);
+                    gameLauncher.launch(intent);
                 } else {
                     Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
                 }
@@ -124,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, ShopActicity.class);
                     intent.putExtra("user", currentUser);
-                    startActivity(intent);
+                    gameLauncher.launch(intent);
                 } else {
                     Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
                 }
@@ -133,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                     intent.putExtra("user", currentUser);
-                    startActivity(intent);
+                    gameLauncher.launch(intent);
                 } else {
                     Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
                 }
@@ -143,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
                     intent.putExtra("user", currentUser);
-                    startActivity(intent);
+                    gameLauncher.launch(intent);
                 } else {
                     Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
                 }
@@ -152,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, StorageActivity.class);
                     intent.putExtra("user", currentUser);
-                    startActivity(intent);
+                    gameLauncher.launch(intent);
                 } else {
                     Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
                 }
@@ -161,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, FriendsActivity.class);
                     intent.putExtra("user", currentUser);
-                    startActivity(intent);
+                    gameLauncher.launch(intent);
                 } else {
                     Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
                 }
