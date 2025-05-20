@@ -85,6 +85,10 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if(v == btnLogin){
+            if (etEmail.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Dialog progressDialog = new Dialog(this);
             progressDialog.setContentView(R.layout.progress_dialog);
             progressDialog.setCancelable(false);

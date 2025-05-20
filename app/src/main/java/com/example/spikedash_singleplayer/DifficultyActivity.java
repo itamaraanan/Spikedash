@@ -65,13 +65,13 @@ public class DifficultyActivity extends AppCompatActivity implements View.OnClic
                     .getReference("users")
                     .child(uid)
                     .child("difficultyMultiplier")
-                    .setValue(1.5f);
+                    .setValue(1.25f);
         } else if (v == insaneButton) {
             FirebaseDatabase.getInstance()
                     .getReference("users")
                     .child(uid)
                     .child("difficultyMultiplier")
-                    .setValue(2f);
+                    .setValue(1.75f);
         }
         SoundManager.play("win");
         Toast.makeText(this, "Difficulty set successfully!", Toast.LENGTH_SHORT).show();

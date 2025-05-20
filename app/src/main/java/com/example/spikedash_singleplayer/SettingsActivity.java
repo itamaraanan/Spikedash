@@ -130,6 +130,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             startActivity(new Intent(this, MenuActivity.class));
             Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
             finish();
+            MusicManager.stop();
+            MusicManager.release();
         } else if (v == btnDeleteAccount) {
             new AlertDialog.Builder(this)
                     .setTitle("Delete Account")
@@ -137,6 +139,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     .setPositiveButton("Delete", (dialog, which) -> deleteAccount())
                     .setNegativeButton("Cancel", null)
                     .show();
+            MusicManager.stop();
+            MusicManager.release();
         } else if (v == btnHowToPlay) {
             new AlertDialog.Builder(this)
                     .setTitle("How to Play")

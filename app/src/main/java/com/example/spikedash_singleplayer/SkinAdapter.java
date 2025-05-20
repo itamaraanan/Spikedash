@@ -27,7 +27,7 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.List;
 
-public class SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder> {
+public class  SkinAdapter extends RecyclerView.Adapter<SkinAdapter.SkinViewHolder> {
     private List<Skin> skins;
     private Context context;
     Dialog dialog;

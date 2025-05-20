@@ -180,6 +180,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
                 userRef.child("difficultyMultiplier").setValue(1.0f);
 
+                userRef.child("friendRequests").setValue(null);
                 // ✅ Register the username
                 DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
                 usernamesRef.child(username).setValue(userId).addOnCompleteListener(usernameTask -> {
