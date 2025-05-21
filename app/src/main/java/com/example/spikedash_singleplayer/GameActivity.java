@@ -190,7 +190,9 @@ public class GameActivity extends AppCompatActivity {
                 bird.gameSrarted = true;
                 btnPause.setVisibility(View.VISIBLE);
             }
-            tvScore.setText("Score: " + wallScore);
+            ((AppCompatActivity) getContext()).runOnUiThread(() -> {
+                tvScore.setText("Score: " + wallScore);
+            });
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 SoundManager.play("jump");
                 bird.jump();
@@ -299,14 +301,18 @@ public class GameActivity extends AppCompatActivity {
                 wallScore++;
                 SoundManager.play("select");
                 bird.increaseSpeed();
-                tvScore.setText("Score: " + wallScore);
+                ((AppCompatActivity) getContext()).runOnUiThread(() -> {
+                    tvScore.setText("Score: " + wallScore);
+                });
             } else if (bird.getX() >= screenWidth - bird.getWidth() && !walls.isLeftWallActive()) {
                 VibrationManager.vibrate(getContext(), 5);
                 walls.switchWall();
                 wallScore++;
                 SoundManager.play("select");
-                bird.increaseSpeed();
-                tvScore.setText("Score: " + wallScore);
+                bird.increaseSpeed();((AppCompatActivity) getContext()).runOnUiThread(() -> {
+                    tvScore.setText("Score: " + wallScore);
+                });
+
             }if (bird.getY() + bird.getHeight() >= getFloorY()) {
                 bird.setY((int) (getFloorY() - bird.getHeight()));
                 isCollide = true;

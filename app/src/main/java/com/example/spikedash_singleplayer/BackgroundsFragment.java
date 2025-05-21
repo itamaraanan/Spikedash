@@ -53,6 +53,7 @@ public class BackgroundsFragment extends Fragment {
                             }
                         }
                         adapter.notifyDataSetChanged();
+                        ((ShopActicity) requireActivity()).refreshBalance();
                     });
         });
     }

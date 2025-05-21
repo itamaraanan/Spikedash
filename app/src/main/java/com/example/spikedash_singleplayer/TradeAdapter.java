@@ -15,27 +15,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendViewHolder> {
+public class TradeAdapter extends RecyclerView.Adapter<TradeAdapter.TradeViewHolder> {
     private List<User> users;
     private Context context;
-    private OnRequestTradeListener requestListener;
 
-    public interface OnRequestTradeListener {
-        void onSendRequest(User user);
-    }
-    public FriendAdapter(Context context, List<User> users) {
+    public TradeAdapter(Context context, List<User> users) {
         this.context = context;
         this.users = users;
     }
     @NonNull
     @Override
-    public FriendAdapter.FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_friend, parent, false);
-        return new FriendAdapter.FriendViewHolder(view);
+    public TradeAdapter.TradeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_trade, parent, false);
+        return new TradeAdapter.TradeViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TradeViewHolder holder, int position) {
         User user = users.get(position);
         holder.tvName.setText(user.getUsername());
         uploadImage(user, holder.ivProfilePicture);
@@ -66,14 +62,19 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
     public int getItemCount() {
         return users.size();
     }
-    public static class FriendViewHolder extends RecyclerView.ViewHolder {
+    public static class TradeViewHolder extends RecyclerView.ViewHolder {
         TextView tvName;
         ImageView ivProfilePicture;
+        ImageButton btnTrade;
 
-        public FriendViewHolder(@NonNull View itemView) {
+        public TradeViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvName);
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicture);
+            btnTrade = itemView.findViewById(R.id.btnTrade);
+            btnTrade.setOnClickListener(v -> {
+
+            });
         }
 
     }

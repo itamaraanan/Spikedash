@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 public class ShopActicity extends AppCompatActivity implements View.OnClickListener {
     TextView skinsTab, backgroundsTab;
     View skinsIndicator, backgroundsIndicator;
@@ -47,6 +49,19 @@ public class ShopActicity extends AppCompatActivity implements View.OnClickListe
                 .commit();
 
     }
+    public void refreshBalance() {
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(user.getUid())
+                .child("balance")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        long balance = snapshot.getValue(Long.class);
+                        tvBalance.setText(String.valueOf(balance));
+                    }
+                });
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -58,7 +73,6 @@ public class ShopActicity extends AppCompatActivity implements View.OnClickListe
             skinsIndicator.setVisibility(View.VISIBLE);
             backgroundsIndicator.setVisibility(View.INVISIBLE);
             loadFragment(new SkinsFragment());
-            tvBalance.setText(String.valueOf(user.getBalance()));
         }
 
         if (v == backgroundsTab) {
@@ -67,7 +81,6 @@ public class ShopActicity extends AppCompatActivity implements View.OnClickListe
             backgroundsIndicator.setVisibility(View.VISIBLE);
             skinsIndicator.setVisibility(View.INVISIBLE);
             loadFragment(new BackgroundsFragment());
-            tvBalance.setText(String.valueOf(user.getBalance()));
         }
 
         if (v == btnBack) {

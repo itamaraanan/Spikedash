@@ -82,8 +82,8 @@ public class FriendsListFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_friends_list, container, false);
 
+        View view = inflater.inflate(R.layout.fragment_friends_list, container, false);
         recyclerView = view.findViewById(R.id.rvFriends);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         tvFriendsCount = view.findViewById(R.id.tvFriendsCount);
@@ -93,6 +93,7 @@ public class FriendsListFragment extends Fragment {
         loadFriends();
 
         btnFriendRequests.setOnClickListener(v -> {
+            SoundManager.play("click");
             d = new Dialog(getContext());
             d.setContentView(R.layout.requests_dialog);
             d.setCancelable(true);
@@ -151,6 +152,7 @@ public class FriendsListFragment extends Fragment {
             ImageButton btnReturn = d.findViewById(R.id.btnReturn);
             btnReturn.setOnClickListener(view1 -> {
                 d.dismiss();
+                SoundManager.play("click");
                 loadFriends();
             });
         });

@@ -1,6 +1,5 @@
 package com.example.spikedash_singleplayer;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -13,7 +12,7 @@ import android.widget.ImageButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class FriendsActivity extends AppCompatActivity {
+public class TradeActivity extends AppCompatActivity {
 
     private ImageButton btnReturn;
     private TabLayout tabLayout;
@@ -22,15 +21,16 @@ public class FriendsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
+        setContentView(R.layout.activity_trade);
 
+        // Initialize views
         btnReturn = findViewById(R.id.btnReturn);
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
 
+        // Set up return button
         btnReturn.setOnClickListener(v -> {
-            SoundManager.play("click");
-            onBackPressed();
+            finish();
         });
 
         // Set up ViewPager with adapter
@@ -40,71 +40,43 @@ public class FriendsActivity extends AppCompatActivity {
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText("All Players");
+                    tab.setText("Creat Trade");
                     break;
                 case 1:
-                    tab.setText("Search");
-                    break;
-                case 2:
-                    tab.setText("Friends");
-                    break;
-                default:
-                    tab.setText("All Players");
+                    tab.setText("Trade offers");
                     break;
             }
         }).attach();
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                SoundManager.play("click"); // ✅ Play sound when a tab is selected
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // Not needed
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // Optional: play sound again if reselected
-                SoundManager.play("click");
-            }
-        });
-
-
     }
 
     private void setupViewPager() {
         // Create and set adapter
-        FriendsPagerAdapter pagerAdapter = new FriendsPagerAdapter(this);
+        TradePagerAdapter pagerAdapter = new TradePagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);
     }
 
     // Adapter for the ViewPager
-    private static class FriendsPagerAdapter extends FragmentStateAdapter {
+    private static class TradePagerAdapter extends FragmentStateAdapter {
 
-        public FriendsPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+        public TradePagerAdapter(FragmentActivity fragmentActivity) {
             super(fragmentActivity);
         }
 
-        @NonNull
         @Override
         public Fragment createFragment(int position) {
-            // Return the appropriate fragment based on position
             switch (position) {
                 case 0:
-                    return new AllPlayersFragment();
+                    return new TradeFragment();
                 case 1:
-                    return new SearchFragment();
-                case 2:
-                    return new FriendsListFragment();
+                    //return new FriendItemsFragment();
                 default:
-                    return new AllPlayersFragment();
+                    return new TradeFragment();
             }
         }
 
+        @Override
         public int getItemCount() {
-            return 3; // We now have 3 tabs
+            return 2; // there are 2 tabs
         }
     }
 }

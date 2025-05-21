@@ -50,6 +50,7 @@ public class AllPlayersFragment extends Fragment {
         });
     }
     private void sendFriendRequest(User targetUser) {
+
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         // Add current user to target user's 'friendRequests'

@@ -25,7 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout btnStart;
-    private ImageButton btnLeaderBoard, btnDifficulty,btnProfile, btnGift, btnSettings, btnStats, btnShop, btnInventory, btnFriends;
+    private ImageButton btnLeaderBoard, btnDifficulty,btnProfile, btnGift,
+            btnSettings, btnStats, btnShop, btnInventory,btnTrade,btnFriends;
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference ref = db.getReference("users");
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSettings = findViewById(R.id.btnSettings);
         btnFriends = findViewById(R.id.btnFriends);
         btnInventory = findViewById(R.id.btnInventory);
+        btnTrade = findViewById(R.id.btnTrade);
         backgroundImage = findViewById(R.id.backgroundImage);
         birdImage = findViewById(R.id.birdImage);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSettings.setOnClickListener(this);
         btnInventory.setOnClickListener(this);
         btnFriends.setOnClickListener(this);
+        btnTrade.setOnClickListener(this);
 
         gameLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -190,6 +193,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (v == btnFriends){
                 if (currentUser != null) {
                     Intent intent = new Intent(MainActivity.this, FriendsActivity.class);
+                    intent.putExtra("user", currentUser);
+                    gameLauncher.launch(intent);
+                } else {
+                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+                }
+            }
+            if (v == btnTrade){
+                if (currentUser != null) {
+                    Intent intent = new Intent(MainActivity.this, TradeActivity.class);
                     intent.putExtra("user", currentUser);
                     gameLauncher.launch(intent);
                 } else {
