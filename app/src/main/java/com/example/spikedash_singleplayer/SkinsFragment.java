@@ -28,7 +28,6 @@ public class SkinsFragment extends Fragment {
     private RecyclerView recyclerView;
     private SkinAdapter adapter;
     private List<Skin> skinList = new ArrayList<>();
-    private Skin lastSelected;
     private void loadSkins() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -55,7 +54,9 @@ public class SkinsFragment extends Fragment {
                             }
                         }
                         adapter.notifyDataSetChanged();
-                        ((ShopActicity) requireActivity()).refreshBalance();
+                        if (isAdded() && getActivity() instanceof ShopActicity) {
+                            ((ShopActicity) getActivity()).refreshBalance();
+                        }
                     });
         });
     }

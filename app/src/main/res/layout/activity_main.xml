@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     android:background="#BABABA">
 
+    <ImageButton
+        android:id="@+id/btnSettings"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_settings"
+        android:background="@drawable/transparent"
+        android:padding="12dp"
+        android:layout_margin="5dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="2dp" />
+
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
@@ -89,15 +100,6 @@
         android:orientation="vertical"
         android:layout_marginStart="16dp">
 
-        <ImageButton
-            android:id="@+id/btnSettings"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/darker_background"
-            android:src="@drawable/ic_settings"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:elevation="2dp" />
 
         <ImageButton
             android:id="@+id/btnGift"
@@ -110,14 +112,15 @@
             android:elevation="2dp" />
 
         <ImageButton
-            android:id="@+id/btnTrade"
+            android:id="@+id/btnStats"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:background="@drawable/darker_background"
-            android:src="@drawable/ic_trade"
+            android:src="@drawable/ic_stats"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
             android:elevation="2dp"/>
+
         <ImageButton
             android:id="@+id/btnShop"
             android:layout_width="60dp"
@@ -126,7 +129,8 @@
             android:src="@drawable/ic_store"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
-            android:elevation="2dp"/>/
+            android:elevation="2dp"/>
+
         <ImageButton
             android:id="@+id/btnLeaderboard"
             android:layout_width="60dp"
@@ -146,15 +150,7 @@
         android:layout_marginEnd="16dp">
 
 
-        <ImageButton
-            android:id="@+id/btnStats"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/darker_background"
-            android:src="@drawable/ic_stats"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:elevation="2dp"/>
+
 
         <ImageButton
             android:id="@+id/btnInventory"
@@ -193,6 +189,7 @@
             android:src="@drawable/ic_difficulty"
             android:padding="12dp"
             android:elevation="2dp"/>
+
     </LinearLayout>
 
     <ImageView
