@@ -353,7 +353,6 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-
         private void handleCollision() {
             SoundManager.play("hit");
             VibrationManager.vibrate(getContext(), 200);
