@@ -1,11 +1,16 @@
 package com.example.spikedash_singleplayer;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.fragment.app.Fragment;
@@ -27,7 +32,9 @@ import java.util.List;
 public class SkinsFragment extends Fragment {
     private RecyclerView recyclerView;
     private SkinAdapter adapter;
+    private Dialog progressDialog;
     private List<Skin> skinList = new ArrayList<>();
+
     private void loadSkins() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -54,12 +61,20 @@ public class SkinsFragment extends Fragment {
                             }
                         }
                         adapter.notifyDataSetChanged();
+                        progressDialog.dismiss();
                         if (isAdded() && getActivity() instanceof ShopActicity) {
                             ((ShopActicity) getActivity()).refreshBalance();
                         }
-                    });
-        });
+                    }).addOnFailureListener(this::errorHandler);
+        }).addOnFailureListener(this::errorHandler);
     }
+
+    private void errorHandler(Exception e) {
+        Log.e("FirebaseError", "Error: " + e.getMessage());
+        Toast.makeText(getContext(), "Error loading data", Toast.LENGTH_SHORT).show();
+        progressDialog.dismiss();
+    }
+
 
 
     @Nullable
@@ -67,6 +82,16 @@ public class SkinsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        progressDialog = new Dialog(getContext());
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        TextView tvMessage = progressDialog.findViewById(R.id.tvMessage);
+        tvMessage.setText("Loading store...");
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        progressDialog.show();
+
         View view = inflater.inflate(R.layout.fragment_skins, container, false);
         recyclerView = view.findViewById(R.id.skinsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

@@ -1,6 +1,9 @@
 package com.example.spikedash_singleplayer;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,7 +26,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SearchFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -32,30 +37,50 @@ public class SearchFragment extends Fragment {
     private ImageButton btnSearch;
     private EditText etSearch;
     private List<User> userList = new ArrayList<>();
+    private Set<String> friendUids;
 
     private void loadUsers(String name) {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
         currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userList.clear();
+        friendUids = new HashSet<>();
 
-        db.get().addOnSuccessListener(snapshot -> {
-            for (DataSnapshot userSnap : snapshot.getChildren()) {
-                User user = userSnap.getValue(User.class);
-                if (user != null &&
-                        user.getUsername() != null &&
-                        !user.getUid().equals(currentUid) &&
-                        user.getUsername().toLowerCase().contains(name.toLowerCase())) {
-                    userList.add(user);
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+
+        // First, load the list of friend UIDs
+        usersRef.child(currentUid).child("friends").get().addOnSuccessListener(friendsSnapshot -> {
+            if (friendsSnapshot.exists()) {
+                for (DataSnapshot snap : friendsSnapshot.getChildren()) {
+                    friendUids.add(snap.getKey());
                 }
             }
 
-            adapter = new UsersAdapter(requireContext(), userList, selectedUser -> {
-                sendFriendRequest(selectedUser);
+            // Now load all users AFTER friends are known
+            usersRef.get().addOnSuccessListener(snapshot -> {
+                for (DataSnapshot userSnap : snapshot.getChildren()) {
+                    User user = userSnap.getValue(User.class);
+                    if (user != null &&
+                            user.getUsername() != null &&
+                            !user.getUid().equals(currentUid) &&
+                            !friendUids.contains(user.getUid()) &&
+                            user.getUsername().toLowerCase().contains(name.toLowerCase())) {
+                        userList.add(user);
+                    }
+                }
+                adapter = new UsersAdapter(requireContext(), userList, selectedUser -> {
+                    sendFriendRequest(selectedUser);
+                });
+                recyclerView.setAdapter(adapter);
+            }).addOnFailureListener(e -> {
+                SoundManager.play("error");
+                Toast.makeText(getContext(), "Failed to load users", Toast.LENGTH_SHORT).show();
             });
 
-            recyclerView.setAdapter(adapter);
+        }).addOnFailureListener(e -> {
+            SoundManager.play("error");
+            Toast.makeText(getContext(), "Failed to load friend list", Toast.LENGTH_SHORT).show();
         });
     }
+
     private void sendFriendRequest(User targetUser) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 

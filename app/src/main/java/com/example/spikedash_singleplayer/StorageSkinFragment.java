@@ -1,9 +1,14 @@
 package com.example.spikedash_singleplayer;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,25 +30,8 @@ public class StorageSkinFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private StorageSkinAdapter adapter;
+    private Dialog progressDialog;
     private List<StorageItem> skinList = new ArrayList<>();
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_storage_skin, container, false);
-
-        recyclerView = view.findViewById(R.id.skinsRecyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-
-        adapter = new StorageSkinAdapter(getContext(), skinList);
-        recyclerView.setAdapter(adapter);
-
-        loadOwnedSkins();
-
-        return view;
-    }
 
     private void loadOwnedSkins() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -75,8 +63,41 @@ public class StorageSkinFragment extends Fragment {
 
                             adapter.setEquippedSkin(equippedId);
                             adapter.notifyDataSetChanged();
-                        });
-            });
-        });
+                        }).addOnFailureListener(this::errorHandler);
+            }).addOnFailureListener(this::errorHandler);
+        }).addOnFailureListener(this::errorHandler);
+    }
+    private void errorHandler(Exception e) {
+        SoundManager.play("error");
+        progressDialog.dismiss();
+        Toast.makeText(getContext(), "Error loading skins: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+        progressDialog = new Dialog(getContext());
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        TextView tvMessage = progressDialog.findViewById(R.id.tvMessage);
+        tvMessage.setText("Loading storage...");
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        progressDialog.show();
+
+        View view = inflater.inflate(R.layout.fragment_storage_skin, container, false);
+
+        recyclerView = view.findViewById(R.id.skinsRecyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+
+        adapter = new StorageSkinAdapter(getContext(), skinList);
+        recyclerView.setAdapter(adapter);
+
+        loadOwnedSkins();
+
+        return view;
     }
 }

@@ -1,6 +1,8 @@
 package com.example.spikedash_singleplayer;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +36,7 @@ public class FriendsListFragment extends Fragment {
     private LinearLayout btnFriendRequests;
     private List<User> friendsList = new ArrayList<>();
     private Dialog d;
+    private Dialog progressDialog;
 
     private void loadFriends() {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
@@ -59,9 +62,16 @@ public class FriendsListFragment extends Fragment {
                         recyclerView.setAdapter(adapter);
                     }
                     tvFriendsCount.setText("Total Friends: " + friendsList.size());
-                });
+                    progressDialog.dismiss();
+                }).addOnFailureListener(this::errorHandler);
             }
-        });
+        }).addOnFailureListener(this::errorHandler);
+    }
+
+    private void errorHandler(Exception e) {
+        SoundManager.play("error");
+        progressDialog.dismiss();
+        Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
     }
 
     private void acceptFriendRequest(String requesterUid) {
@@ -83,6 +93,15 @@ public class FriendsListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        progressDialog = new Dialog(getContext());
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        TextView tvMessage = progressDialog.findViewById(R.id.tvMessage);
+        tvMessage.setText("Loading friends...");
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        progressDialog.show();
+
         View view = inflater.inflate(R.layout.fragment_friends_list, container, false);
         recyclerView = view.findViewById(R.id.rvFriends);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -99,6 +118,8 @@ public class FriendsListFragment extends Fragment {
             d.setCancelable(true);
             d.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             d.show();
+            d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
 
             RecyclerView rvFriendRequests = d.findViewById(R.id.rvFriendRequests);
             rvFriendRequests.setLayoutManager(new LinearLayoutManager(getContext()));

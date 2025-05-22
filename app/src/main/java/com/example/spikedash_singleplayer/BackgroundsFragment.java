@@ -1,9 +1,14 @@
 package com.example.spikedash_singleplayer;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
@@ -25,6 +30,7 @@ public class BackgroundsFragment extends Fragment {
     private RecyclerView recyclerView;
     private BackgroundAdapter adapter;
     private List<Background> backgroundList = new ArrayList<>();
+    private Dialog progressDialog;
     private Background lastSelected;
 
     private void loadBackgrounds() {
@@ -53,16 +59,30 @@ public class BackgroundsFragment extends Fragment {
                             }
                         }
                         adapter.notifyDataSetChanged();
+                        progressDialog.dismiss();
                         ((ShopActicity) requireActivity()).refreshBalance();
-                    });
-        });
+                    }).addOnFailureListener(this::errorHandler);
+        }).addOnFailureListener(this::errorHandler);
     }
-
+    private void errorHandler(Exception e) {
+        progressDialog.dismiss();
+        SoundManager.play("error");
+        Toast.makeText(getContext(), "Error loading backgrounds: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        progressDialog = new Dialog(getContext());
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        TextView tvMessage = progressDialog.findViewById(R.id.tvMessage);
+        tvMessage.setText("Loading store...");
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        progressDialog.show();
+
         View view = inflater.inflate(R.layout.fragment_backgrounds, container, false);
         recyclerView = view.findViewById(R.id.backgroundsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

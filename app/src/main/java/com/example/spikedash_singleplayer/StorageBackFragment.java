@@ -1,9 +1,14 @@
 package com.example.spikedash_singleplayer;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,28 +27,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 public class StorageBackFragment extends Fragment {
-
     private RecyclerView recyclerView;
+    private Dialog progressDialog;
     private StorageBackAdapter adapter;
     private List<StorageItem> backgroundList = new ArrayList<>();
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_storage_back, container, false);
-
-        recyclerView = view.findViewById(R.id.backgroundsRecyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-
-        adapter = new StorageBackAdapter(getContext(), backgroundList);
-        recyclerView.setAdapter(adapter);
-
-        loadOwnedBackgrounds();
-
-        return view;
-    }
 
     private void loadOwnedBackgrounds() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -76,8 +63,49 @@ public class StorageBackFragment extends Fragment {
 
                             adapter.setEquippedBackground(equippedId);
                             adapter.notifyDataSetChanged();
-                        });
-            });
-        });
+                            progressDialog.dismiss();
+
+
+                        }).addOnFailureListener(e -> {
+                            SoundManager.play("error");
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), "Failed to load backgrounds", Toast.LENGTH_SHORT).show();
+                        }).addOnFailureListener(this::errorHandler);
+            }).addOnFailureListener(this::errorHandler);
+        })
+        .addOnFailureListener(this::errorHandler);
+    }
+
+    private void errorHandler(Exception e) {
+        SoundManager.play("error");
+        progressDialog.dismiss();
+        Toast.makeText(getContext(), "Error loading backgrounds: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_storage_back, container, false);
+        progressDialog = new Dialog(getContext());
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        TextView tvMessage = progressDialog.findViewById(R.id.tvMessage);
+        tvMessage.setText("Loading storage...");
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        progressDialog.show();
+
+        recyclerView = view.findViewById(R.id.backgroundsRecyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+
+        adapter = new StorageBackAdapter(getContext(), backgroundList);
+        recyclerView.setAdapter(adapter);
+
+        loadOwnedBackgrounds();
+
+        return view;
     }
 }

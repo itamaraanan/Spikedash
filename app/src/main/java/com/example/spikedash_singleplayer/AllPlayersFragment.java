@@ -1,6 +1,9 @@
 package com.example.spikedash_singleplayer;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AllPlayersFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -29,26 +34,47 @@ public class AllPlayersFragment extends Fragment {
     private String currentUid;
     private TextView tvPlayerCount;
     private List<User> userList = new ArrayList<>();
+    private Set<String> friendUids = new HashSet<>();
+    private Dialog progressDialog;
 
     private void loadUsers() {
-        // Load users from Firebase to the fragment
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
         String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
+        userList.clear();
+        friendUids = new HashSet<>();
 
-        db.get().addOnSuccessListener(snapshot -> {
-            for (DataSnapshot userSnap : snapshot.getChildren()) {
-                User user = userSnap.getValue(User.class);
-                if (user != null && !user.getUid().equals(currentUid)) {
-                    userList.add(user);
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        usersRef.child(currentUid).child("friends").get().addOnSuccessListener(friendsSnapshot -> {
+            if (friendsSnapshot.exists()) {
+                for (DataSnapshot snap : friendsSnapshot.getChildren()) {
+                    friendUids.add(snap.getKey());
                 }
             }
-            adapter = new UsersAdapter(requireContext(), userList, selectedUser -> {
-                sendFriendRequest(selectedUser);
-            });
-            recyclerView.setAdapter(adapter);
-            tvPlayerCount.setText("Total Players: " + adapter.getItemCount());
-        });
+
+            // Only load users AFTER friendUids are ready
+            db.get().addOnSuccessListener(snapshot -> {
+                for (DataSnapshot userSnap : snapshot.getChildren()) {
+                    User user = userSnap.getValue(User.class);
+                    if (user != null &&
+                            user.getUid() != null &&
+                            !user.getUid().equals(currentUid) &&
+                            !friendUids.contains(user.getUid())) {
+                        userList.add(user);
+                    }
+                }
+
+                adapter = new UsersAdapter(requireContext(), userList, selectedUser -> {
+                    sendFriendRequest(selectedUser);
+                });
+                recyclerView.setAdapter(adapter);
+                tvPlayerCount.setText("Total Players: " + adapter.getItemCount());
+                progressDialog.dismiss();
+
+            }).addOnFailureListener(this::errorHandler);
+
+        }).addOnFailureListener(this::errorHandler);
     }
+
     private void sendFriendRequest(User targetUser) {
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
@@ -74,12 +100,28 @@ public class AllPlayersFragment extends Fragment {
                 });
     }
 
+    private void errorHandler(Exception e) {
+        SoundManager.play("error");
+        progressDialog.dismiss();
+        Toast.makeText(getContext(), "Error loading players: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+    }
 
 
 
-    @Override
+
+        @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        progressDialog = new Dialog(getContext());
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        TextView tvMessage = progressDialog.findViewById(R.id.tvMessage);
+        tvMessage.setText("Loading players...");
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        progressDialog.show();
+
         View view = inflater.inflate(R.layout.fragment_all_players, container, false);
         recyclerView = view.findViewById(R.id.rvAllPlayers);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
