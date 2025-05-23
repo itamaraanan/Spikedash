@@ -48,9 +48,9 @@ public class GlobalLeaderFragment extends Fragment {
                 }
 
                 if (!isAdded()) return; //this prevents the app to crash if the user navigated before it loaded
-                Collections.sort(userList, (a, b) -> Integer.compare(b.getGames(), a.getGames()));
+                Collections.sort(userList, (a, b) -> Integer.compare(b.getHighScore(), a.getHighScore()));
                 String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                adapter = new GlobalLeaderAdapter(requireContext(), userList, true, currentUid);
+                adapter = new GlobalLeaderAdapter(requireContext(), userList, false, currentUid);
                 recyclerView.setAdapter(adapter);
 
                 progressDialog.dismiss();

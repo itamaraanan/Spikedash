@@ -30,7 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 
-public class SingupActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     EditText etEmail, etPassword, etConfirmPassword, etUsername;
@@ -126,28 +126,16 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
         DatabaseReference usernamesRef = FirebaseDatabase.getInstance().getReference("usernames");
 
-        usernamesRef.child(username).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                if (task.getResult().exists()) {
-                    hideProgressDialog();
-                    Toast.makeText(this, "Username already taken. Try another one.", Toast.LENGTH_SHORT).show();
-                } else {
-                    mAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(this, authTask -> {
-                                if (authTask.isSuccessful()) {
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    writeNewUser(user.getUid(), username, email);
-                                } else {
-                                    hideProgressDialog();
-                                    Toast.makeText(this, "Signup failed: " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-            } else {
-                hideProgressDialog();
-                Toast.makeText(this, "Error checking username.", Toast.LENGTH_SHORT).show();
-            }
-        });
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, authTask -> {
+                        if (authTask.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            writeNewUser(user.getUid(), username, email);
+                        } else {
+                            hideProgressDialog();
+                            Toast.makeText(this, "Signup failed: " + authTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
     }
 
     private void writeNewUser(String userId, String username, String email) {
@@ -187,20 +175,20 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
                     hideProgressDialog();
 
                     if (usernameTask.isSuccessful()) {
-                        Toast.makeText(SingupActivity.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SingupActivity.this, MainActivity.class);
+                        Toast.makeText(SignupActivity.this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(SingupActivity.this, "Failed to register username.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignupActivity.this, "Failed to register username.", Toast.LENGTH_SHORT).show();
                         FirebaseUser u = mAuth.getCurrentUser();
                         if (u != null) u.delete();
                     }
                 });
             } else {
                 hideProgressDialog();
-                Toast.makeText(SingupActivity.this, "Failed to save user data.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "Failed to save user data.", Toast.LENGTH_SHORT).show();
                 FirebaseUser u = mAuth.getCurrentUser();
                 if (u != null) u.delete();
             }
@@ -250,8 +238,7 @@ public class SingupActivity extends AppCompatActivity implements View.OnClickLis
 
             createAccount(email, password, username);
         } else if (v == btnBack) {
-            Intent intent = new Intent(SingupActivity.this, MenuActivity.class);
-            startActivity(intent);
+            finish();
         } else if (v == btnShowPassword) {
             if (etPassword.getTransformationMethod() == null) {
                 etPassword.setTransformationMethod(new PasswordTransformationMethod());

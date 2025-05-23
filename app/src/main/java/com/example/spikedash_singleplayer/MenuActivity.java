@@ -31,7 +31,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (v == btnSingup) {
-            Intent intent = new Intent(MenuActivity.this, SingupActivity.class);
+            Intent intent = new Intent(MenuActivity.this, SignupActivity.class);
             startActivity(intent);
         }
     }

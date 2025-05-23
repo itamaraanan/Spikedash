@@ -56,9 +56,9 @@ public class FriendsLeaderFragment extends Fragment {
                     }
 
                     if (!isAdded()) return; //this prevents the app to crash if the user navigated before it loaded
-                    Collections.sort(friendsList, (a, b) -> Integer.compare(b.getGames(), a.getGames()));
+                    Collections.sort(friendsList, (a, b) -> Integer.compare(b.getHighScore(), a.getHighScore()));
                     String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    adapter = new FriendsLeaderAdapter(requireContext(), friendsList, true, currentUid);
+                    adapter = new FriendsLeaderAdapter(requireContext(), friendsList, false, currentUid);
                     recyclerView.setAdapter(adapter);
                     progressDialog.dismiss();
 
@@ -68,6 +68,14 @@ public class FriendsLeaderFragment extends Fragment {
                     progressDialog.dismiss();
                 });
 
+            }
+            //if the user dosent have any friends
+        else {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "No friends found", Toast.LENGTH_SHORT).show();
+                adapter = new FriendsLeaderAdapter(requireContext(), friendsList, false, currentUid);
+                recyclerView.setAdapter(adapter);
+                progressDialog.dismiss();
             }
         }).addOnFailureListener(e -> {
             SoundManager.play("error");

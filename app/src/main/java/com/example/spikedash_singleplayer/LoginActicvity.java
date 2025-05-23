@@ -101,7 +101,7 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
             login(etEmail.getText().toString(), etPassword.getText().toString(), progressDialog);
         }
         if(v == btnGoToSignUp){
-            Intent intent = new Intent(LoginActicvity.this, SingupActivity.class);
+            Intent intent = new Intent(LoginActicvity.this, SignupActivity.class);
             startActivity(intent);
         }
         if(v == btnBack){

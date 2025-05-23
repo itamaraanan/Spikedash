@@ -65,6 +65,13 @@ public class FriendsListFragment extends Fragment {
                     progressDialog.dismiss();
                 }).addOnFailureListener(this::errorHandler);
             }
+            // If no friends found
+            else {
+                progressDialog.dismiss();
+                tvFriendsCount.setText("Total Friends: 0");
+                recyclerView.setAdapter(null);
+                Toast.makeText(getContext(), "No friends found", Toast.LENGTH_SHORT).show();
+            }
         }).addOnFailureListener(this::errorHandler);
     }
 

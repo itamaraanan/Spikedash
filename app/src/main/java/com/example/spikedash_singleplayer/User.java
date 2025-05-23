@@ -80,54 +80,14 @@ public class User implements Parcelable {
         this.base64Image = base64Image;
     }
 
-    public void add(int amount) {
-        this.balance += amount;
-    }
-
-    public int getBalance() {
-        return this.balance;
-    }
-    public int getWins() {
-        return wins;
-    }
 
     public String getUid() {
         return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getGames() {
-        return games;
-    }
-
-    public void addGame() {
-        games++;
-    }
-
-    public int getHighScore() {
-        return highScore;
-    }
-
-    public void setHighScore(int highScore) {
-        this.highScore = highScore;
-    }
 }

@@ -63,6 +63,7 @@ public class StorageSkinFragment extends Fragment {
 
                             adapter.setEquippedSkin(equippedId);
                             adapter.notifyDataSetChanged();
+                            progressDialog.dismiss();
                         }).addOnFailureListener(this::errorHandler);
             }).addOnFailureListener(this::errorHandler);
         }).addOnFailureListener(this::errorHandler);

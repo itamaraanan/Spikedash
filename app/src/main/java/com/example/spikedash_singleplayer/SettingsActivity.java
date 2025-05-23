@@ -48,13 +48,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         bgmSeekBar = findViewById(R.id.seekbar_bgm);
         vibrationSwitch = findViewById(R.id.switch_vibrartion);
         btnHowToPlay = findViewById(R.id.btnHowToPlay);
-        btnPrivacySettings = findViewById(R.id.btnCredits);
         btnLogout = findViewById(R.id.btnLogout);
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
 
         btnBack.setOnClickListener(this);
         btnHowToPlay.setOnClickListener(this);
-        btnPrivacySettings.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
         btnDeleteAccount.setOnClickListener(this);
 
@@ -123,7 +121,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         SoundManager.play("click");
 
         if (v == btnBack) {
-            startActivity(new Intent(this, MainActivity.class));
+            Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+            startActivity(intent);
             finish();
         } else if (v == btnLogout) {
             FirebaseAuth.getInstance().signOut();
@@ -150,16 +149,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                     "3. Collect candies to increase your score.\n\n" +
                                     "4. Pause the game anytime using the pause button.\n\n" +
                                     "5. Have fun and aim for a high score!"
-                    )
-                    .setPositiveButton("OK", null)
-                    .show();
-        } else if (v == btnPrivacySettings) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Privacy Settings")
-                    .setMessage(
-                            "1. Your data is stored securely and is not shared with third parties.\n\n" +
-                                    "2. You can delete your account anytime from the settings.\n\n" +
-                                    "3. You can change your password and profile settings however you want."
                     )
                     .setPositiveButton("OK", null)
                     .show();

@@ -161,8 +161,7 @@ WheelItem gift6 = new WheelItem(ResourcesCompat.getColor(getResources(), R.color
         }
         else if (v == btnReturnMenu){
             SoundManager.play("click");
-            Intent intent = new Intent(GiftActivity.this, MainActivity.class);
-            startActivity(intent);
+            finish();
         }
     }
 }
