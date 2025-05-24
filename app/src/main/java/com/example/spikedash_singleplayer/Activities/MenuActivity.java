@@ -1,12 +1,13 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
+
+import com.example.spikedash_singleplayer.R;
 
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
 

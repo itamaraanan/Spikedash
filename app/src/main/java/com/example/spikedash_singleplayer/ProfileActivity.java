@@ -1,14 +1,11 @@
 package com.example.spikedash_singleplayer;
 
-import static android.opengl.ETC1.decodeImage;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,20 +19,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.spikedash_singleplayer.Activities.ForgotActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -73,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         etUsername = findViewById(R.id.editUsername);
         etUsername.setText(user.getUsername());
         tvEmail = findViewById(R.id.tvEmail);
-        tvEmail.setText(user.email);
+        tvEmail.setText(user.getEmail());
         btnConfirm = findViewById(R.id.btnConfirmChanges);
         btnConfirm.setOnClickListener(this);
         btnChangePassword = findViewById(R.id.btnChangePassword);
@@ -199,7 +189,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 return;
             }
 
-            if (!newUsername.equals(user.username)) {
+            if (!newUsername.equals(user.getUsername())) {
                 hasUsernameChange = true;
             }
             if ((base64Pic == null && user.getBase64Image() != null) ||
@@ -249,7 +239,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         if (task.isSuccessful()) {
                             // Update the user object with new values
                             if (hasUsernameChange) {
-                                user.username = newUsername;
+                                user.getUsername().equals(newUsername);
                             }
                             if (hasImageChange) {
                                 user.setBase64Image(base64Pic);

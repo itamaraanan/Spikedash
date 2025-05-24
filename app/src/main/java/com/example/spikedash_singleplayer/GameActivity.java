@@ -395,7 +395,6 @@ public class GameActivity extends AppCompatActivity {
                 userRef.child("highScore").setValue(user.getHighScore());
             }
 
-
             userRef.child("games").setValue(user.getGames());
             tvGames.setText("GAMES PLAYED: " + String.valueOf(user.getGames()));
             tvHighScore.setText("HIGHSCORE: "+ String.valueOf(user.getHighScore()));

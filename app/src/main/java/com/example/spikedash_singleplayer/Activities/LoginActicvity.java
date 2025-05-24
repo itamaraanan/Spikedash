@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.spikedash_singleplayer.MainActivity;
+import com.example.spikedash_singleplayer.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -26,8 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActicvity extends AppCompatActivity implements View.OnClickListener {
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
     EditText etEmail, etPassword;
     LinearLayout btnLogin;
     TextView btnGoToSignUp, btnForgotPassword;
@@ -62,21 +64,19 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        // Dismiss the progress dialog
                         if (progressDialog != null && progressDialog.isShowing()) {
                             progressDialog.dismiss();
                         }
 
                         if (task.isSuccessful()) {
+                            // Sign in success
                             Toast.makeText(LoginActicvity.this, "Login succeeded.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActicvity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
-                            String errorMessage = "Login failed";
-                            if (task.getException() != null) {
-                                errorMessage += ": " + task.getException().getMessage();
-                            }
-                            Toast.makeText(LoginActicvity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActicvity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -85,10 +85,12 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if(v == btnLogin){
+            // Check if the email and password fields are empty
             if (etEmail.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+            // loading progress dialog
             Dialog progressDialog = new Dialog(this);
             progressDialog.setContentView(R.layout.progress_dialog);
             progressDialog.setCancelable(false);
@@ -113,6 +115,7 @@ public class LoginActicvity extends AppCompatActivity implements View.OnClickLis
             startActivity(intent);
         }
         if(v == btnShowPassword){
+            // Toggle password visibility
             if (etPassword.getTransformationMethod() == null) {
                 etPassword.setTransformationMethod(new PasswordTransformationMethod());
                 btnShowPassword.setImageResource(R.drawable.ic_closed_eye_24);

@@ -30,16 +30,16 @@
             android:name=".LeaderboardActivity"
             android:exported="false" />
         <activity
-            android:name=".ForgotActivity"
+            android:name=".Activities.ForgotActivity"
             android:exported="false" />
         <activity
             android:name=".Entitys.ForgotPassword"
             android:exported="false" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".Activities.SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActicvity"
+            android:name=".Activities.LoginActicvity"
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"
@@ -67,7 +67,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".MenuActivity"
+            android:name=".Activities.MenuActivity"
             android:exported="true">
             .
             <intent-filter>
