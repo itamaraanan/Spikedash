@@ -17,8 +17,10 @@ public class VibrationManager {
     }
 
     public static void vibrate(Context context, int durationMs) {
+        // Check if vibration is enabled before proceeding
         if (!isEnabled) return;
 
+        // call the vibrate method with the specified duration
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
             vibrator.vibrate(durationMs);
@@ -26,9 +28,11 @@ public class VibrationManager {
     }
 
     public static void syncWithFirebase() {
+        // Get the current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
+        // Get the user's vibration setting from Firebase
         FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(user.getUid())
@@ -37,6 +41,7 @@ public class VibrationManager {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     if (snapshot.exists()) {
+                        // Update the local vibration setting based on Firebase value
                         boolean value = snapshot.getValue(Boolean.class);
                         setEnabled(value);
                     }

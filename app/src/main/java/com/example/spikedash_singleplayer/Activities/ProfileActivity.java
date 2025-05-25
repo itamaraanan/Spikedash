@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -23,7 +23,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.spikedash_singleplayer.Activities.ForgotActivity;
+import com.example.spikedash_singleplayer.ImageUtils;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.User;
+import com.example.spikedash_singleplayer.VibrationManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -53,8 +57,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         btnBack.setOnClickListener(this);
         btnEditPicture = findViewById(R.id.btnEditPicture);
         btnEditPicture.setOnClickListener(this);
-        hasUsernameChange = true;
-        hasImageChange = true;
+        hasUsernameChange = false;
+        hasImageChange = false;
         user = getIntent().getParcelableExtra("user");
         imProfilePicture = findViewById(R.id.profilePicture);
         base64Pic = user.getBase64Image();
@@ -93,15 +97,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
     private void  initializeCameraAndGallery() {
+        // Initialize the camera and gallery launchers
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                 Bitmap bitmap = null;
                 Intent intent = result.getData();
-
+                // Check if the image is in the extras
                 if (intent.getExtras() != null) {
                     bitmap = (Bitmap) intent.getExtras().get("data");
                 }
-
+                // If not, try to get it from the URI
                 if (bitmap == null && intent.getData() != null) {
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), intent.getData());
@@ -109,11 +114,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         e.printStackTrace();
                     }
                 }
-
+                // If we have a bitmap, convert it to base64 and set it to the ImageView
                 if (bitmap != null) {
                     base64Pic = ImageUtils.encodeImage(bitmap);
                     Log.d("img base64", "Image encoded successfully");
-
+                    // Show preview
                     imProfilePicture.setImageBitmap(bitmap);
                 }
             }
@@ -121,10 +126,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                // Get the URI of the selected image
                 Uri imageUri = result.getData().getData(); // get Uri
 
                 if (imageUri != null) {
                     try {
+                        // Convert URI to Bitmap
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
 
                         // Convert to base64
@@ -147,11 +154,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         SoundManager.play("click");
 
         if(v == btnBack) {
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-            startActivity(intent);
+            finish();
         }
 
         if (v == btnEditPicture) {
+            // Show dialog to choose between camera and gallery
             d = new Dialog(this);
             d.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             d.setContentView(R.layout.image_dialog);
@@ -159,52 +166,51 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             LinearLayout btnCamera = d.findViewById(R.id.btnCamera);
             ImageButton btnClose = d.findViewById(R.id.btnClose);
 
+            // Set click listeners for the buttons
             btnCamera.setOnClickListener(view -> {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 cameraLauncher.launch(cameraIntent);
                 d.dismiss();
             });
-
+            // Open gallery to select an image
             btnGallery.setOnClickListener(view -> {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 galleryLauncher.launch(galleryIntent);
                 d.dismiss();
             });
-
+            // Close button to dismiss the dialog
             btnClose.setOnClickListener(view -> d.dismiss());
 
             d.show();
         }
         if (v == btnChangePassword) {
+            // Open ForgotActivity to change password
             Intent intent = new Intent(ProfileActivity.this, ForgotActivity.class);
             startActivity(intent);
         }
         if (v == btnConfirm) {
-
+            //trigger profile update
             String newUsername = etUsername.getText().toString().trim();
 
-
+            // Check if the username is empty
             if (newUsername.isEmpty()) {
+                SoundManager.play("error");
                 Toast.makeText(ProfileActivity.this, "Username cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!newUsername.equals(user.getUsername())) {
-                hasUsernameChange = true;
-            }
-            if ((base64Pic == null && user.getBase64Image() != null) ||
-                    (base64Pic != null && !base64Pic.equals(user.getBase64Image()))) {
-                hasImageChange = true;
-            } else {
-                hasImageChange = false;
-            }
+            // Check if the username is the same as the current one
+            hasUsernameChange = !newUsername.equals(user.getUsername());
+            // Check if the image has changed
+            hasImageChange = base64Pic != null && !base64Pic.equals(user.getBase64Image());
 
-
+            // If no changes were made, show a message and return
             if (!hasUsernameChange && !hasImageChange) {
                 Toast.makeText(ProfileActivity.this, "No changes made", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // Show a progress dialog while saving changes
             Dialog progressDialog = new Dialog(this);
             progressDialog.setContentView(R.layout.progress_dialog);
             progressDialog.setCancelable(false);
@@ -239,7 +245,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         if (task.isSuccessful()) {
                             // Update the user object with new values
                             if (hasUsernameChange) {
-                                user.getUsername().equals(newUsername);
+                                user.setUsername(newUsername);
                             }
                             if (hasImageChange) {
                                 user.setBase64Image(base64Pic);
@@ -247,9 +253,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                             Toast.makeText(ProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
                             SoundManager.play("win");
-                            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                            intent.putExtra("user", user);
-                            startActivity(intent);
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("user", user);
+                            setResult(RESULT_OK, resultIntent);
                             finish();
                         } else {
                             SoundManager.play("error");

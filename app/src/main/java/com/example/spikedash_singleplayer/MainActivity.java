@@ -14,6 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.spikedash_singleplayer.Activities.GiftActivity;
+import com.example.spikedash_singleplayer.Activities.ProfileActivity;
+import com.example.spikedash_singleplayer.Activities.SettingsActivity;
+import com.example.spikedash_singleplayer.Activities.StatsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView backgroundImage, birdImage;
     private String uid;
     private ActivityResultLauncher<Intent> gameLauncher;
-
     private boolean isAccountFound = false;
 
     @Override
@@ -54,7 +57,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnInventory = findViewById(R.id.btnInventory);
         backgroundImage = findViewById(R.id.backgroundImage);
         birdImage = findViewById(R.id.birdImage);
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            uid = firebaseUser.getUid();
+        } else {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         SettingsManager.applySavedBgmVolume(this, uid);
         SoundManager.init(this);
         MusicManager.start(this, R.raw.bgm_music);
@@ -75,16 +85,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                    }
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {}
                 }
         );
 
 
+
         currentUser();
-        loadBackground();
-        loadSkin();
+        loadImage("equippedBackground", "backgrounds", backgroundImage, "BackgroundDebug");
+        loadImage("equippedSkin", "skins", birdImage, "SkinDebug");
+
     }
     @Override
     public void onBackPressed() {
@@ -93,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMessage("Are you sure you want to exit?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     finishAffinity();
-                    System.exit(0);
                 })
                 .setNegativeButton("No", null)
                 .show();
@@ -101,159 +110,84 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    @Override
     public void onClick(View v) {
         VibrationManager.vibrate(this, 25);
-        if(v == btnStart) {
-            if (currentUser != null) {
-                MusicManager.stop();
-                MusicManager.release();
-                MusicManager.start(this, R.raw.game_music);
-                Intent intent = new Intent(MainActivity.this, GameActivity.class);
-                intent.putExtra("user", currentUser);
-                SoundManager.play("start");
-                gameLauncher.launch(intent);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else{
-            SoundManager.play("click");
-            if(v == btnDifficulty){
-                if (currentUser != null) {
-                    Intent intent = new Intent(MainActivity.this, DifficultyActivity.class);
-                    intent.putExtra("user", currentUser);
-                    gameLauncher.launch(intent);
-                } else {
-                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if(v == btnGift){
-                if (currentUser != null) {
-                    Intent intent = new Intent(MainActivity.this, GiftActivity.class);
-                    intent.putExtra("user", currentUser);
-                    gameLauncher.launch(intent);
-                } else {
-                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if(v == btnSettings){
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                gameLauncher.launch(intent);
-            }
-            if(v == btnStats){
-                 if (currentUser != null) {
-                    Intent intent = new Intent(MainActivity.this, StatsActivity.class);
-                    intent.putExtra("user", currentUser);
-                    gameLauncher.launch(intent);
-                } else {
-                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if(v == btnShop){
-                if (currentUser != null) {
-                    Intent intent = new Intent(MainActivity.this, ShopActicity.class);
-                    intent.putExtra("user", currentUser);
-                    gameLauncher.launch(intent);
-                } else {
-                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if(v == btnProfile){
-                if (currentUser != null) {
-                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                    intent.putExtra("user", currentUser);
-                    gameLauncher.launch(intent);
-                } else {
-                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-                }
 
-            }
-            if (v == btnLeaderBoard){
-                if (currentUser != null) {
-                    Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
-                    intent.putExtra("user", currentUser);
-                    gameLauncher.launch(intent);
-                } else {
-                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if (v == btnInventory){
-                if (currentUser != null) {
-                    Intent intent = new Intent(MainActivity.this, StorageActivity.class);
-                    intent.putExtra("user", currentUser);
-                    gameLauncher.launch(intent);
-                } else {
-                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if (v == btnFriends){
-                if (currentUser != null) {
-                    Intent intent = new Intent(MainActivity.this, FriendsActivity.class);
-                    intent.putExtra("user", currentUser);
-                    gameLauncher.launch(intent);
-                } else {
-                    Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
+        if (v == btnStart) {
+            handleClick(GameActivity.class, true, R.raw.game_music, true);
+            return;
         }
 
+        SoundManager.play("click");
+
+        if (v == btnDifficulty) {
+            handleClick(DifficultyActivity.class, true);
+        } else if (v == btnGift) {
+            handleClick(GiftActivity.class, true);
+        } else if (v == btnSettings) {
+            handleClick(SettingsActivity.class, false);
+        } else if (v == btnStats) {
+            handleClick(StatsActivity.class, true);
+        } else if (v == btnShop) {
+            handleClick(ShopActicity.class, true);
+        } else if (v == btnProfile) {
+            handleClick(ProfileActivity.class, true);
+        } else if (v == btnLeaderBoard) {
+            handleClick(LeaderboardActivity.class, true);
+        } else if (v == btnInventory) {
+            handleClick(StorageActivity.class, true);
+        } else if (v == btnFriends) {
+            handleClick(FriendsActivity.class, true);
+        }
     }
-    public void loadBackground() {
+
+    private void handleClick(Class<?> activityClass, boolean needsUser) {
+        handleClick(activityClass, needsUser, -1, false);
+    }
+
+    private void handleClick(Class<?> activityClass, boolean needsUser, int bgmResId, boolean stopAndStartMusic) {
+        if (needsUser && currentUser == null) {
+            Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (stopAndStartMusic) {
+            MusicManager.stop();
+            MusicManager.release();
+            MusicManager.start(this, bgmResId);
+        }
+
+        Intent intent = new Intent(MainActivity.this, activityClass);
+        if (needsUser) {
+            intent.putExtra("user", currentUser);
+        }
+        gameLauncher.launch(intent);
+    }
+
+    private void loadImage(String userField, String firestoreCollection, ImageView targetView, String logTag) {
         FirebaseDatabase.getInstance().getReference("users")
                 .child(uid)
-                .child("equippedBackground")
+                .child(userField)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     String equippedId = snapshot.getValue(String.class);
-                    Log.d("BackgroundDebug", "Equipped ID: " + equippedId);
-
+                    Log.d(logTag, "Equipped ID: " + equippedId);
                     if (equippedId == null) return;
 
-                    FirebaseFirestore.getInstance().collection("backgrounds")
+                    FirebaseFirestore.getInstance().collection(firestoreCollection)
                             .document(equippedId)
                             .get()
                             .addOnSuccessListener(doc -> {
                                 String imageUrl = doc.getString("imageUrl");
-                                Log.d("BackgroundDebug", "Image URL: " + imageUrl);
-
+                                Log.d(logTag, "Image URL: " + imageUrl);
                                 if (imageUrl != null) {
-                                    Glide.with(this)
-                                            .load(imageUrl)
-                                            .into(backgroundImage);
+                                    Glide.with(this).load(imageUrl).into(targetView);
                                 }
                             });
                 });
     }
 
 
-    public void loadSkin() {
-        FirebaseDatabase.getInstance().getReference("users")
-                .child(uid)
-                .child("equippedSkin")
-                .get()
-                .addOnSuccessListener(snapshot -> {
-                    String equippedId = snapshot.getValue(String.class);
-                    Log.d("SkinDebug", "Equipped ID: " + equippedId);
-
-                    if (equippedId == null) return;
-
-                    FirebaseFirestore.getInstance().collection("skins")
-                            .document(equippedId)
-                            .get()
-                            .addOnSuccessListener(doc -> {
-                                String imageUrl = doc.getString("imageUrl");
-                                Log.d("SkinDebug", "Image URL: " + imageUrl);
-
-                                if (imageUrl != null) {
-                                    Glide.with(this)
-                                            .load(imageUrl)
-                                            .into(birdImage);
-                                }
-                            });
-                });
-    }
 
     public void currentUser() {
         FirebaseUser firebaseUser = auth.getCurrentUser();

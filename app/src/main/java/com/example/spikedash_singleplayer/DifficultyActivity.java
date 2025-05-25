@@ -13,8 +13,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class DifficultyActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button easyButton, mediumButton, hardButton, insaneButton, returnButton;
-
-    Intent intent;
     User user;
     String uid;
 
@@ -43,35 +41,32 @@ public class DifficultyActivity extends AppCompatActivity implements View.OnClic
 
 
     }
+    private void setDifficulty(float multiplier) {
+        // Update the user's difficulty multiplier in the database
+        FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(uid)
+                .child("difficultyMultiplier")
+                .setValue(multiplier);
+
+        SoundManager.play("win");
+        Toast.makeText(this, "Difficulty set successfully!", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
 
     @Override
     public void onClick(View v) {
         VibrationManager.vibrate(this, 25);
         SoundManager.play("click");
         if (v == easyButton) {
-            FirebaseDatabase.getInstance()
-                    .getReference("users")
-                    .child(uid)
-                    .child("difficultyMultiplier")
-                    .setValue(0.75f);
+            setDifficulty(0.75f);
         } else if (v == mediumButton) {
-            FirebaseDatabase.getInstance()
-                    .getReference("users")
-                    .child(uid)
-                    .child("difficultyMultiplier")
-                    .setValue(1.0f);
+            setDifficulty(1.0f);
         } else if (v == hardButton) {
-            FirebaseDatabase.getInstance()
-                    .getReference("users")
-                    .child(uid)
-                    .child("difficultyMultiplier")
-                    .setValue(1.25f);
+            setDifficulty(1.25f);
         } else if (v == insaneButton) {
-            FirebaseDatabase.getInstance()
-                    .getReference("users")
-                    .child(uid)
-                    .child("difficultyMultiplier")
-                    .setValue(1.75f);
+            setDifficulty(1.75f);
         }
         SoundManager.play("win");
         Toast.makeText(this, "Difficulty set successfully!", Toast.LENGTH_SHORT).show();

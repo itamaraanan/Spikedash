@@ -1,16 +1,17 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.example.spikedash_singleplayer.MainActivity;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.User;
+import com.example.spikedash_singleplayer.VibrationManager;
 
 public class StatsActivity extends AppCompatActivity {
 
@@ -30,7 +31,7 @@ public class StatsActivity extends AppCompatActivity {
         btnReturn.setOnClickListener(v -> {
             VibrationManager.vibrate(this, 25);
             SoundManager.play("click");
-
+            // Return to MainActivity
             Intent intent = new Intent(StatsActivity.this, MainActivity.class);
             startActivity(intent);
         });
@@ -39,6 +40,7 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private void init(){
+        // Set the values in the TextViews with user data
         balanceValue.setText(String.valueOf(user.getBalance()));
         gamesValue.setText(String.valueOf(user.getGames()));
         highScoreValue.setText(String.valueOf(user.getHighScore()));

@@ -7,21 +7,27 @@ import java.util.HashMap;
 
 public class SoundManager {
     private static SoundPool soundPool;
-    private static float globalVolume = 1.0f;
-
+    private static float globalVolume;
     private static HashMap<String, Integer> soundMap;
 
     public static void init(Context context) {
+        // Initialize the SoundPool and load sounds
+
+         globalVolume = 1.0f;
+
+        // Set up AudioAttributes for the SoundPool
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
 
+        // Create the SoundPool instance with the specified attributes
         soundPool = new SoundPool.Builder()
                 .setMaxStreams(5)
                 .setAudioAttributes(audioAttributes)
                 .build();
 
+        // Load sounds into the soundMap
         soundMap = new HashMap<>();
         soundMap.put("jump", soundPool.load(context, R.raw.jump_sound, 1));
         soundMap.put("hit", soundPool.load(context, R.raw.hit_sound, 1));
@@ -35,12 +41,14 @@ public class SoundManager {
     }
 
     public static void play(String sound) {
+        // Play the sound if it exists in the soundMap
         if (soundMap.containsKey(sound)) {
             soundPool.play(soundMap.get(sound), globalVolume, globalVolume, 1, 0, 1f);
         }
     }
 
     public static void setVolume(float volume) {
+    // Set the global volume for all sounds
         globalVolume = Math.max(0f, Math.min(volume, 1f));
     }
 }

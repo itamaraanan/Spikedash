@@ -33,28 +33,25 @@
             android:name=".Activities.ForgotActivity"
             android:exported="false" />
         <activity
-            android:name=".Entitys.ForgotPassword"
-            android:exported="false" />
-        <activity
             android:name=".Activities.SignupActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.LoginActicvity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".Activities.ProfileActivity"
             android:exported="false" />
         <activity
             android:name=".ShopActicity"
             android:exported="false" />
         <activity
-            android:name=".StatsActivity"
+            android:name=".Activities.StatsActivity"
             android:exported="false" />
         <activity
-            android:name=".GiftActivity"
+            android:name=".Activities.GiftActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".Activities.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity

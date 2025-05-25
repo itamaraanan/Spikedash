@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spikedash_singleplayer.Activities.MenuActivity;
+import com.example.spikedash_singleplayer.MusicManager;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.VibrationManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,13 +25,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ImageButton btnBack;
-    private SeekBar soundSeekBar, bgmSeekBar;
-    private Switch vibrationSwitch;
-    private LinearLayout btnHowToPlay, btnPrivacySettings, btnLogout, btnDeleteAccount;
-    private FirebaseUser user;
-    private DatabaseReference settingsRef;
-    private String uid;
+    ImageButton btnBack;
+    SeekBar soundSeekBar, bgmSeekBar;
+    Switch vibrationSwitch;
+    LinearLayout btnHowToPlay, btnLogout, btnDeleteAccount;
+    FirebaseUser user;
+    DatabaseReference settingsRef;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+            SoundManager.play("error");
             finish();
             return;
         }
@@ -59,8 +64,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         soundSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) settingsRef.child("sound").setValue(progress / 100.0);
-                SoundManager.setVolume(progress / 100.0f);
+                // Update sound setting in Firebase
+                if (fromUser) {
+                    settingsRef.child("sound").setValue(progress / 100.0);
+                    SoundManager.setVolume(progress / 100.0f);
+                }
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -69,6 +77,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         bgmSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
+                    // Update BGM setting in Firebase
                     float volume = progress / 100.0f;
                     settingsRef.child("bgm").setValue(volume);
                     MusicManager.setVolume(volume);
@@ -79,6 +88,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         });
 
         vibrationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Update vibration setting in Firebase
+            VibrationManager.setEnabled(isChecked);
             VibrationManager.vibrate(this, 25);
             SoundManager.play("click");
             settingsRef.child("vibration").setValue(isChecked);
@@ -88,9 +99,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadSettings() {
+        // Load settings from Firebase
         settingsRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
                 DataSnapshot snapshot = task.getResult();
+
+                // Set the SeekBar and Switch values based on Firebase data
                 double sound = snapshot.child("sound").getValue(Double.class) != null ? snapshot.child("sound").getValue(Double.class) : 1.0;
                 double bgm = snapshot.child("bgm").getValue(Double.class) != null ? snapshot.child("bgm").getValue(Double.class) : 1.0;
                 boolean vibration = snapshot.child("vibration").getValue(Boolean.class) != null && snapshot.child("vibration").getValue(Boolean.class);
@@ -98,18 +112,25 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 soundSeekBar.setProgress((int) (sound * 100));
                 bgmSeekBar.setProgress((int) (bgm * 100));
                 vibrationSwitch.setChecked(vibration);
+
+                SoundManager.setVolume((float) sound);
+                MusicManager.setVolume((float) bgm);
+                VibrationManager.setEnabled(vibration);
+
             }
         });
     }
 
     private void deleteAccount() {
         if (user != null) {
+            // Delete user from Firebase Authentication
             user.delete().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(this, "Account deleted", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, MenuActivity.class));
                     finish();
                 } else {
+                    SoundManager.play("error");
                     Toast.makeText(this, "Error deleting account", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -122,10 +143,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         SoundManager.play("click");
 
         if (v == btnBack) {
-            Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-            startActivity(intent);
+            setResult(RESULT_OK);
             finish();
         } else if (v == btnLogout) {
+            // Log out the user
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, MenuActivity.class));
             Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
@@ -133,15 +154,19 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             MusicManager.stop();
             MusicManager.release();
         } else if (v == btnDeleteAccount) {
+            // Show confirmation dialog for account deletion
             new AlertDialog.Builder(this)
                     .setTitle("Delete Account")
                     .setMessage("Are you sure you want to delete your account? This action cannot be undone.")
-                    .setPositiveButton("Delete", (dialog, which) -> deleteAccount())
+                    .setPositiveButton("Delete", (dialog, which) -> {
+                        MusicManager.stop();
+                        MusicManager.release();
+                        deleteAccount();
+                    })
                     .setNegativeButton("Cancel", null)
                     .show();
-            MusicManager.stop();
-            MusicManager.release();
         } else if (v == btnHowToPlay) {
+            // Show how to play dialog
             new AlertDialog.Builder(this)
                     .setTitle("How to Play")
                     .setMessage(
