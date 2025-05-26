@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,36 +9,40 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spikedash_singleplayer.PlayerStats;
+import com.example.spikedash_singleplayer.R;
+
 import java.util.List;
 public class FriendsLeaderAdapter extends RecyclerView.Adapter<FriendsLeaderAdapter.ViewHolder> {
 
     private Context context;
     private List<PlayerStats> statsList;
-    private boolean showGames;
     private String loggedInUid;
 
-    public FriendsLeaderAdapter(Context context, List<PlayerStats> statsList, boolean showGames, String loggedInUid) {
+    public FriendsLeaderAdapter(Context context, List<PlayerStats> statsList, String loggedInUid) {
+        //constructor
         this.context = context;
         this.statsList = statsList;
-        this.showGames = showGames;
         this.loggedInUid = loggedInUid;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate the layout for each item in the RecyclerView
         View v = LayoutInflater.from(context).inflate(R.layout.stats_layout, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // Bind the data to the ViewHolder
         PlayerStats temp = statsList.get(position);
-
+        // Set the username, rank, and high score
         holder.tvName.setText(temp.getUsername());
         holder.tvRank.setText((position + 1) + ".");
-        holder.tvValue.setText(showGames ? String.valueOf(temp.getGames()) : String.valueOf(temp.getHighScore()));
-
+        holder.tvValue.setText(String.valueOf(temp.getHighScore()));
+        // Highlight the item if it belongs to the logged-in user
         if (temp.getUid() != null && temp.getUid().equals(loggedInUid)) {
             holder.root.setBackgroundColor(context.getResources().getColor(R.color.highlight_yellow));
         } else {

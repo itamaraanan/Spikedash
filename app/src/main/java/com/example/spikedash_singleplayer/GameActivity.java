@@ -25,6 +25,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.spikedash_singleplayer.Activities.LeaderboardActivity;
 import com.example.spikedash_singleplayer.Activities.StatsActivity;
 import com.example.spikedash_singleplayer.Entitys.Bird;
 import com.example.spikedash_singleplayer.Entitys.Candy;
@@ -109,7 +110,6 @@ public class GameActivity extends AppCompatActivity {
         private int currentCount;
         private User user;
         private boolean tookCandy;
-        private float difficultyMultiplier;
         Dialog d;
 
         public GameView(Context context, int screenWidth, int screenHeight, TextView tvScore, TextView tvCandies, ImageButton btnPause,User user) {
@@ -564,7 +564,6 @@ public class GameActivity extends AppCompatActivity {
 
 
         }
-
 
         private void resumeGame() {
             isCountingDown = true;

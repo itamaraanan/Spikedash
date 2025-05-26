@@ -1,9 +1,7 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Adapters;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.spikedash_singleplayer.ImageUtils;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.User;
 
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
+        // Bind data to the view holder
         User user = users.get(position);
         holder.tvName.setText(user.getUsername());
         uploadImage(user, holder.ivProfilePicture);
@@ -50,6 +53,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         });
     }
     private void uploadImage(User user, ImageView imProfilePicture) {
+        // Check if the user has a valid base64 image
         if (user != null && user.getBase64Image() != null && !user.getBase64Image().isEmpty()) {
             try {
                 Bitmap profileBitmap = ImageUtils.decodeImage(user.getBase64Image());
@@ -75,6 +79,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         return users.size();
     }
     public static class UserViewHolder extends RecyclerView.ViewHolder {
+        // ViewHolder for users
         TextView tvName;
         ImageView ivProfilePicture;
         ImageButton btnAddFriend;

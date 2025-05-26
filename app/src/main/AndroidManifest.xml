@@ -15,19 +15,16 @@
         android:theme="@style/Theme.Spikedash_singleplayer"
         tools:targetApi="31">
         <activity
-            android:name=".TradeActivity"
+            android:name=".Activities.FriendsActivity"
             android:exported="false" />
         <activity
-            android:name=".FriendsActivity"
+            android:name=".Activities.StorageActivity"
             android:exported="false" />
         <activity
-            android:name=".StorageActivity"
+            android:name=".Fragments.SkinsFragment"
             android:exported="false" />
         <activity
-            android:name=".SkinsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".LeaderboardActivity"
+            android:name=".Activities.LeaderboardActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.ForgotActivity"
@@ -42,7 +39,7 @@
             android:name=".Activities.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".ShopActicity"
+            android:name=".Activities.ShopActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.StatsActivity"
@@ -55,7 +52,7 @@
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".DifficultyActivity"
+            android:name=".Activities.DifficultyActivity"
             android:exported="false" />
         <activity
             android:name=".GameActivity"

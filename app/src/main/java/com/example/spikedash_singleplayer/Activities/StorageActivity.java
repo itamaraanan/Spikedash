@@ -1,13 +1,19 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.example.spikedash_singleplayer.Fragments.StorageBackFragment;
+import com.example.spikedash_singleplayer.Fragments.StorageSkinFragment;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.User;
+import com.example.spikedash_singleplayer.VibrationManager;
 
 public class StorageActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,6 +44,7 @@ public class StorageActivity extends AppCompatActivity implements View.OnClickLi
 
     }
     private void loadFragment(Fragment fragment) {
+        // Load the specified fragment into the container
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.storageContentContainer, fragment)
@@ -50,6 +57,7 @@ public class StorageActivity extends AppCompatActivity implements View.OnClickLi
         SoundManager.play("click");
 
         if (v == skinsTab) {
+            // Switch to skins tab
             skinsTab.setAlpha(1f);
             backgroundsTab.setAlpha(0.5f);
             skinsIndicator.setVisibility(View.VISIBLE);
@@ -58,6 +66,7 @@ public class StorageActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         if (v == backgroundsTab) {
+            // Switch to backgrounds tab
             backgroundsTab.setAlpha(1f);
             skinsTab.setAlpha(0.5f);
             backgroundsIndicator.setVisibility(View.VISIBLE);
@@ -66,8 +75,8 @@ public class StorageActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         if (v == btnBack) {
-            Intent intent = new Intent(StorageActivity.this, MainActivity.class);
-            startActivity(intent);
+            setResult(RESULT_OK);
+            finish();
         }
     }
 }

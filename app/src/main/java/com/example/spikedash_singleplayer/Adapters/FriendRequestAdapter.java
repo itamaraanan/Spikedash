@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spikedash_singleplayer.ImageUtils;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.User;
+
 import java.util.List;
 
 public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdapter.RequestViewHolder> {
@@ -26,6 +30,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
     private OnRequestActionListener listener;
 
     public FriendRequestAdapter(List<User> requestList, Context context, OnRequestActionListener listener) {
+        //
         this.requestList = requestList;
         this.context = context;
         this.listener = listener;
@@ -40,6 +45,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
 
     @Override
     public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
+        // Bind data to the view holder
         User user = requestList.get(position);
         holder.tvName.setText(user.getUsername());
         uploadImage(user, holder.ivProfilePicture);
@@ -49,8 +55,9 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
     }
 
     private void uploadImage(User user, ImageView imProfilePicture) {
+        // Check if the user has a valid base64 image
         if (user != null && user.getBase64Image() != null && !user.getBase64Image().isEmpty()) {
-            try {
+            try {// Decode the base64 image and set it to the ImageView
                 Bitmap profileBitmap = ImageUtils.decodeImage(user.getBase64Image());
                 if (profileBitmap != null) {
                     imProfilePicture.setImageBitmap(profileBitmap);

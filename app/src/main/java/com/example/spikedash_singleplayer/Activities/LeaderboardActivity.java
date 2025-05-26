@@ -1,26 +1,24 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
+import com.example.spikedash_singleplayer.Fragments.FriendsLeaderFragment;
+import com.example.spikedash_singleplayer.Fragments.GlobalLeaderFragment;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.VibrationManager;
 
 public class LeaderboardActivity extends AppCompatActivity implements View.OnClickListener {
 
     ImageButton btnBack;
     TextView friendsTab, globalTab;
     View gamesInidcator, globalIndicator;
-    GlobalLeaderAdapter adapter;
-    ListView lvPlayerStats;
-    ArrayList<PlayerStats> globalList = new ArrayList<>();
-    ArrayList<PlayerStats> gamesList = new ArrayList<>();
-    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +39,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 
     }
     private void loadFragment(Fragment fragment) {
+        // Load the specified fragment into the container
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.contentContainer, fragment)
@@ -54,6 +53,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
         SoundManager.play("click");
 
         if (v == friendsTab) {
+            // Switch to friends tab
             friendsTab.setAlpha(1f);  
             globalTab.setAlpha(0.5f);
             gamesInidcator.setVisibility(View.VISIBLE);
@@ -61,12 +61,14 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
             loadFragment(new FriendsLeaderFragment());
 
         } else if (v == globalTab) {
+            // Switch to global tab
             globalTab.setAlpha(1f);
             friendsTab.setAlpha(0.5f);
             globalIndicator.setVisibility(View.VISIBLE);
             gamesInidcator.setVisibility(View.INVISIBLE);
             loadFragment(new GlobalLeaderFragment());
         } else if (v == btnBack) {
+            setResult(RESULT_OK);
             finish();
         }
     }

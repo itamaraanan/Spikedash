@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradeint"
-    tools:context=".FriendsActivity">
+    tools:context=".Activities.FriendsActivity">
 
-    <!-- Top Bar with Back Button -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"

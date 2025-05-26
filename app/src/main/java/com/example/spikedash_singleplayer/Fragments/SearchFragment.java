@@ -1,9 +1,5 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Fragments;
 
-import android.app.Dialog;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,15 +7,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.spikedash_singleplayer.Adapters.UsersAdapter;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -31,15 +29,16 @@ import java.util.List;
 import java.util.Set;
 
 public class SearchFragment extends Fragment {
-    private RecyclerView recyclerView;
-    private UsersAdapter adapter;
-    private String currentUid, search;
-    private ImageButton btnSearch;
-    private EditText etSearch;
-    private List<User> userList = new ArrayList<>();
-    private Set<String> friendUids;
+    RecyclerView recyclerView;
+    UsersAdapter adapter;
+    String currentUid, search;
+    ImageButton btnSearch;
+    EditText etSearch;
+    List<User> userList = new ArrayList<>();
+    Set<String> friendUids;
 
     private void loadUsers(String name) {
+        // Load users from Firebase based on the search term
         currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userList.clear();
         friendUids = new HashSet<>();
@@ -55,21 +54,23 @@ public class SearchFragment extends Fragment {
             }
 
             // Now load all users AFTER friends are known
+            userList.clear();
             usersRef.get().addOnSuccessListener(snapshot -> {
                 for (DataSnapshot userSnap : snapshot.getChildren()) {
                     User user = userSnap.getValue(User.class);
+                    // Check if user is valid and not the current user or a friend
                     if (user != null &&
                             user.getUsername() != null &&
                             !user.getUid().equals(currentUid) &&
                             !friendUids.contains(user.getUid()) &&
+                            // Check if username contains the search term
                             user.getUsername().toLowerCase().contains(name.toLowerCase())) {
                         userList.add(user);
                     }
                 }
-                adapter = new UsersAdapter(requireContext(), userList, selectedUser -> {
-                    sendFriendRequest(selectedUser);
-                });
-                recyclerView.setAdapter(adapter);
+                // Notify the adapter that data has changed
+                adapter.notifyDataSetChanged();
+
             }).addOnFailureListener(e -> {
                 SoundManager.play("error");
                 Toast.makeText(getContext(), "Failed to load users", Toast.LENGTH_SHORT).show();
@@ -109,14 +110,16 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+        // Initialize RecyclerView and other UI elements
         recyclerView = view.findViewById(R.id.rvPlayers);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         userList = new ArrayList<>();
         currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         etSearch = view.findViewById(R.id.etSearch);
         btnSearch = view.findViewById(R.id.btnSearch);
+        // Set up the search button click listener
         btnSearch.setOnClickListener(v -> {
             if (etSearch.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "Please enter a username", Toast.LENGTH_SHORT).show();
@@ -126,6 +129,9 @@ public class SearchFragment extends Fragment {
             search = etSearch.getText().toString();
             loadUsers(search);
         });
+        // Initialize the adapter with an empty user list
+        adapter = new UsersAdapter(requireContext(), userList, selectedUser -> sendFriendRequest(selectedUser));
+        recyclerView.setAdapter(adapter);
 
         return view;
     }

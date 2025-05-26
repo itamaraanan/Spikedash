@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.User;
+import com.example.spikedash_singleplayer.VibrationManager;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class DifficultyActivity extends AppCompatActivity implements View.OnClickListener {

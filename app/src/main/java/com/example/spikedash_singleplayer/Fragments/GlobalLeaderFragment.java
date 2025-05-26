@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Fragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -17,6 +17,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.spikedash_singleplayer.Adapters.GlobalLeaderAdapter;
+import com.example.spikedash_singleplayer.PlayerStats;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,30 +33,31 @@ import java.util.Collections;
 import java.util.List;
 
 public class GlobalLeaderFragment extends Fragment {
-    private List<PlayerStats> userList = new ArrayList<>();
-    private GlobalLeaderAdapter adapter;
-    private RecyclerView recyclerView;
-    private Dialog progressDialog;
+    List<PlayerStats> userList = new ArrayList<>();
+    GlobalLeaderAdapter adapter;
+    RecyclerView recyclerView;
+    Dialog progressDialog;
+    String currentUid;
 
     private void loadPlayers(){
+        // Fetching data from Firebase Realtime Database
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users");
+        // Adding a listener to fetch data once
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                userList.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
+                    // Each child represents a user
                     PlayerStats player = child.getValue(PlayerStats.class);
                     if (player != null) {
                         userList.add(player);
                     }
                 }
-
-                if (!isAdded()) return; //this prevents the app to crash if the user navigated before it loaded
+                // Sorting the list based on high score in descending order
                 Collections.sort(userList, (a, b) -> Integer.compare(b.getHighScore(), a.getHighScore()));
-                String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                adapter = new GlobalLeaderAdapter(requireContext(), userList, false, currentUid);
-                recyclerView.setAdapter(adapter);
-
+                // Notifying the adapter that the data has changed
+                adapter.notifyDataSetChanged();
                 progressDialog.dismiss();
 
             }
@@ -77,7 +82,9 @@ public class GlobalLeaderFragment extends Fragment {
         tvMessage.setText("Loading leaderboard...");
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+
         progressDialog.show();
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_global_leader, container, false);
         recyclerView = view.findViewById(R.id.rvGlobalLeader);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -89,6 +96,12 @@ public class GlobalLeaderFragment extends Fragment {
         );
         recyclerView.addItemDecoration(dividerItemDecoration);
         userList = new ArrayList<>();
+
+        currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // Creating the adapter with the user list and current user ID
+        adapter = new GlobalLeaderAdapter(requireContext(), userList, currentUid);
+        recyclerView.setAdapter(adapter);
+
 
         loadPlayers();
         return view;

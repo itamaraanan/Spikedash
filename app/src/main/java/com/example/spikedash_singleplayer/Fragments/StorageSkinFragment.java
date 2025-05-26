@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Fragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -14,9 +14,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.spikedash_singleplayer.Adapters.StorageSkinAdapter;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.StorageItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -26,69 +29,66 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
-public class StorageBackFragment extends Fragment {
-    private RecyclerView recyclerView;
-    private Dialog progressDialog;
-    private StorageBackAdapter adapter;
-    private List<StorageItem> backgroundList = new ArrayList<>();
 
-    private void loadOwnedBackgrounds() {
+public class StorageSkinFragment extends Fragment {
+
+    RecyclerView recyclerView;
+    StorageSkinAdapter adapter;
+    Dialog progressDialog;
+    List<StorageItem> skinList = new ArrayList<>();
+
+    private void loadOwnedSkins() {
+        // Load owned skins from Firebase
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
 
-        userRef.child("ownedBackgrounds").get().addOnSuccessListener(snapshot -> {
+        // Get owned skins from Realtime Database
+        userRef.child("ownedSkins").get().addOnSuccessListener(snapshot -> {
             List<String> ownedIds = new ArrayList<>();
-            for (DataSnapshot bg : snapshot.getChildren()) {
-                ownedIds.add(bg.getKey()); // backgroundId
+            for (DataSnapshot skin : snapshot.getChildren()) {
+                ownedIds.add(skin.getKey()); // skinId
             }
+            // Get equipped skin from Realtime Database
+            userRef.child("equippedSkin").get().addOnSuccessListener(equippedSnap -> {
+                String equippedId = equippedSnap.getValue(String.class); // skinId
 
-            userRef.child("equippedBackground").get().addOnSuccessListener(equippedSnap -> {
-                String equippedId = equippedSnap.getValue(String.class); // this is now the ID
-
-                // Now load background definitions from Firestore
+                // Now load skin definitions from Firestore
                 FirebaseFirestore.getInstance()
-                        .collection("backgrounds")
+                        .collection("skins")
                         .get()
                         .addOnSuccessListener(querySnapshot -> {
-                            backgroundList.clear();
+                            skinList.clear();
+                            // Iterate through Firestore documents
                             for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
-                                String id = doc.getId(); // backgroundId
+                                String id = doc.getId(); // skinId
                                 String name = doc.getString("name");
                                 String imageUrl = doc.getString("imageUrl");
 
                                 if (ownedIds.contains(id)) {
-                                    backgroundList.add(new StorageItem(id, name, imageUrl));
+                                    // Add skin to list if owned
+                                    skinList.add(new StorageItem(id, name, imageUrl));
                                 }
                             }
-
-                            adapter.setEquippedBackground(equippedId);
+                            // Set equipped skin in adapter
+                            adapter.setEquippedSkin(equippedId);
                             adapter.notifyDataSetChanged();
                             progressDialog.dismiss();
-
-
-                        }).addOnFailureListener(e -> {
-                            SoundManager.play("error");
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), "Failed to load backgrounds", Toast.LENGTH_SHORT).show();
                         }).addOnFailureListener(this::errorHandler);
             }).addOnFailureListener(this::errorHandler);
-        })
-        .addOnFailureListener(this::errorHandler);
+        }).addOnFailureListener(this::errorHandler);
     }
-
     private void errorHandler(Exception e) {
         SoundManager.play("error");
         progressDialog.dismiss();
-        Toast.makeText(getContext(), "Error loading backgrounds: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Error loading skins: " + e.getMessage(), Toast.LENGTH_SHORT).show();
     }
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_storage_back, container, false);
+        // call the progress dialog
         progressDialog = new Dialog(getContext());
         progressDialog.setContentView(R.layout.progress_dialog);
         progressDialog.setCancelable(false);
@@ -98,13 +98,18 @@ public class StorageBackFragment extends Fragment {
 
         progressDialog.show();
 
-        recyclerView = view.findViewById(R.id.backgroundsRecyclerView);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_storage_skin, container, false);
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.skinsRecyclerView);
+        // Set up RecyclerView with GridLayoutManager
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-
-        adapter = new StorageBackAdapter(getContext(), backgroundList);
+        // Initialize the adapter
+        adapter = new StorageSkinAdapter(getContext(), skinList);
+        // Set the adapter to the RecyclerView
         recyclerView.setAdapter(adapter);
-
-        loadOwnedBackgrounds();
+        // Load owned skins from Firebase
+        loadOwnedSkins();
 
         return view;
     }

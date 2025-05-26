@@ -11,7 +11,7 @@ public class ImageUtils {
 
     private static final int MAX_IMAGE_DIMENSION = 800;
     private static final int COMPRESSION_QUALITY = 50;
-    private static final int MAX_BASE64_SIZE = 500000; // ~500KB
+    private static final int MAX_BASE64_SIZE = 500000;
 
     /**
      * Encodes a bitmap image to base64 string with proper compression

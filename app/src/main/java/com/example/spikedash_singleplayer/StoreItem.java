@@ -1,25 +1,25 @@
 package com.example.spikedash_singleplayer;
-public class Skin {
-    private String skinId;
+public class StoreItem {
+    private String Id;
     private String name;
     private String imageUrl;
     private int price;
 
-    public Skin(String skinId, String name, String imageUrl, int price) {
-        this.skinId = skinId;
+    public StoreItem(String Id, String name, String imageUrl, int price) {
+        this.Id = Id;
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;
     }
 
-    public Skin() {}
+    public StoreItem() {}
 
-    public String getSkinId() {
-        return skinId;
+    public String getId() {
+        return Id;
     }
 
-    public void setSkinId(String skinId) {
-        this.skinId = skinId;
+    public void setId(String Id) {
+        this.Id = Id;
     }
 
     public String getName() {

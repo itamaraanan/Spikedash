@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,33 +14,39 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.StorageItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
-public class StorageSkinAdapter extends RecyclerView.Adapter<StorageSkinAdapter.ViewHolder> {
-    private List<StorageItem> skinsList;
+public class StorageBackAdapter extends RecyclerView.Adapter<StorageBackAdapter.ViewHolder> {
+    private List<StorageItem> backgroundsList;
     private Context context;
-    private String equippedSkinId;
+    private String equippedBackgroundId;
 
-    public StorageSkinAdapter(Context context, List<StorageItem> skinsList) {
+    public StorageBackAdapter(Context context, List<StorageItem> backgroundsList) {
+        // Constructor
         this.context = context;
-        this.skinsList = skinsList;
+        this.backgroundsList = backgroundsList;
     }
 
-    public void setEquippedSkin(String equippedSkinId) {
-        this.equippedSkinId = equippedSkinId;
+    public void setEquippedBackground(String equippedBackgroundId) {
+        this.equippedBackgroundId = equippedBackgroundId;
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        // ViewHolder for storage backgrounds
         ImageView imageView;
         TextView nameView;
         LinearLayout contentLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.imSkin);
+            imageView = itemView.findViewById(R.id.imBackground);
             nameView = itemView.findViewById(R.id.tvName);
             contentLayout = itemView.findViewById(R.id.cardLayout);
         }
@@ -48,17 +54,20 @@ public class StorageSkinAdapter extends RecyclerView.Adapter<StorageSkinAdapter.
 
     @NonNull
     @Override
-    public StorageSkinAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.storage_skin, parent, false);
+    // Create a new ViewHolder
+    public StorageBackAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.storage_background, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        StorageItem item = skinsList.get(position);
+        // Bind data to the view holder
+        StorageItem item = backgroundsList.get(position);
         holder.nameView.setText(item.getName());
 
-        if (item.getId().equals(equippedSkinId)) {
+        // Highlight the currently equipped background
+        if (item.getId().equals(equippedBackgroundId)) {
             holder.contentLayout.setBackgroundColor(Color.parseColor("#C8E6C9")); // Light green
         } else {
             holder.contentLayout.setBackgroundColor(Color.parseColor("#FFFFFF")); // White
@@ -67,20 +76,22 @@ public class StorageSkinAdapter extends RecyclerView.Adapter<StorageSkinAdapter.
         Glide.with(context)
                 .load(item.getImageUrl())
                 .into(holder.imageView);
-
+        // Set click listener for the item
         holder.itemView.setOnClickListener(v -> {
+            SoundManager.play("select");
             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            String selectedSkinId = item.getId();
+            String selectedBackgroundId = item.getId(); // use ID for storage
 
+            // Update the equipped background in Firebase
             FirebaseDatabase.getInstance()
                     .getReference("users")
                     .child(uid)
-                    .child("equippedSkin")
-                    .setValue(selectedSkinId)
+                    .child("equippedBackground")
+                    .setValue(selectedBackgroundId)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(context, item.getName() + " equipped!", Toast.LENGTH_SHORT).show();
-                        SoundManager.play("select");
-                        setEquippedSkin(selectedSkinId);
+                        setEquippedBackground(selectedBackgroundId);
+                        // Update the equipped background ID in the adapter
                         notifyDataSetChanged();
                     });
         });
@@ -88,6 +99,6 @@ public class StorageSkinAdapter extends RecyclerView.Adapter<StorageSkinAdapter.
 
     @Override
     public int getItemCount() {
-        return skinsList.size();
+        return backgroundsList.size();
     }
 }

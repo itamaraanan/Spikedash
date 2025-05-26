@@ -14,10 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.spikedash_singleplayer.Activities.DifficultyActivity;
+import com.example.spikedash_singleplayer.Activities.FriendsActivity;
 import com.example.spikedash_singleplayer.Activities.GiftActivity;
+import com.example.spikedash_singleplayer.Activities.LeaderboardActivity;
 import com.example.spikedash_singleplayer.Activities.ProfileActivity;
 import com.example.spikedash_singleplayer.Activities.SettingsActivity;
+import com.example.spikedash_singleplayer.Activities.ShopActivity;
 import com.example.spikedash_singleplayer.Activities.StatsActivity;
+import com.example.spikedash_singleplayer.Activities.StorageActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -89,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
         );
 
-
-
         currentUser();
         loadImage("equippedBackground", "backgrounds", backgroundImage, "BackgroundDebug");
         loadImage("equippedSkin", "skins", birdImage, "SkinDebug");
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         SoundManager.play("click");
 
-        if (v == btnDifficulty) {
+         if (v == btnDifficulty) {
             handleClick(DifficultyActivity.class, true);
         } else if (v == btnGift) {
             handleClick(GiftActivity.class, true);
@@ -129,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v == btnStats) {
             handleClick(StatsActivity.class, true);
         } else if (v == btnShop) {
-            handleClick(ShopActicity.class, true);
+            handleClick(ShopActivity.class, true);
         } else if (v == btnProfile) {
             handleClick(ProfileActivity.class, true);
         } else if (v == btnLeaderBoard) {
