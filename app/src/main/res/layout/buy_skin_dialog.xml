@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Title -->
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
@@ -27,7 +26,6 @@
             android:fontFamily="@font/futura"
             android:layout_marginBottom="20dp"/>
 
-        <!-- Skin Image -->
         <ImageView
             android:id="@+id/iv_skin"
             android:layout_width="200dp"
@@ -36,7 +34,6 @@
             android:scaleType="fitCenter"
             android:layout_marginBottom="20dp"/>
 
-        <!-- Skin Info Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +42,6 @@
             android:padding="12dp"
             android:layout_marginBottom="20dp">
 
-            <!-- Skin Name -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,14 +68,12 @@
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
 
-            <!-- Separator Line -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#4DFFFFFF"
                 android:layout_marginVertical="4dp"/>
 
-            <!-- Skin Price -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -107,7 +101,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Buttons -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -118,7 +111,6 @@
             android:gravity="center"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Vertical Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

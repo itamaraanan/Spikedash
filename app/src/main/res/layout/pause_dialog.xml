@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +25,6 @@
             android:fontFamily="@font/futura"
             android:layout_marginBottom="20dp"/>
 
-        <!-- Sound Settings -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,14 +55,12 @@
                 android:thumbTint="#FFFFFF"/>
         </LinearLayout>
 
-        <!-- Separator Line -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#4DFFFFFF"
             android:layout_marginVertical="8dp"/>
 
-        <!-- BGM Settings -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,14 +91,12 @@
                 android:thumbTint="#FFFFFF"/>
         </LinearLayout>
 
-        <!-- Separator Line -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#4DFFFFFF"
             android:layout_marginVertical="8dp"/>
 
-        <!-- Vibration Settings -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -132,21 +126,18 @@
                 android:trackTint="#80000000"/>
         </LinearLayout>
 
-        <!-- Separator Line -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#4DFFFFFF"
             android:layout_marginVertical="8dp"/>
 
-        <!-- Vertical Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="12dp">
 
-            <!-- Home Button -->
             <LinearLayout
                 android:id="@+id/btn_home"
                 android:layout_width="match_parent"
@@ -172,7 +163,6 @@
                     android:layout_marginStart="12dp"/>
             </LinearLayout>
 
-            <!-- Replay Button -->
             <LinearLayout
                 android:id="@+id/btn_replay"
                 android:layout_width="match_parent"
@@ -198,7 +188,6 @@
                     android:layout_marginStart="12dp"/>
             </LinearLayout>
 
-            <!-- Resume Button -->
             <LinearLayout
                 android:id="@+id/btn_resume"
                 android:layout_width="match_parent"

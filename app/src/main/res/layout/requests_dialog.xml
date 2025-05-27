@@ -14,8 +14,6 @@
         android:background="@drawable/dialog_inner_background"
         android:minHeight="400dp">
 
-
-        <!-- RecyclerView for Friend Requests -->
         <LinearLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
@@ -55,7 +53,6 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <!-- Empty space to balance the back button -->
                 <View
                     android:layout_width="33dp"
                     android:layout_height="37dp"

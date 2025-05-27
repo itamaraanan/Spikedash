@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <!-- Search Bar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,7 +59,6 @@
         </LinearLayout>
 
 
-        <!-- Player List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPlayers"
             android:layout_width="match_parent"

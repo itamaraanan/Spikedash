@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="#757575">
 
-    <!-- Header -->
     <RelativeLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -34,7 +33,6 @@
 
     </RelativeLayout>
 
-    <!-- Tabs Container -->
     <RelativeLayout
         android:id="@+id/tabsContainer"
         android:layout_width="match_parent"
@@ -42,7 +40,6 @@
         android:layout_below="@id/headerLayout"
         android:background="#5A5A5A">
 
-        <!-- Tabs Layout -->
         <LinearLayout
             android:id="@+id/tabsLayout"
             android:layout_width="match_parent"
@@ -52,7 +49,6 @@
             android:paddingVertical="8dp"
             android:weightSum="2">
 
-            <!-- Skins Tab Container -->
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -79,7 +75,6 @@
                     android:background="#FFA41E" />
             </RelativeLayout>
 
-            <!-- Backgrounds Tab Container -->
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -109,7 +104,6 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <!-- Bottom Separator -->
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -117,7 +111,6 @@
             android:background="#4A4A4A"/>
     </RelativeLayout>
 
-    <!-- Content -->
     <FrameLayout
         android:id="@+id/contentContainer"
         android:layout_width="match_parent"

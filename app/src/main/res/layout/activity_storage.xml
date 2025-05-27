@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="#757575">
 
-  <!-- Header -->
   <RelativeLayout
       android:id="@+id/headerLayout"
       android:layout_width="match_parent"
@@ -32,7 +31,6 @@
         android:textStyle="bold" />
   </RelativeLayout>
 
-  <!-- Tabs Container -->
   <RelativeLayout
       android:id="@+id/tabsContainer"
       android:layout_width="match_parent"
@@ -76,7 +74,6 @@
             android:background="#FFA41E" />
       </RelativeLayout>
 
-      <!-- Backgrounds Tab -->
       <RelativeLayout
           android:layout_width="0dp"
           android:layout_height="wrap_content"
@@ -106,7 +103,6 @@
       </RelativeLayout>
     </LinearLayout>
 
-    <!-- Bottom Separator -->
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
@@ -114,7 +110,6 @@
         android:background="#4A4A4A" />
   </RelativeLayout>
 
-  <!-- Content (Fragment Container) -->
   <FrameLayout
       android:id="@+id/storageContentContainer"
       android:layout_width="match_parent"

@@ -5,7 +5,6 @@
     android:layout_margin="8dp">
 
 
-    <!-- The actual CardView content -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardRoot"
         android:layout_width="wrap_content"

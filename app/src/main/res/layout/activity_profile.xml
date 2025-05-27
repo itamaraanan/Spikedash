@@ -151,7 +151,6 @@
 
         </LinearLayout>
 
-        <!-- New Confirm Changes Button -->
         <Button
             android:id="@+id/btnConfirmChanges"
             android:layout_width="match_parent"
