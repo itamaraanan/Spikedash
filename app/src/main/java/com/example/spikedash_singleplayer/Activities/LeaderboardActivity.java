@@ -1,5 +1,6 @@
 package com.example.spikedash_singleplayer.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.spikedash_singleplayer.Fragments.FriendsLeaderFragment;
 import com.example.spikedash_singleplayer.Fragments.GlobalLeaderFragment;
+import com.example.spikedash_singleplayer.MainActivity;
 import com.example.spikedash_singleplayer.R;
 import com.example.spikedash_singleplayer.SoundManager;
 import com.example.spikedash_singleplayer.VibrationManager;
@@ -68,7 +70,8 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
             gamesInidcator.setVisibility(View.INVISIBLE);
             loadFragment(new GlobalLeaderFragment());
         } else if (v == btnBack) {
-            setResult(RESULT_OK);
+            Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+            startActivity(intent);
             finish();
         }
     }

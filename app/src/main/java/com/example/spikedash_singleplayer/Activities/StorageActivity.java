@@ -3,6 +3,7 @@ package com.example.spikedash_singleplayer.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -75,8 +76,11 @@ public class StorageActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         if (v == btnBack) {
-            setResult(RESULT_OK);
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("user", user); // החזר את המשתמש
+            setResult(RESULT_OK, resultIntent);
             finish();
         }
+
     }
 }

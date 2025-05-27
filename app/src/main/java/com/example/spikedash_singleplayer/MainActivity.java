@@ -90,7 +90,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {}
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        User updatedUser = result.getData().getParcelableExtra("user");
+                        if (updatedUser != null) {
+                            this.currentUser = updatedUser;
+                            loadImage("equippedBackground", "backgrounds", backgroundImage, "BackgroundDebug");
+                            loadImage("equippedSkin", "skins", birdImage, "SkinDebug");
+                        }
+                    }
                 }
         );
 
