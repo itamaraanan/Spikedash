@@ -14,6 +14,7 @@ public class CountDown extends Entity {
     private Paint paint;
 
     public CountDown(int ScreenWidth, int ScreenHeight, Bitmap bitmap, int number) {
+        //constructor
         super(ScreenWidth, ScreenHeight, bitmap);
         this.number = number;
         this.x = ScreenWidth / 2;
@@ -29,6 +30,7 @@ public class CountDown extends Entity {
     }
 
     @Override
+    // Draw the countdown number on the canvas
     public void draw(Canvas canvas) {
         paint.setTextSize(scaleY(200) * scale); // scalable font
         paint.setAlpha(alpha);

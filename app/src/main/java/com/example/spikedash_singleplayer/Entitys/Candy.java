@@ -12,6 +12,7 @@ public class Candy extends Entity {
     private float floatAmplitude;
     private float counter;
 
+    //constructor
     public Candy(int ScreenWidth, int ScreenHeight, Bitmap bitmap) {
         super(ScreenWidth, ScreenHeight, bitmap);
 
@@ -45,16 +46,18 @@ public class Candy extends Entity {
     }
 
     public void takesCandy() {
+        // Reset position to a new random location
         int marginX = (int) scaleX(75);
         int marginYTop = (int) scaleY(275);
         int marginYBottom = (int) scaleY(550);
-
+        // Resetting the position of the candy
         x = marginX + random.nextInt(ScreenWidth - 2 * marginX);
         y = marginYTop + random.nextInt(ScreenHeight - marginYBottom);
     }
 
     @Override
     public void move() {
+        // Update the floating effect of the candy
         counter += floatSpeed;
         floatOffset = (float) (floatAmplitude * Math.sin(counter));
     }

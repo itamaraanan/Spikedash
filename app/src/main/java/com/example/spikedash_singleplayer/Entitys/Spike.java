@@ -1,12 +1,16 @@
-package com.example.spikedash_singleplayer.Entitys.Spikes;
+package com.example.spikedash_singleplayer.Entitys;
+
 import android.graphics.Bitmap;
 
-public class MovingSpike_right extends MovingSpike {
-    public MovingSpike_right(int ScreenWidth, int ScreenHeight, Bitmap bitmap) {
+import com.example.spikedash_singleplayer.Entitys.Entity;
+
+public class Spike extends Entity {
+    public Spike(int ScreenWidth, int ScreenHeight, Bitmap bitmap) {
         super(ScreenWidth, ScreenHeight, bitmap);
         x = ScreenWidth;
         y = ScreenHeight;
     }
+
     public int getX() {
         return x;
     }
@@ -23,11 +27,8 @@ public class MovingSpike_right extends MovingSpike {
         return bitmap.getHeight(); // Get height of the bitmap
     }
 
+
     @Override
-    public void move() {
-        x += fading_speed;
-        if (x > ScreenWidth) {
-            x = 0;
-        }
-    }
+    public void move() {}
+
 }

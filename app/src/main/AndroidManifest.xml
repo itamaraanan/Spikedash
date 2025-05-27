@@ -21,9 +21,6 @@
             android:name=".Activities.StorageActivity"
             android:exported="false" />
         <activity
-            android:name=".Fragments.SkinsFragment"
-            android:exported="false" />
-        <activity
             android:name=".Activities.LeaderboardActivity"
             android:exported="false" />
         <activity
@@ -49,8 +46,7 @@
             android:exported="false" />
         <activity
             android:name=".Activities.SettingsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_settings" />
+            android:exported="false" />
         <activity
             android:name=".Activities.DifficultyActivity"
             android:exported="false" />

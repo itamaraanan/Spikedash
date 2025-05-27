@@ -20,8 +20,6 @@ public abstract class Entity {
         canvas.drawBitmap(bitmap, x, y, null);
 
     }
-
-
     protected float scaleX(float value) {
         return value * (ScreenWidth / 1080f);
     }

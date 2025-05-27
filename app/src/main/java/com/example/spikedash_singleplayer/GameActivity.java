@@ -31,8 +31,7 @@ import com.example.spikedash_singleplayer.Entitys.Bird;
 import com.example.spikedash_singleplayer.Entitys.Candy;
 import com.example.spikedash_singleplayer.Entitys.CountDown;
 import com.example.spikedash_singleplayer.Entitys.Plus;
-import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_left;
-import com.example.spikedash_singleplayer.Entitys.Spikes.MovingSpike_right;
+import com.example.spikedash_singleplayer.Entitys.Spike;
 import com.example.spikedash_singleplayer.Entitys.Walls;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -182,8 +181,8 @@ public class GameActivity extends AppCompatActivity {
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            if (!bird.gameSrarted) {
-                bird.gameSrarted = true;
+            if (!bird.gameStarted) {
+                bird.gameStarted = true;
                 btnPause.setVisibility(View.VISIBLE);
             }
             ((AppCompatActivity) getContext()).runOnUiThread(() -> {
@@ -221,20 +220,24 @@ public class GameActivity extends AppCompatActivity {
             while (isRunning) {
                 if (isCountingDown) {
                     count();
-                } else {
-                    drawSurface();
-                    eatCandies();
-                    if (!handleCollisions()) {
-                        gameOver();
-                    }
-                    candy.move();
-                    bird.move();
-                    if (plus.isActive()) {
-                        plus.move();
-                    }
+                    continue;
+                }
+                drawSurface();
+                eatCandies();
+                if (!handleCollisions()) {
+                    isRunning = false;
+                    continue;
+                }
+
+                candy.move();
+                bird.move();
+
+                if (plus.isActive()) {
+                    plus.move();
                 }
             }
         }
+
 
         private void count() {
             long currentTime = System.currentTimeMillis();
@@ -276,14 +279,14 @@ public class GameActivity extends AppCompatActivity {
         private boolean handleCollisions() {
             boolean isCollide = false;
             if (walls.isLeftWallActive()) {
-                for (MovingSpike_left spike : walls.left_spikes) {
+                for (Spike spike : walls.left_spikes) {
                     if (bird.collidesWith(spike.getX(), spike.getY(), spike.getWidth(), spike.getHeight())) {
                         handleCollision();
                         isCollide = true;
                     }
                 }
             } else {
-                for (MovingSpike_right spike : walls.right_spikes) {
+                for (Spike spike : walls.right_spikes) {
                     if (bird.collidesWith(spike.getX(), spike.getY(), spike.getWidth(), spike.getHeight())) {
                         handleCollision();
                         isCollide = true;
@@ -413,9 +416,8 @@ public class GameActivity extends AppCompatActivity {
                     d.dismiss();
                     MusicManager.stop();
                     MusicManager.release();
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    intent.putExtra("user", user);
-                    getContext().startActivity(intent);
+                    setResult(RESULT_OK);
+                    finish();
                 }
             });
 
@@ -575,8 +577,6 @@ public class GameActivity extends AppCompatActivity {
             thread.start();
         }
 
-        private void gameOver() {
-        }
         public void setBackgroundBitmap(Bitmap bitmap) {
             this.backgroundBitmap = Bitmap.createScaledBitmap(bitmap, screenWidth, screenHeight, true);
         }
