@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Items;
 public class StoreItem {
     private String Id;
     private String name;

@@ -11,10 +11,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.spikedash_singleplayer.Fragments.FriendsLeaderFragment;
 import com.example.spikedash_singleplayer.Fragments.GlobalLeaderFragment;
-import com.example.spikedash_singleplayer.MainActivity;
 import com.example.spikedash_singleplayer.R;
-import com.example.spikedash_singleplayer.SoundManager;
-import com.example.spikedash_singleplayer.VibrationManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
+import com.example.spikedash_singleplayer.Managers.VibrationManager;
 
 public class LeaderboardActivity extends AppCompatActivity implements View.OnClickListener {
 

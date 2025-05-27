@@ -17,9 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.spikedash_singleplayer.Adapters.FriendsLeaderAdapter;
-import com.example.spikedash_singleplayer.PlayerStats;
+import com.example.spikedash_singleplayer.Items.PlayerStats;
 import com.example.spikedash_singleplayer.R;
-import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;

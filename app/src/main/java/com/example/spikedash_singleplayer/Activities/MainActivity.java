@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Activities;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -14,15 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.spikedash_singleplayer.Activities.DifficultyActivity;
-import com.example.spikedash_singleplayer.Activities.FriendsActivity;
-import com.example.spikedash_singleplayer.Activities.GiftActivity;
-import com.example.spikedash_singleplayer.Activities.LeaderboardActivity;
-import com.example.spikedash_singleplayer.Activities.ProfileActivity;
-import com.example.spikedash_singleplayer.Activities.SettingsActivity;
-import com.example.spikedash_singleplayer.Activities.ShopActivity;
-import com.example.spikedash_singleplayer.Activities.StatsActivity;
-import com.example.spikedash_singleplayer.Activities.StorageActivity;
+import com.example.spikedash_singleplayer.Managers.MusicManager;
+import com.example.spikedash_singleplayer.Managers.SettingsManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
+import com.example.spikedash_singleplayer.Managers.VibrationManager;
+import com.example.spikedash_singleplayer.R;
+import com.example.spikedash_singleplayer.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,17 +30,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private LinearLayout btnStart;
-    private ImageButton btnLeaderBoard, btnDifficulty,btnProfile, btnGift,
+    LinearLayout btnStart;
+    ImageButton btnLeaderBoard, btnDifficulty,btnProfile, btnGift,
             btnSettings, btnStats, btnShop, btnInventory,btnFriends;
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private DatabaseReference ref = db.getReference("users");
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private User currentUser;
-    private ImageView backgroundImage, birdImage;
-    private String uid;
-    private ActivityResultLauncher<Intent> gameLauncher;
-    private boolean isAccountFound = false;
+    FirebaseDatabase db = FirebaseDatabase.getInstance();
+    DatabaseReference ref = db.getReference("users");
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    User currentUser;
+    ImageView backgroundImage, birdImage;
+    String uid;
+    ActivityResultLauncher<Intent> gameLauncher;
+    boolean isAccountFound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnInventory = findViewById(R.id.btnInventory);
         backgroundImage = findViewById(R.id.backgroundImage);
         birdImage = findViewById(R.id.birdImage);
+
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
             uid = firebaseUser.getUid();
@@ -156,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void handleClick(Class<?> activityClass, boolean needsUser, int bgmResId, boolean stopAndStartMusic) {
+        // Check if the user is logged in and currentUser is set
         if (needsUser && currentUser == null) {
             Toast.makeText(this, "Loading user data, please try again", Toast.LENGTH_SHORT).show();
             return;
@@ -175,21 +174,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void loadImage(String userField, String firestoreCollection, ImageView targetView, String logTag) {
+
         FirebaseDatabase.getInstance().getReference("users")
                 .child(uid)
                 .child(userField)
                 .get()
                 .addOnSuccessListener(snapshot -> {
+                    // Get the equipped ID from the snapshot
                     String equippedId = snapshot.getValue(String.class);
-                    Log.d(logTag, "Equipped ID: " + equippedId);
                     if (equippedId == null) return;
-
+                    // look up the image URL in Firestore
                     FirebaseFirestore.getInstance().collection(firestoreCollection)
                             .document(equippedId)
                             .get()
                             .addOnSuccessListener(doc -> {
+                                // Get the image URL from the document
                                 String imageUrl = doc.getString("imageUrl");
-                                Log.d(logTag, "Image URL: " + imageUrl);
                                 if (imageUrl != null) {
                                     Glide.with(this).load(imageUrl).into(targetView);
                                 }
@@ -200,34 +200,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void currentUser() {
+        // Check if the user is logged in
         FirebaseUser firebaseUser = auth.getCurrentUser();
         if (firebaseUser == null) {
             isAccountFound = false;
             return;
         }
+        // Get the user's UID
         currentUser = new User();
         currentUser.setUid(uid);
         currentUser.setEmail(firebaseUser.getEmail());
-
+        // Check if the user already exists in the database
         DatabaseReference userRef = ref.child(uid);
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    // User exists, retrieve data
                     User dbUser = dataSnapshot.getValue(User.class);
                     if (dbUser != null) {
                         currentUser = dbUser;
                         isAccountFound = true;
                     }
+                    // If its a new user, set default values
                 } else {
-
+                    //save the username
                     String username = firebaseUser.getDisplayName();
                     if (username == null || username.isEmpty()) {
 
                         String email = firebaseUser.getEmail();
+                        // If the email is null or empty, generate username from mail
                         username = email != null ? email.split("@")[0] : "User" + uid.substring(0, 5);
                     }
-
+                    // Set default values for the new user
                     currentUser.setUsername(username);
                     userRef.setValue(currentUser);
                     isAccountFound = true;

@@ -1,13 +1,11 @@
 package com.example.spikedash_singleplayer;
 
-import android.app.Dialog;
 import android.content.Context;
 
 import android.graphics.Bitmap;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -16,29 +14,26 @@ import com.example.spikedash_singleplayer.Entitys.Candy;
 import com.example.spikedash_singleplayer.Entitys.CountDown;
 import com.example.spikedash_singleplayer.Entitys.Plus;
 import com.example.spikedash_singleplayer.Entitys.Walls;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
 
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder holder;
     private Canvas canvas;
-    private Paint bgPaint;
     private Bitmap backgroundBitmap;
     private Bird bird;
     private Candy candy;
     private Plus plus;
     private Walls walls;
     private CountDown countDown;
-
     private GameController controller;
 
 
     public GameView(Context context) {
+        // Initialize the SurfaceView and its holder
         super(context);
         holder = getHolder();
         holder.addCallback(this);
-        bgPaint = new Paint();
-        bgPaint.setARGB(255, 240, 240, 240);
-
     }
 
     public void setGameController(GameController controller) {
@@ -47,6 +42,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // Jump the bird when the screen is touched
         if (event.getAction() == MotionEvent.ACTION_DOWN && bird != null) {
             SoundManager.play("jump");
             bird.jump();
@@ -57,6 +53,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     public void drawSurface() {
+        // Draw the game elements on the surface
         if (holder.getSurface().isValid()) {
             canvas = holder.lockCanvas();
 
@@ -75,14 +72,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void drawCountdown() {
+        // Draw the countdown on the canvas
         if (holder.getSurface().isValid()) {
             canvas = holder.lockCanvas();
-            canvas.drawPaint(bgPaint);
+
+            if (backgroundBitmap != null) {
+                canvas.drawBitmap(backgroundBitmap, 0, 0, null);
+            } else {
+                canvas.drawColor(Color.LTGRAY);
+            }
             bird.draw(canvas);
             walls.draw(canvas);
             candy.draw(canvas);
             plus.draw(canvas);
             countDown.draw(canvas);
+
 
             holder.unlockCanvasAndPost(canvas);
         }
@@ -111,12 +115,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void setCountDown(CountDown countDown) {
         this.countDown = countDown;
     }
-    public void setBirdBitmap(Bitmap birdBitmap) {
-        if (this.bird != null) {
-            this.bird.setBitmap(birdBitmap);
-        }
-    }
-
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {

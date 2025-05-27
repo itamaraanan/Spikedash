@@ -23,11 +23,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.spikedash_singleplayer.ImageUtils;
+import com.example.spikedash_singleplayer.Managers.ImageUtils;
 import com.example.spikedash_singleplayer.R;
-import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
 import com.example.spikedash_singleplayer.User;
-import com.example.spikedash_singleplayer.VibrationManager;
+import com.example.spikedash_singleplayer.Managers.VibrationManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -18,8 +17,8 @@ import com.bluehomestudio.luckywheel.LuckyWheel;
 import com.bluehomestudio.luckywheel.OnLuckyWheelReachTheTarget;
 import com.bluehomestudio.luckywheel.WheelItem;
 import com.example.spikedash_singleplayer.R;
-import com.example.spikedash_singleplayer.SoundManager;
-import com.example.spikedash_singleplayer.VibrationManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
+import com.example.spikedash_singleplayer.Managers.VibrationManager;
 import com.example.spikedash_singleplayer.User;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

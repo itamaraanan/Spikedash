@@ -1,8 +1,11 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Managers;
 
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
+
+import com.example.spikedash_singleplayer.R;
+
 import java.util.HashMap;
 
 public class SoundManager {

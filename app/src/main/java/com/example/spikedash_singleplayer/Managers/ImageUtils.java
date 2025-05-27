@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Managers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

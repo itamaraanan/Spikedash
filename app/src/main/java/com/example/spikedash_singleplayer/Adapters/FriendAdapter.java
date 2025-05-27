@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.spikedash_singleplayer.ImageUtils;
+import com.example.spikedash_singleplayer.Managers.ImageUtils;
 import com.example.spikedash_singleplayer.R;
 import com.example.spikedash_singleplayer.User;
 

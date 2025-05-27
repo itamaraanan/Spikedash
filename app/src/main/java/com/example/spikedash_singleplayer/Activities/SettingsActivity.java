@@ -12,11 +12,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.spikedash_singleplayer.Activities.MenuActivity;
-import com.example.spikedash_singleplayer.MusicManager;
+import com.example.spikedash_singleplayer.Managers.MusicManager;
 import com.example.spikedash_singleplayer.R;
-import com.example.spikedash_singleplayer.SoundManager;
-import com.example.spikedash_singleplayer.VibrationManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
+import com.example.spikedash_singleplayer.Managers.VibrationManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

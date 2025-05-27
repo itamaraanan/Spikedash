@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.example.spikedash_singleplayer.Fragments.BackgroundsFragment;
 import com.example.spikedash_singleplayer.Fragments.SkinsFragment;
 import com.example.spikedash_singleplayer.R;
-import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
 import com.example.spikedash_singleplayer.User;
-import com.example.spikedash_singleplayer.VibrationManager;
+import com.example.spikedash_singleplayer.Managers.VibrationManager;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class ShopActivity extends AppCompatActivity implements View.OnClickListener {

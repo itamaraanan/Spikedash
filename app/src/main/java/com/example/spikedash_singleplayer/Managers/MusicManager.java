@@ -1,4 +1,4 @@
-package com.example.spikedash_singleplayer;
+package com.example.spikedash_singleplayer.Managers;
 
 import android.media.MediaPlayer;
 import android.content.Context;

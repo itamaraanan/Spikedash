@@ -14,8 +14,8 @@ import com.example.spikedash_singleplayer.Fragments.AllPlayersFragment;
 import com.example.spikedash_singleplayer.Fragments.FriendsListFragment;
 import com.example.spikedash_singleplayer.R;
 import com.example.spikedash_singleplayer.Fragments.SearchFragment;
-import com.example.spikedash_singleplayer.SoundManager;
-import com.example.spikedash_singleplayer.VibrationManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
+import com.example.spikedash_singleplayer.Managers.VibrationManager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 

@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.spikedash_singleplayer.Adapters.SkinAdapter;
 import com.example.spikedash_singleplayer.R;
 import com.example.spikedash_singleplayer.Activities.ShopActivity;
-import com.example.spikedash_singleplayer.StoreItem;
+import com.example.spikedash_singleplayer.Items.StoreItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;

@@ -7,11 +7,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.spikedash_singleplayer.MainActivity;
 import com.example.spikedash_singleplayer.R;
-import com.example.spikedash_singleplayer.SoundManager;
+import com.example.spikedash_singleplayer.Managers.SoundManager;
 import com.example.spikedash_singleplayer.User;
-import com.example.spikedash_singleplayer.VibrationManager;
+import com.example.spikedash_singleplayer.Managers.VibrationManager;
 
 public class StatsActivity extends AppCompatActivity {
 
