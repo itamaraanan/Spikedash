@@ -92,16 +92,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         User updatedUser = result.getData().getParcelableExtra("user");
                         if (updatedUser != null) {
                             this.currentUser = updatedUser;
-                            loadImage("equippedBackground", "backgrounds", backgroundImage, "BackgroundDebug");
-                            loadImage("equippedSkin", "skins", birdImage, "SkinDebug");
+                            loadImage("equippedBackground", "backgrounds", backgroundImage);
+                            loadImage("equippedSkin", "skins", birdImage);
                         }
                     }
                 }
         );
 
         currentUser();
-        loadImage("equippedBackground", "backgrounds", backgroundImage, "BackgroundDebug");
-        loadImage("equippedSkin", "skins", birdImage, "SkinDebug");
+        loadImage("equippedBackground", "backgrounds", backgroundImage);
+        loadImage("equippedSkin", "skins", birdImage);
 
     }
     @Override
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameLauncher.launch(intent);
     }
 
-    private void loadImage(String userField, String firestoreCollection, ImageView targetView, String logTag) {
+    private void loadImage(String userField, String firestoreCollection, ImageView targetView) {
 
         FirebaseDatabase.getInstance().getReference("users")
                 .child(uid)

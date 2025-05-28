@@ -52,6 +52,7 @@ public class GameController implements Runnable {
     private GameView gameView;
     private int currentCount = 3;
     private Bird bird;
+    private Thread gameThread;
     private Dialog d;
     public GameController(GameView gameView, Context context, User user,
                           TextView tvScore, TextView tvCandies, ImageButton btnPause) {
@@ -107,16 +108,29 @@ public class GameController implements Runnable {
     }
 
 
-    public void start() {
-        // start the game
-        isRunning = true;
-        new Thread(this).start();
+
+    public void start() { // start the game
+        if (gameThread == null || !gameThread.isAlive()) {
+            isRunning = true;
+            gameThread = new Thread(this);
+            gameThread.start();
+        }
     }
 
+
     public void stop() {
-        //stop the game
+        // Stop the game
         isRunning = false;
+        if (gameThread != null) {
+            try {
+                // Wait for the game thread to finish
+                gameThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
 
     @Override
     public void run() {
@@ -264,10 +278,10 @@ public class GameController implements Runnable {
         // Handle the collision with the wall or spike
         SoundManager.play("hit");
         VibrationManager.vibrate(context, 200);
-        stop();
         ((AppCompatActivity) context).runOnUiThread(() -> {
             createGameOverDialog();
         });
+        stop();
 
     }
 
@@ -314,6 +328,7 @@ public class GameController implements Runnable {
                 Intent intent = new Intent(context, GameActivity.class);
                 intent.putExtra("user", user);
                 context.startActivity(intent);
+                ((AppCompatActivity) context).finish();
             }
         });
 
@@ -325,9 +340,11 @@ public class GameController implements Runnable {
                 d.dismiss();
                 MusicManager.stop();
                 MusicManager.release();
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra("user", user);
-                context.startActivity(intent);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("user", user);
+                ((AppCompatActivity) context).setResult(AppCompatActivity.RESULT_OK, resultIntent);
+                ((AppCompatActivity) context).finish();
+
             }
         });
 
@@ -343,6 +360,7 @@ public class GameController implements Runnable {
                 Intent intent = new Intent(context, LeaderboardActivity.class);
                 intent.putExtra("user", user);
                 context.startActivity(intent);
+                ((AppCompatActivity) context).finish();
             }
         });
 
@@ -358,16 +376,18 @@ public class GameController implements Runnable {
                 Intent intent = new Intent(context, StatsActivity.class);
                 intent.putExtra("user", user);
                 context.startActivity(intent);
+                ((AppCompatActivity) context).finish();
             }
         });
         d.setOnCancelListener(dialog -> {
-            // If the dialog is canceled, resume the game
+            // If the dialog is canceled, exit the game
             d.dismiss();
             MusicManager.stop();
             MusicManager.release();
             Intent intent = new Intent(context, MainActivity.class);
             intent.putExtra("user", user);
             context.startActivity(intent);
+            ((AppCompatActivity) context).finish();
         });
 
         d.show();
@@ -453,6 +473,7 @@ public class GameController implements Runnable {
             Intent intent = new Intent(context, GameActivity.class);
             intent.putExtra("user", user);
             context.startActivity(intent);
+            ((AppCompatActivity) context).finish();
         });
         // Go back to the home screen
         btnHome.setOnClickListener(v -> {
@@ -461,9 +482,11 @@ public class GameController implements Runnable {
             d.dismiss();
             MusicManager.stop();
             MusicManager.release();
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.putExtra("user", user);
-            context.startActivity(intent);
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("user", user);
+            ((AppCompatActivity) context).setResult(AppCompatActivity.RESULT_OK, resultIntent);
+            ((AppCompatActivity) context).finish();
+
         });
         d.setOnCancelListener(dialog -> {
             d.dismiss();
