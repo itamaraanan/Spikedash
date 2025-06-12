@@ -4,7 +4,6 @@
     android:viewportWidth="100"
     android:viewportHeight="50">
 
-    <!-- Draw a triangle spike -->
     <path
         android:fillColor="#808080"
         android:pathData="M0,50 L50,0 L50,50 Z" />

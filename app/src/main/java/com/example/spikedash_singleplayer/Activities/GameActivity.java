@@ -49,8 +49,8 @@ public class GameActivity extends AppCompatActivity {
         user = getIntent().getParcelableExtra("user");
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        SoundManager.init(this);
-        SettingsManager.applySavedBgmVolume(this, uid);
+        SettingsManager.applySavedBgmVolume( uid);
+        SettingsManager.applySavedSoundVolume(uid);
 
 
         gameView = new GameView(this);
@@ -158,6 +158,9 @@ public class GameActivity extends AppCompatActivity {
                             });
                 });
     }
+    @Override
+    //lock the back button to prevent problems
+    public void onBackPressed() {}
 
 
 

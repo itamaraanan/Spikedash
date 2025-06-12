@@ -264,7 +264,7 @@ public class GameController implements Runnable {
 
         }
         // Check if the bird collides with the floor or ceiling
-        float floorY = gameView.getHeight() - (gameView.getHeight() / 1920f) * 200;
+        float floorY = gameView.getHeight() - (gameView.getHeight() / 1920f) * 250;
         if (bird.getY() + bird.getHeight() >= floorY || bird.getY() < (gameView.getHeight() / 1920f) * 250) {
             isCollide = true;
             handleCollision();
@@ -347,6 +347,7 @@ public class GameController implements Runnable {
 
             }
         });
+
 
         imgLeaderBoard.setOnClickListener(new View.OnClickListener() {
             // Open the leaderboard activity
@@ -482,9 +483,7 @@ public class GameController implements Runnable {
             d.dismiss();
             MusicManager.stop();
             MusicManager.release();
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("user", user);
-            ((AppCompatActivity) context).setResult(AppCompatActivity.RESULT_OK, resultIntent);
+            ((AppCompatActivity) context).setResult(AppCompatActivity.RESULT_OK);
             ((AppCompatActivity) context).finish();
 
         });

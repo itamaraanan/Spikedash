@@ -159,10 +159,20 @@ public class GiftActivity extends AppCompatActivity implements View.OnClickListe
                 // When the countdown finishes, enable the spin button and hide the timer
                 tvTimer.setVisibility(View.INVISIBLE);
                 spinButton.setVisibility(View.VISIBLE);
+
             }
         };
         // Start the countdown timer
         countdownTimer.start();
+    }
+
+    @Override
+    //lock the back button to prevent problems
+    public void onBackPressed() {
+        if (btnReturnMenu.getVisibility() == View.VISIBLE) {
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 
 
@@ -174,6 +184,7 @@ public class GiftActivity extends AppCompatActivity implements View.OnClickListe
             btnReturnMenu.setVisibility(View.INVISIBLE);
             spinButton.setVisibility(View.INVISIBLE);
             // Generate a random index for the wheel item
+
             Random random = new Random();
             int index = random.nextInt(wheelItemList.size());
             points = String.valueOf(index + 1);
@@ -193,4 +204,5 @@ public class GiftActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         }
     }
+
 }

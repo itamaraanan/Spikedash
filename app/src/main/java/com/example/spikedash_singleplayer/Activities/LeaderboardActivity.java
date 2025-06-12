@@ -69,8 +69,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
             gamesInidcator.setVisibility(View.INVISIBLE);
             loadFragment(new GlobalLeaderFragment());
         } else if (v == btnBack) {
-            Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
-            startActivity(intent);
+            setResult(RESULT_OK);
             finish();
         }
     }

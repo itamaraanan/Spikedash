@@ -1,0 +1,152 @@
+<html>
+<head>
+<title>GameView.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+GameView.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.spikedash_singleplayer</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.graphics.Bitmap</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.graphics.Canvas</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.Color</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.MotionEvent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.SurfaceHolder</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.SurfaceView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Bird</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Candy</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.CountDown</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Plus</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Walls</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Managers.SoundManager</span><span class="s0">;</span>
+
+
+<span class="s0">public class </span><span class="s1">GameView </span><span class="s0">extends </span><span class="s1">SurfaceView </span><span class="s0">implements </span><span class="s1">SurfaceHolder.Callback {</span>
+    <span class="s0">private </span><span class="s1">SurfaceHolder holder</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Canvas canvas</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Bitmap backgroundBitmap</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Bird bird</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Candy candy</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Plus plus</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Walls walls</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">CountDown countDown</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">GameController controller</span><span class="s0">;</span>
+
+
+    <span class="s0">public </span><span class="s1">GameView(Context context) {</span>
+        <span class="s2">// Initialize the SurfaceView and its holder</span>
+        <span class="s0">super</span><span class="s1">(context)</span><span class="s0">;</span>
+        <span class="s1">holder = getHolder()</span><span class="s0">;</span>
+        <span class="s1">holder.addCallback(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setGameController(GameController controller) {</span>
+        <span class="s0">this</span><span class="s1">.controller = controller</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public boolean </span><span class="s1">onTouchEvent(MotionEvent event) {</span>
+        <span class="s2">// Jump the bird when the screen is touched</span>
+        <span class="s0">if </span><span class="s1">(event.getAction() == MotionEvent.ACTION_DOWN &amp;&amp; bird != </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s1">SoundManager.play(</span><span class="s3">&quot;jump&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">bird.jump()</span><span class="s0">;</span>
+            <span class="s0">return true;</span>
+        <span class="s1">}</span>
+        <span class="s0">return false;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">drawSurface() {</span>
+        <span class="s2">// Draw the game elements on the surface</span>
+        <span class="s0">if </span><span class="s1">(holder.getSurface().isValid()) {</span>
+            <span class="s1">canvas = holder.lockCanvas()</span><span class="s0">;</span>
+
+            <span class="s0">if </span><span class="s1">(backgroundBitmap != </span><span class="s0">null</span><span class="s1">) {</span>
+                <span class="s1">canvas.drawBitmap(backgroundBitmap</span><span class="s0">, </span><span class="s4">0</span><span class="s0">, </span><span class="s4">0</span><span class="s0">, null</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                <span class="s1">canvas.drawColor(Color.LTGRAY)</span><span class="s0">; </span><span class="s2">// fallback</span>
+            <span class="s1">}</span>
+
+            <span class="s1">bird.draw(canvas)</span><span class="s0">;</span>
+            <span class="s1">walls.draw(canvas)</span><span class="s0">;</span>
+            <span class="s1">candy.draw(canvas)</span><span class="s0">;</span>
+            <span class="s1">plus.draw(canvas)</span><span class="s0">;</span>
+            <span class="s1">holder.unlockCanvasAndPost(canvas)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">drawCountdown() {</span>
+        <span class="s2">// Draw the countdown on the canvas</span>
+        <span class="s0">if </span><span class="s1">(holder.getSurface().isValid()) {</span>
+            <span class="s1">canvas = holder.lockCanvas()</span><span class="s0">;</span>
+
+            <span class="s0">if </span><span class="s1">(backgroundBitmap != </span><span class="s0">null</span><span class="s1">) {</span>
+                <span class="s1">canvas.drawBitmap(backgroundBitmap</span><span class="s0">, </span><span class="s4">0</span><span class="s0">, </span><span class="s4">0</span><span class="s0">, null</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                <span class="s1">canvas.drawColor(Color.LTGRAY)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            <span class="s1">bird.draw(canvas)</span><span class="s0">;</span>
+            <span class="s1">walls.draw(canvas)</span><span class="s0">;</span>
+            <span class="s1">candy.draw(canvas)</span><span class="s0">;</span>
+            <span class="s1">plus.draw(canvas)</span><span class="s0">;</span>
+            <span class="s1">countDown.draw(canvas)</span><span class="s0">;</span>
+
+
+            <span class="s1">holder.unlockCanvasAndPost(canvas)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setBackgroundBitmap(Bitmap bitmap) {</span>
+        <span class="s0">this</span><span class="s1">.backgroundBitmap = Bitmap.createScaledBitmap(bitmap</span><span class="s0">, </span><span class="s1">getWidth()</span><span class="s0">, </span><span class="s1">getHeight()</span><span class="s0">, true</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setBird(Bird bird) {</span>
+        <span class="s0">this</span><span class="s1">.bird = bird</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setCandy(Candy candy) {</span>
+        <span class="s0">this</span><span class="s1">.candy = candy</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setWalls(Walls walls) {</span>
+        <span class="s0">this</span><span class="s1">.walls = walls</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setPlus(Plus plus) {</span>
+        <span class="s0">this</span><span class="s1">.plus = plus</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setCountDown(CountDown countDown) {</span>
+        <span class="s0">this</span><span class="s1">.countDown = countDown</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">surfaceCreated(SurfaceHolder holder) {</span>
+        <span class="s2">// controller.start() should be triggered from activity once bitmaps and user are ready</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">surfaceChanged(SurfaceHolder holder</span><span class="s0">, int </span><span class="s1">format</span><span class="s0">, int </span><span class="s1">width</span><span class="s0">, int </span><span class="s1">height) {}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">surfaceDestroyed(SurfaceHolder holder) {}</span>
+<span class="s1">}</span>
+
+
+</pre>
+</body>
+</html>

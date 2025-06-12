@@ -1,0 +1,547 @@
+<html>
+<head>
+<title>GameController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #808080;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+GameController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.spikedash_singleplayer</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.Dialog</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.Bitmap</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.Color</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.graphics.drawable.ColorDrawable</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.ImageButton</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.LinearLayout</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.SeekBar</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Switch</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Activities.GameActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Activities.LeaderboardActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Activities.MainActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Activities.StatsActivity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Bird</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Candy</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.CountDown</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Plus</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Spike</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Entitys.Walls</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Managers.MusicManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Managers.SoundManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.example.spikedash_singleplayer.Managers.VibrationManager</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DataSnapshot</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.DatabaseReference</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.database.FirebaseDatabase</span><span class="s0">;</span>
+
+
+<span class="s0">public class </span><span class="s1">GameController </span><span class="s0">implements </span><span class="s1">Runnable {</span>
+    <span class="s1">TextView tvScore</span><span class="s0">, </span><span class="s1">tvCandies</span><span class="s0">;</span>
+    <span class="s1">ImageButton btnPause</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Context context</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">User user</span><span class="s0">;</span>
+    <span class="s0">private long </span><span class="s1">countdownStartTime</span><span class="s0">;</span>
+    <span class="s0">private boolean </span><span class="s1">tookCandy = </span><span class="s0">false;</span>
+    <span class="s0">private </span><span class="s1">Candy candy</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Walls walls</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Plus plus</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">CountDown currentNumber</span><span class="s0">;</span>
+    <span class="s0">private int </span><span class="s1">candies = </span><span class="s2">0</span><span class="s0">;</span>
+    <span class="s0">private boolean </span><span class="s1">isRunning = </span><span class="s0">false;</span>
+    <span class="s0">private boolean </span><span class="s1">isCountingDown = </span><span class="s0">false;</span>
+    <span class="s0">private long </span><span class="s1">lastCountdownTickTime = </span><span class="s2">0</span><span class="s0">;</span>
+    <span class="s0">private int </span><span class="s1">wallScore = </span><span class="s2">0</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">GameView gameView</span><span class="s0">;</span>
+    <span class="s0">private int </span><span class="s1">currentCount = </span><span class="s2">3</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Bird bird</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Thread gameThread</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Dialog d</span><span class="s0">;</span>
+    <span class="s0">public </span><span class="s1">GameController(GameView gameView</span><span class="s0">, </span><span class="s1">Context context</span><span class="s0">, </span><span class="s1">User user</span><span class="s0">,</span>
+                          <span class="s1">TextView tvScore</span><span class="s0">, </span><span class="s1">TextView tvCandies</span><span class="s0">, </span><span class="s1">ImageButton btnPause) {</span>
+        <span class="s3">//constructor</span>
+        <span class="s0">this</span><span class="s1">.gameView = gameView</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.context = context</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.user = user</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.tvScore = tvScore</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.tvCandies = tvCandies</span><span class="s0">;</span>
+        <span class="s0">this</span><span class="s1">.btnPause = btnPause</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">initializeGame(Bitmap bitmapBird</span><span class="s0">, </span><span class="s1">Bitmap spikeBitmap</span><span class="s0">, </span><span class="s1">Bitmap candyBitmap</span><span class="s0">, </span><span class="s1">Bitmap plusBitmap) {</span>
+        <span class="s3">// Initialize the game elements</span>
+        <span class="s0">int </span><span class="s1">screenWidth = gameView.getWidth()</span><span class="s0">;</span>
+        <span class="s0">int </span><span class="s1">screenHeight = gameView.getHeight()</span><span class="s0">;</span>
+
+        <span class="s1">walls = </span><span class="s0">new </span><span class="s1">Walls(screenWidth</span><span class="s0">, </span><span class="s1">screenHeight</span><span class="s0">, </span><span class="s1">spikeBitmap)</span><span class="s0">;</span>
+        <span class="s1">candy = </span><span class="s0">new </span><span class="s1">Candy(screenWidth</span><span class="s0">, </span><span class="s1">screenHeight</span><span class="s0">, </span><span class="s1">candyBitmap)</span><span class="s0">;</span>
+        <span class="s1">plus = </span><span class="s0">new </span><span class="s1">Plus(screenWidth</span><span class="s0">, </span><span class="s1">screenHeight</span><span class="s0">, </span><span class="s1">plusBitmap)</span><span class="s0">;</span>
+        <span class="s1">plus.setX(candy.getX())</span><span class="s0">;</span>
+        <span class="s1">plus.setY(candy.getY())</span><span class="s0">;</span>
+
+        <span class="s1">gameView.setWalls(walls)</span><span class="s0">;</span>
+        <span class="s1">gameView.setCandy(candy)</span><span class="s0">;</span>
+        <span class="s1">gameView.setPlus(plus)</span><span class="s0">;</span>
+
+
+        <span class="s1">btnPause.setOnClickListener(v -&gt; {</span>
+            <span class="s1">stop()</span><span class="s0">;</span>
+            <span class="s1">createPauseDialog()</span><span class="s0">;</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s3">// Initialize the bird with a difficulty multiplier from Firebase</span>
+        <span class="s1">FirebaseDatabase.getInstance()</span>
+                <span class="s1">.getReference(</span><span class="s4">&quot;users&quot;</span><span class="s1">)</span>
+                <span class="s1">.child(user.getUid())</span>
+                <span class="s1">.child(</span><span class="s4">&quot;difficultyMultiplier&quot;</span><span class="s1">)</span>
+                <span class="s1">.get()</span>
+                <span class="s1">.addOnSuccessListener(snapshot -&gt; {</span>
+                    <span class="s0">float </span><span class="s1">multiplier = </span><span class="s2">1.0f</span><span class="s0">;</span>
+                    <span class="s0">if </span><span class="s1">(snapshot.exists()) {</span>
+                        <span class="s1">Float value = snapshot.getValue(Float.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s0">if </span><span class="s1">(value != </span><span class="s0">null</span><span class="s1">) multiplier = value</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+
+                    <span class="s1">bird = </span><span class="s0">new </span><span class="s1">Bird(screenWidth</span><span class="s0">, </span><span class="s1">screenHeight</span><span class="s0">, </span><span class="s1">bitmapBird</span><span class="s0">, </span><span class="s1">multiplier)</span><span class="s0">;</span>
+                    <span class="s1">gameView.setBird(bird)</span><span class="s0">;</span>
+
+                    <span class="s1">start()</span><span class="s0">;</span>
+                <span class="s1">})</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+
+    <span class="s0">public void </span><span class="s1">start() { </span><span class="s3">// start the game</span>
+        <span class="s0">if </span><span class="s1">(gameThread == </span><span class="s0">null </span><span class="s1">|| !gameThread.isAlive()) {</span>
+            <span class="s1">isRunning = </span><span class="s0">true;</span>
+            <span class="s1">gameThread = </span><span class="s0">new </span><span class="s1">Thread(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">gameThread.start()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">stop() {</span>
+        <span class="s3">// Stop the game</span>
+        <span class="s1">isRunning = </span><span class="s0">false;</span>
+        <span class="s0">if </span><span class="s1">(gameThread != </span><span class="s0">null</span><span class="s1">) {</span>
+            <span class="s0">try </span><span class="s1">{</span>
+                <span class="s3">// Wait for the game thread to finish</span>
+                <span class="s1">gameThread.join()</span><span class="s0">;</span>
+            <span class="s1">} </span><span class="s0">catch </span><span class="s1">(InterruptedException e) {</span>
+                <span class="s1">e.printStackTrace()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">run() {</span>
+        <span class="s3">// Run the game loop</span>
+        <span class="s0">while </span><span class="s1">(isRunning) {</span>
+            <span class="s3">// Check if the game is paused</span>
+            <span class="s0">if </span><span class="s1">(isCountingDown) {</span>
+                <span class="s1">count()</span><span class="s0">;</span>
+                <span class="s0">continue;</span>
+            <span class="s1">}</span>
+            <span class="s1">gameView.drawSurface()</span><span class="s0">;</span>
+            <span class="s3">// Handle collisions with candies</span>
+            <span class="s1">eatCandies()</span><span class="s0">;</span>
+            <span class="s0">if </span><span class="s1">(!handleCollisions()) {</span>
+                <span class="s3">// If a collision is detected, stop the game</span>
+                <span class="s1">stop()</span><span class="s0">;</span>
+                <span class="s0">continue;</span>
+            <span class="s1">}</span>
+            <span class="s3">// Update the game elements</span>
+            <span class="s1">candy.move()</span><span class="s0">;</span>
+            <span class="s1">bird.move()</span><span class="s0">;</span>
+
+            <span class="s0">if </span><span class="s1">(plus.isActive()) {</span>
+                <span class="s1">plus.move()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">count() {</span>
+        <span class="s3">// Countdown logic</span>
+        <span class="s0">long </span><span class="s1">currentTime = System.currentTimeMillis()</span><span class="s0">;</span>
+
+        <span class="s0">if </span><span class="s1">(currentNumber != </span><span class="s0">null </span><span class="s1">&amp;&amp; currentNumber.isFinished()) {</span>
+            <span class="s1">currentNumber = </span><span class="s0">null;</span>
+        <span class="s1">}</span>
+        <span class="s3">// If the countdown has started, update the countdown</span>
+        <span class="s0">if </span><span class="s1">(currentTime - lastCountdownTickTime &gt;= </span><span class="s2">1000</span><span class="s1">) {</span>
+            <span class="s1">currentCount--</span><span class="s0">;</span>
+            <span class="s1">lastCountdownTickTime = currentTime</span><span class="s0">;</span>
+
+            <span class="s0">if </span><span class="s1">(currentCount &gt; </span><span class="s2">0</span><span class="s1">) {</span>
+                <span class="s3">// Create a new CountDown object with the current count</span>
+                <span class="s1">currentNumber = </span><span class="s0">new </span><span class="s1">CountDown(gameView.getWidth()</span><span class="s0">, </span><span class="s1">gameView.getHeight()</span><span class="s0">, null, </span><span class="s1">currentCount)</span><span class="s0">;</span>
+                <span class="s1">gameView.setCountDown(currentNumber)</span><span class="s0">;</span>
+            <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                <span class="s3">// Countdown finished</span>
+                <span class="s1">isCountingDown = </span><span class="s0">false;</span>
+                <span class="s1">currentNumber = </span><span class="s0">null;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s3">// If the countdown is still active, move the countdown number</span>
+        <span class="s0">if </span><span class="s1">(currentNumber != </span><span class="s0">null </span><span class="s1">&amp;&amp; !currentNumber.isFinished()) {</span>
+            <span class="s1">currentNumber.move()</span><span class="s0">;</span>
+            <span class="s1">gameView.drawCountdown()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">eatCandies() {</span>
+        <span class="s3">// Check if the bird collides with the candy</span>
+        <span class="s0">if </span><span class="s1">(bird.collidesWith(candy.getX()</span><span class="s0">, </span><span class="s1">candy.getY()</span><span class="s0">, </span><span class="s1">candy.getWidth()</span><span class="s0">, </span><span class="s1">candy.getHeight())) {</span>
+            <span class="s0">int </span><span class="s1">candyX = candy.getX()</span><span class="s0">;</span>
+            <span class="s0">int </span><span class="s1">candyY = candy.getY()</span><span class="s0">;</span>
+            <span class="s3">// If the candy is not taken, take it</span>
+            <span class="s1">candy.takesCandy()</span><span class="s0">;</span>
+            <span class="s1">SoundManager.play(</span><span class="s4">&quot;candy&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">candies++</span><span class="s0">;</span>
+            <span class="s1">((AppCompatActivity) context).runOnUiThread(() -&gt; {</span>
+                <span class="s3">// Update the score and candies TextViews</span>
+                <span class="s1">tvCandies.setText(String.valueOf(candies))</span><span class="s0">;</span>
+            <span class="s1">})</span><span class="s0">;</span>
+            <span class="s3">// Activate the plus entity</span>
+            <span class="s1">plus.activate(candyX + candy.getWidth() / </span><span class="s2">2 </span><span class="s1">- plus.getBitmapWidth() / </span><span class="s2">2</span><span class="s0">,</span>
+                    <span class="s1">candyY + candy.getHeight() / </span><span class="s2">2 </span><span class="s1">- plus.getBitmapHeight() / </span><span class="s2">2</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">tookCandy = </span><span class="s0">false;</span>
+        <span class="s1">}</span>
+        <span class="s3">//Move the candy every 5 wall switches</span>
+        <span class="s0">else if </span><span class="s1">(wallScore % </span><span class="s2">5 </span><span class="s1">== </span><span class="s2">0 </span><span class="s1">&amp;&amp; wallScore != </span><span class="s2">0</span><span class="s1">) {</span>
+            <span class="s0">if </span><span class="s1">(!tookCandy) {</span>
+                <span class="s1">candy.takesCandy()</span><span class="s0">;</span>
+                <span class="s1">tookCandy = </span><span class="s0">true;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s0">else </span><span class="s1">{</span>
+            <span class="s3">// If the candy is not taken, reset its position</span>
+            <span class="s1">tookCandy = </span><span class="s0">false;</span>
+        <span class="s1">}</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">handleCollisions() {</span>
+        <span class="s3">// Check for collisions with walls and spikes</span>
+        <span class="s0">boolean </span><span class="s1">isCollide = </span><span class="s0">false;</span>
+        <span class="s0">if </span><span class="s1">(walls.isLeftWallActive()) {</span>
+            <span class="s0">for </span><span class="s1">(Spike spike : walls.left_spikes) {</span>
+                <span class="s3">// Check if the bird collides with the spike</span>
+                <span class="s0">if </span><span class="s1">(bird.collidesWith(spike.getX()</span><span class="s0">, </span><span class="s1">spike.getY()</span><span class="s0">, </span><span class="s1">spike.getWidth()</span><span class="s0">, </span><span class="s1">spike.getHeight())) {</span>
+                    <span class="s1">handleCollision()</span><span class="s0">;</span>
+                    <span class="s1">isCollide = </span><span class="s0">true;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+            <span class="s0">for </span><span class="s1">(Spike spike : walls.right_spikes) {</span>
+                <span class="s3">// Check if the bird collides with the spike</span>
+                <span class="s0">if </span><span class="s1">(bird.collidesWith(spike.getX()</span><span class="s0">, </span><span class="s1">spike.getY()</span><span class="s0">, </span><span class="s1">spike.getWidth()</span><span class="s0">, </span><span class="s1">spike.getHeight())) {</span>
+                    <span class="s1">handleCollision()</span><span class="s0">;</span>
+                    <span class="s1">isCollide = </span><span class="s0">true;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s3">// Check if the bird reaches the left or right wall</span>
+        <span class="s0">if </span><span class="s1">(bird.getX() &lt;= </span><span class="s2">0 </span><span class="s1">&amp;&amp; walls.isLeftWallActive()) {</span>
+            <span class="s1">walls.switchWall()</span><span class="s0">;</span>
+            <span class="s1">VibrationManager.vibrate(context</span><span class="s0">, </span><span class="s2">5</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">wallScore++</span><span class="s0">;</span>
+            <span class="s1">SoundManager.play(</span><span class="s4">&quot;select&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">bird.increaseSpeed()</span><span class="s0">;</span>
+            <span class="s3">// Update the score TextView on the UI thread</span>
+            <span class="s1">((AppCompatActivity) context).runOnUiThread(() -&gt; {</span>
+                <span class="s1">tvScore.setText(</span><span class="s4">&quot;Score: &quot; </span><span class="s1">+ wallScore)</span><span class="s0">;</span>
+            <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">else if </span><span class="s1">(bird.getX() &gt;= gameView.getWidth() - bird.getWidth() &amp;&amp; !walls.isLeftWallActive()) {</span>
+            <span class="s1">VibrationManager.vibrate(context</span><span class="s0">, </span><span class="s2">5</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">walls.switchWall()</span><span class="s0">;</span>
+            <span class="s1">wallScore++</span><span class="s0">;</span>
+            <span class="s1">SoundManager.play(</span><span class="s4">&quot;select&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s3">//update the score TextView on the UI thread</span>
+            <span class="s1">bird.increaseSpeed()</span><span class="s0">;</span><span class="s1">((AppCompatActivity) context).runOnUiThread(() -&gt; {</span>
+                <span class="s1">tvScore.setText(</span><span class="s4">&quot;Score: &quot; </span><span class="s1">+ wallScore)</span><span class="s0">;</span>
+            <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+        <span class="s3">// Check if the bird collides with the floor or ceiling</span>
+        <span class="s0">float </span><span class="s1">floorY = gameView.getHeight() - (gameView.getHeight() / </span><span class="s2">1920f</span><span class="s1">) * </span><span class="s2">200</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(bird.getY() + bird.getHeight() &gt;= floorY || bird.getY() &lt; (gameView.getHeight() / </span><span class="s2">1920f</span><span class="s1">) * </span><span class="s2">250</span><span class="s1">) {</span>
+            <span class="s1">isCollide = </span><span class="s0">true;</span>
+            <span class="s1">handleCollision()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">return </span><span class="s1">!isCollide</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+
+    <span class="s0">private void </span><span class="s1">handleCollision() {</span>
+        <span class="s3">// Handle the collision with the wall or spike</span>
+        <span class="s1">SoundManager.play(</span><span class="s4">&quot;hit&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">VibrationManager.vibrate(context</span><span class="s0">, </span><span class="s2">200</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">((AppCompatActivity) context).runOnUiThread(() -&gt; {</span>
+            <span class="s1">createGameOverDialog()</span><span class="s0">;</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">stop()</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">createGameOverDialog() {</span>
+        <span class="s3">// Create a dialog to show the game over screen</span>
+        <span class="s1">d = </span><span class="s0">new </span><span class="s1">Dialog(context)</span><span class="s0">;</span>
+        <span class="s1">d.getWindow().setBackgroundDrawable(</span><span class="s0">new </span><span class="s1">ColorDrawable(Color.TRANSPARENT))</span><span class="s0">;</span>
+        <span class="s1">d.setContentView(R.layout.over_dialog)</span><span class="s0">;</span>
+
+        <span class="s1">ImageButton imgLeaderBoard = d.findViewById(R.id.imgLeaderBoard)</span><span class="s0">;</span>
+        <span class="s1">ImageButton imgStats = d.findViewById(R.id.imgStats)</span><span class="s0">;</span>
+        <span class="s1">LinearLayout btnRestart = d.findViewById(R.id.replayButton)</span><span class="s0">;</span>
+        <span class="s1">LinearLayout btnHome = d.findViewById(R.id.homeButton)</span><span class="s0">;</span>
+        <span class="s1">TextView dialogScore = d.findViewById(R.id.tvScore)</span><span class="s0">;</span>
+        <span class="s1">TextView dialogCandies = d.findViewById(R.id.tvCandies)</span><span class="s0">;</span>
+        <span class="s1">dialogScore.setText(String.valueOf(wallScore))</span><span class="s0">;</span>
+        <span class="s1">dialogCandies.setText(String.valueOf(candies))</span><span class="s0">;</span>
+        <span class="s1">TextView tvHighScore = d.findViewById(R.id.tvHighScore)</span><span class="s0">;</span>
+        <span class="s1">TextView tvGames = d.findViewById(R.id.tvGames)</span><span class="s0">;</span>
+
+        <span class="s3">// Update the dialog with the user's score and candies</span>
+        <span class="s1">DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(</span><span class="s4">&quot;users&quot;</span><span class="s1">)</span>
+                <span class="s1">.child(user.getUid())</span><span class="s0">;</span>
+        <span class="s1">user.add(candies)</span><span class="s0">;</span>
+        <span class="s1">userRef.child(</span><span class="s4">&quot;balance&quot;</span><span class="s1">).setValue(user.getBalance())</span><span class="s0">;</span>
+        <span class="s1">user.addGame()</span><span class="s0">;</span>
+
+
+        <span class="s0">if </span><span class="s1">(wallScore &gt;= user.getHighScore()) {</span>
+            <span class="s1">user.setHighScore(wallScore)</span><span class="s0">;</span>
+            <span class="s1">userRef.child(</span><span class="s4">&quot;highScore&quot;</span><span class="s1">).setValue(user.getHighScore())</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s1">userRef.child(</span><span class="s4">&quot;games&quot;</span><span class="s1">).setValue(user.getGames())</span><span class="s0">;</span>
+        <span class="s1">tvGames.setText(</span><span class="s4">&quot;GAMES PLAYED: &quot; </span><span class="s1">+ String.valueOf(user.getGames()))</span><span class="s0">;</span>
+        <span class="s1">tvHighScore.setText(</span><span class="s4">&quot;HIGHSCORE: &quot;</span><span class="s1">+ String.valueOf(user.getHighScore()))</span><span class="s0">;</span>
+
+        <span class="s1">btnRestart.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s3">// Restart the game</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">SoundManager.play(</span><span class="s4">&quot;click&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">d.dismiss()</span><span class="s0">;</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(context</span><span class="s0">, </span><span class="s1">GameActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">intent.putExtra(</span><span class="s4">&quot;user&quot;</span><span class="s0">, </span><span class="s1">user)</span><span class="s0">;</span>
+                <span class="s1">context.startActivity(intent)</span><span class="s0">;</span>
+                <span class="s1">((AppCompatActivity) context).finish()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">btnHome.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s3">// Go back to the home screen</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">SoundManager.play(</span><span class="s4">&quot;click&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">d.dismiss()</span><span class="s0">;</span>
+                <span class="s1">MusicManager.stop()</span><span class="s0">;</span>
+                <span class="s1">MusicManager.release()</span><span class="s0">;</span>
+                <span class="s1">Intent resultIntent = </span><span class="s0">new </span><span class="s1">Intent()</span><span class="s0">;</span>
+                <span class="s1">resultIntent.putExtra(</span><span class="s4">&quot;user&quot;</span><span class="s0">, </span><span class="s1">user)</span><span class="s0">;</span>
+                <span class="s1">((AppCompatActivity) context).setResult(AppCompatActivity.RESULT_OK</span><span class="s0">, </span><span class="s1">resultIntent)</span><span class="s0">;</span>
+                <span class="s1">((AppCompatActivity) context).finish()</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">imgLeaderBoard.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s3">// Open the leaderboard activity</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">SoundManager.play(</span><span class="s4">&quot;click&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">MusicManager.stop()</span><span class="s0">;</span>
+                <span class="s1">MusicManager.release()</span><span class="s0">;</span>
+                <span class="s1">MusicManager.start(context</span><span class="s0">, </span><span class="s1">R.raw.bgm_music)</span><span class="s0">;</span>
+                <span class="s1">d.dismiss()</span><span class="s0">;</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(context</span><span class="s0">, </span><span class="s1">LeaderboardActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">intent.putExtra(</span><span class="s4">&quot;user&quot;</span><span class="s0">, </span><span class="s1">user)</span><span class="s0">;</span>
+                <span class="s1">context.startActivity(intent)</span><span class="s0">;</span>
+                <span class="s1">((AppCompatActivity) context).finish()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">imgStats.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s3">// Open the stats activity</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">SoundManager.play(</span><span class="s4">&quot;click&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">MusicManager.stop()</span><span class="s0">;</span>
+                <span class="s1">MusicManager.release()</span><span class="s0">;</span>
+                <span class="s1">MusicManager.start(context</span><span class="s0">, </span><span class="s1">R.raw.bgm_music)</span><span class="s0">;</span>
+                <span class="s1">d.dismiss()</span><span class="s0">;</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(context</span><span class="s0">, </span><span class="s1">StatsActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">intent.putExtra(</span><span class="s4">&quot;user&quot;</span><span class="s0">, </span><span class="s1">user)</span><span class="s0">;</span>
+                <span class="s1">context.startActivity(intent)</span><span class="s0">;</span>
+                <span class="s1">((AppCompatActivity) context).finish()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">d.setOnCancelListener(dialog -&gt; {</span>
+            <span class="s3">// If the dialog is canceled, exit the game</span>
+            <span class="s1">d.dismiss()</span><span class="s0">;</span>
+            <span class="s1">MusicManager.stop()</span><span class="s0">;</span>
+            <span class="s1">MusicManager.release()</span><span class="s0">;</span>
+            <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(context</span><span class="s0">, </span><span class="s1">MainActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">intent.putExtra(</span><span class="s4">&quot;user&quot;</span><span class="s0">, </span><span class="s1">user)</span><span class="s0">;</span>
+            <span class="s1">context.startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">((AppCompatActivity) context).finish()</span><span class="s0">;</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">d.show()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">createPauseDialog() {</span>
+        <span class="s3">// Create a dialog to show the pause menu</span>
+        <span class="s1">d = </span><span class="s0">new </span><span class="s1">Dialog(context)</span><span class="s0">;</span>
+        <span class="s1">d.getWindow().setBackgroundDrawable(</span><span class="s0">new </span><span class="s1">ColorDrawable(Color.TRANSPARENT))</span><span class="s0">;</span>
+        <span class="s1">d.setContentView(R.layout.pause_dialog)</span><span class="s0">;</span>
+        <span class="s1">LinearLayout btnResume = d.findViewById(R.id.btn_resume)</span><span class="s0">;</span>
+        <span class="s1">LinearLayout btnRestart = d.findViewById(R.id.btn_replay)</span><span class="s0">;</span>
+        <span class="s1">LinearLayout btnHome = d.findViewById(R.id.btn_home)</span><span class="s0">;</span>
+
+        <span class="s1">SeekBar skBgm = d.findViewById(R.id.skBgm)</span><span class="s0">;</span>
+        <span class="s1">SeekBar skSound = d.findViewById(R.id.skSound)</span><span class="s0">;</span>
+        <span class="s1">Switch swVibration = d.findViewById(R.id.swVibration)</span><span class="s0">;</span>
+
+
+
+
+        <span class="s1">DatabaseReference settingsRef = FirebaseDatabase.getInstance()</span>
+                <span class="s1">.getReference(</span><span class="s4">&quot;users&quot;</span><span class="s1">)</span>
+                <span class="s1">.child(user.getUid())</span>
+                <span class="s1">.child(</span><span class="s4">&quot;settings&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s3">// Load the user's settings from Firebase</span>
+        <span class="s1">settingsRef.get().addOnCompleteListener(task -&gt; {</span>
+            <span class="s0">if </span><span class="s1">(task.isSuccessful() &amp;&amp; task.getResult().exists()) {</span>
+                <span class="s1">DataSnapshot snapshot = task.getResult()</span><span class="s0">;</span>
+                <span class="s0">double </span><span class="s1">sound = snapshot.child(</span><span class="s4">&quot;sound&quot;</span><span class="s1">).getValue(Double.</span><span class="s0">class</span><span class="s1">) != </span><span class="s0">null </span><span class="s1">?</span>
+                        <span class="s1">snapshot.child(</span><span class="s4">&quot;sound&quot;</span><span class="s1">).getValue(Double.</span><span class="s0">class</span><span class="s1">) : </span><span class="s2">1.0</span><span class="s0">;</span>
+                <span class="s0">double </span><span class="s1">bgm = snapshot.child(</span><span class="s4">&quot;bgm&quot;</span><span class="s1">).getValue(Double.</span><span class="s0">class</span><span class="s1">) != </span><span class="s0">null </span><span class="s1">?</span>
+                        <span class="s1">snapshot.child(</span><span class="s4">&quot;bgm&quot;</span><span class="s1">).getValue(Double.</span><span class="s0">class</span><span class="s1">) : </span><span class="s2">1.0</span><span class="s0">;</span>
+                <span class="s0">boolean </span><span class="s1">vibration = snapshot.child(</span><span class="s4">&quot;vibration&quot;</span><span class="s1">).getValue(Boolean.</span><span class="s0">class</span><span class="s1">) != </span><span class="s0">null </span><span class="s1">&amp;&amp;</span>
+                        <span class="s1">snapshot.child(</span><span class="s4">&quot;vibration&quot;</span><span class="s1">).getValue(Boolean.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s3">// Set the SeekBars and Switch based on the user's settings</span>
+                <span class="s1">skSound.setProgress((</span><span class="s0">int</span><span class="s1">) (sound * </span><span class="s2">100</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">skBgm.setProgress((</span><span class="s0">int</span><span class="s1">) (bgm * </span><span class="s2">100</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">swVibration.setChecked(vibration)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s3">// Set the SeekBar listeners to update the user's settings in Firebase</span>
+        <span class="s1">skSound.setOnSeekBarChangeListener(</span><span class="s0">new </span><span class="s1">SeekBar.OnSeekBarChangeListener() {</span>
+            <span class="s1">@Override </span><span class="s0">public void </span><span class="s1">onProgressChanged(SeekBar seekBar</span><span class="s0">, int </span><span class="s1">progress</span><span class="s0">, boolean </span><span class="s1">fromUser) {</span>
+                <span class="s0">float </span><span class="s1">vol = progress / </span><span class="s2">100f</span><span class="s0">;</span>
+                <span class="s1">settingsRef.child(</span><span class="s4">&quot;sound&quot;</span><span class="s1">).setValue(vol)</span><span class="s0">;</span>
+                <span class="s1">SoundManager.setVolume(vol)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            <span class="s1">@Override </span><span class="s0">public void </span><span class="s1">onStartTrackingTouch(SeekBar seekBar) {}</span>
+            <span class="s1">@Override </span><span class="s0">public void </span><span class="s1">onStopTrackingTouch(SeekBar seekBar) {}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">skBgm.setOnSeekBarChangeListener(</span><span class="s0">new </span><span class="s1">SeekBar.OnSeekBarChangeListener() {</span>
+            <span class="s1">@Override </span><span class="s0">public void </span><span class="s1">onProgressChanged(SeekBar seekBar</span><span class="s0">, int </span><span class="s1">progress</span><span class="s0">, boolean </span><span class="s1">fromUser) {</span>
+                <span class="s0">float </span><span class="s1">vol = progress / </span><span class="s2">100f</span><span class="s0">;</span>
+                <span class="s1">settingsRef.child(</span><span class="s4">&quot;bgm&quot;</span><span class="s1">).setValue(vol)</span><span class="s0">;</span>
+                <span class="s1">MusicManager.setVolume(vol)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            <span class="s1">@Override </span><span class="s0">public void </span><span class="s1">onStartTrackingTouch(SeekBar seekBar) {}</span>
+            <span class="s1">@Override </span><span class="s0">public void </span><span class="s1">onStopTrackingTouch(SeekBar seekBar) {}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s3">// Set the Switch listener to update the user's settings in Firebase</span>
+
+        <span class="s1">swVibration.setOnCheckedChangeListener((buttonView</span><span class="s0">, </span><span class="s1">isChecked) -&gt; {</span>
+            <span class="s1">VibrationManager.setEnabled(isChecked)</span><span class="s0">;</span>
+
+            <span class="s0">if </span><span class="s1">(isChecked) {</span>
+                <span class="s1">VibrationManager.vibrate(context</span><span class="s0">, </span><span class="s2">25</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            <span class="s1">settingsRef.child(</span><span class="s4">&quot;vibration&quot;</span><span class="s1">).setValue(isChecked)</span><span class="s0">;</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">btnResume.setOnClickListener(v -&gt; {</span>
+            <span class="s3">// Resume the game</span>
+            <span class="s1">SoundManager.play(</span><span class="s4">&quot;click&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">d.dismiss()</span><span class="s0">;</span>
+            <span class="s1">resumeGame()</span><span class="s0">;</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s3">// Restart the game</span>
+        <span class="s1">btnRestart.setOnClickListener(v -&gt; {</span>
+            <span class="s1">SoundManager.play(</span><span class="s4">&quot;click&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">d.dismiss()</span><span class="s0">;</span>
+            <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(context</span><span class="s0">, </span><span class="s1">GameActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">intent.putExtra(</span><span class="s4">&quot;user&quot;</span><span class="s0">, </span><span class="s1">user)</span><span class="s0">;</span>
+            <span class="s1">context.startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">((AppCompatActivity) context).finish()</span><span class="s0">;</span>
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s3">// Go back to the home screen</span>
+        <span class="s1">btnHome.setOnClickListener(v -&gt; {</span>
+            <span class="s1">SoundManager.play(</span><span class="s4">&quot;click&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">SoundManager.play(</span><span class="s4">&quot;click&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">d.dismiss()</span><span class="s0">;</span>
+            <span class="s1">MusicManager.stop()</span><span class="s0">;</span>
+            <span class="s1">MusicManager.release()</span><span class="s0">;</span>
+            <span class="s1">Intent resultIntent = </span><span class="s0">new </span><span class="s1">Intent()</span><span class="s0">;</span>
+            <span class="s1">resultIntent.putExtra(</span><span class="s4">&quot;user&quot;</span><span class="s0">, </span><span class="s1">user)</span><span class="s0">;</span>
+            <span class="s1">((AppCompatActivity) context).setResult(AppCompatActivity.RESULT_OK</span><span class="s0">, </span><span class="s1">resultIntent)</span><span class="s0">;</span>
+            <span class="s1">((AppCompatActivity) context).finish()</span><span class="s0">;</span>
+
+        <span class="s1">})</span><span class="s0">;</span>
+        <span class="s1">d.setOnCancelListener(dialog -&gt; {</span>
+            <span class="s1">d.dismiss()</span><span class="s0">;</span>
+            <span class="s1">resumeGame()</span><span class="s0">;</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">d.show()</span><span class="s0">;</span>
+
+
+    <span class="s1">}</span>
+
+    <span class="s0">public float </span><span class="s1">scaleX(</span><span class="s0">float </span><span class="s1">value) {</span>
+        <span class="s0">return </span><span class="s1">value * (gameView.getWidth() / </span><span class="s2">1080f</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public float </span><span class="s1">scaleY(</span><span class="s0">float </span><span class="s1">value) {</span>
+        <span class="s0">return </span><span class="s1">value * (gameView.getHeight() / </span><span class="s2">1920f</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s3">// Method to resume the game after a pause</span>
+    <span class="s0">public void </span><span class="s1">resumeGame() {</span>
+        <span class="s1">isCountingDown = </span><span class="s0">true;</span>
+        <span class="s1">currentCount = </span><span class="s2">3</span><span class="s0">;</span>
+        <span class="s1">countdownStartTime = System.currentTimeMillis()</span><span class="s0">;</span>
+        <span class="s1">lastCountdownTickTime = countdownStartTime</span><span class="s0">;</span>
+        <span class="s1">currentNumber = </span><span class="s0">new </span><span class="s1">CountDown(gameView.getWidth()</span><span class="s0">, </span><span class="s1">gameView.getHeight()</span><span class="s0">, null, </span><span class="s1">currentCount)</span><span class="s0">;</span>
+        <span class="s1">gameView.setCountDown(currentNumber)</span><span class="s0">;</span>
+
+        <span class="s1">isRunning = </span><span class="s0">true;</span>
+        <span class="s0">new </span><span class="s1">Thread(</span><span class="s0">this</span><span class="s1">).start()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+
+
+
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

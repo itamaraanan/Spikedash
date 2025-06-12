@@ -25,6 +25,10 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    //lock the back button to prevent problems
+    public void onBackPressed() {}
+
+    @Override
     public void onClick(View v) {
         if (v == btnLogin) {
             Intent intent = new Intent(MenuActivity.this, LoginActicvity.class);

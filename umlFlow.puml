@@ -1,0 +1,851 @@
+@startuml
+class com.example.spikedash_singleplayer.MusicManager {
++ {static} MediaPlayer mediaPlayer
++ {static} boolean isPlaying
++ {static} void start(Context,int)
++ {static} void stop()
++ {static} void release()
++ {static} void setVolume(float)
+}
+
+
+class com.example.spikedash_singleplayer.Activities.ForgotActivity {
+~ FirebaseAuth mAuth
+~ EditText etEmail
+~ LinearLayout btnResetPassword
+~ ImageView btnBack
+# void onCreate(Bundle)
+- void resetPassword()
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.GameView {
+- SurfaceHolder holder
+- Canvas canvas
+- Bitmap backgroundBitmap
+- Bird bird
+- Candy candy
+- Plus plus
+- Walls walls
+- CountDown countDown
+- GameController controller
++ void setGameController(GameController)
++ boolean onTouchEvent(MotionEvent)
++ void drawSurface()
++ void drawCountdown()
++ void setBackgroundBitmap(Bitmap)
++ void setBird(Bird)
++ void setCandy(Candy)
++ void setWalls(Walls)
++ void setPlus(Plus)
++ void setCountDown(CountDown)
++ void surfaceCreated(SurfaceHolder)
++ void surfaceChanged(SurfaceHolder,int,int,int)
++ void surfaceDestroyed(SurfaceHolder)
+}
+
+
+class com.example.spikedash_singleplayer.Fragments.StorageSkinFragment {
+~ RecyclerView recyclerView
+~ StorageSkinAdapter adapter
+~ Dialog progressDialog
+~ List<StorageItem> skinList
+- void loadOwnedSkins()
+- void errorHandler(Exception)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.ImageUtils {
+- {static} int MAX_IMAGE_DIMENSION
+- {static} int COMPRESSION_QUALITY
+- {static} int MAX_BASE64_SIZE
++ {static} String encodeImage(Bitmap)
+- {static} Bitmap resizeBitmapIfNeeded(Bitmap)
++ {static} Bitmap decodeImage(String)
+}
+
+
+class com.example.spikedash_singleplayer.Fragments.StorageBackFragment {
+~ RecyclerView recyclerView
+~ Dialog progressDialog
+~ StorageBackAdapter adapter
+~ List<StorageItem> backgroundList
+- void loadOwnedBackgrounds()
+- void errorHandler(Exception)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.Activities.ShopActivity {
+~ TextView skinsTab
+~ View skinsIndicator
+~ TextView tvBalance
+~ User user
+~ ImageButton btnBack
+# void onCreate(Bundle)
+- void loadFragment(Fragment)
++ void refreshBalance()
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.Entitys.Candy {
+- Random random
+- float floatOffset
+- float floatSpeed
+- float floatAmplitude
+- float counter
++ void draw(Canvas)
++ int getWidth()
++ int getHeight()
++ void takesCandy()
++ void move()
+}
+
+
+class com.example.spikedash_singleplayer.Activities.FriendsActivity {
+- ImageButton btnReturn
+- TabLayout tabLayout
+- ViewPager2 viewPager
+# void onCreate(Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.Activities.FriendsActivity$FriendsPagerAdapter {
++ Fragment createFragment(int)
++ int getItemCount()
+}
+
+class com.example.spikedash_singleplayer.Activities.SettingsActivity {
+~ ImageButton btnBack
+~ SeekBar soundSeekBar
+~ Switch vibrationSwitch
+~ LinearLayout btnHowToPlay
+~ FirebaseUser user
+~ DatabaseReference settingsRef
+~ String uid
+# void onCreate(Bundle)
+- void loadSettings()
+- void deleteAccount()
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.UsersAdapter {
+- List<User> users
+- Context context
+- OnSendRequestListener requestListener
++ UsersAdapter.UserViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(UserViewHolder,int)
+- void uploadImage(User,ImageView)
++ int getItemCount()
+}
+
+
+interface com.example.spikedash_singleplayer.Adapters.UsersAdapter$OnSendRequestListener {
+~ void onSendRequest(User)
+}
+
+class com.example.spikedash_singleplayer.Adapters.UsersAdapter$UserViewHolder {
+~ TextView tvName
+~ ImageView ivProfilePicture
+~ ImageButton btnAddFriend
+}
+
+class com.example.spikedash_singleplayer.Activities.StatsActivity {
+~ ImageButton btnReturn
+~ User user
+~ TextView balanceValue
+# void onCreate(Bundle)
+- void init()
+}
+
+
+class com.example.spikedash_singleplayer.Entitys.Plus {
+- int alpha
+- boolean active
+- Paint paint
++ void move()
++ void draw(Canvas)
++ void setX(int)
++ void setY(int)
++ void activate(int,int)
++ int getBitmapWidth()
++ int getBitmapHeight()
++ boolean isActive()
+}
+
+
+class com.example.spikedash_singleplayer.Fragments.SearchFragment {
+~ RecyclerView recyclerView
+~ UsersAdapter adapter
+~ String currentUid
+~ ImageButton btnSearch
+~ EditText etSearch
+~ List<User> userList
+~ Set<String> friendUids
+- void loadUsers(String)
+- void sendFriendRequest(User)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.Entitys.Walls {
++ ArrayList<Spike> left_spikes
++ ArrayList<Spike> right_spikes
+- int screen_width
+- int screen_height
+- Bitmap spikeBitmap
+- boolean isLeftWallActive
+- int scaleY(int)
+- int scaleX(int)
+- void generateLeft()
+- void generateRight()
++ void draw(Canvas)
++ void switchWall()
++ boolean isLeftWallActive()
+}
+
+
+class com.example.spikedash_singleplayer.Activities.LoginActicvity {
+~ FirebaseAuth mAuth
+~ DatabaseReference mDatabase
+~ EditText etEmail
+~ LinearLayout btnLogin
+~ TextView btnGoToSignUp
+~ ImageButton btnBack
+~ ImageButton btnShowPassword
+# void onCreate(Bundle)
+- void login(String,String,Dialog)
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.Entitys.Bird {
++ boolean gameStarted
+- float velocity
+- float gravity
+- float jumpStrength
+- float floatOffset
+- float floatSpeed
+- float floatAmplitude
+- float counter
+- float horizontalSpeed
+~ boolean Right
+- float difficultyMultiplier
++ void move()
++ void draw(Canvas)
++ void fly()
++ void jump()
++ void increaseSpeed()
++ void setBitmap(Bitmap)
++ void setY(int)
++ void setX(int)
++ int getWidth()
++ int getHeight()
++ boolean collidesWith(int,int,int,int)
+}
+
+
+class com.example.spikedash_singleplayer.Fragments.AllPlayersFragment {
+~ RecyclerView recyclerView
+~ UsersAdapter adapter
+~ String currentUid
+~ TextView tvPlayerCount
+~ List<User> userList
+~ Set<String> friendUids
+~ Dialog progressDialog
+- void loadUsers()
+- void sendFriendRequest(User)
+- void errorHandler(Exception)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.Activities.SignupActivity {
+~ FirebaseAuth mAuth
+~ EditText etEmail
+~ LinearLayout btnSingup
+~ ActivityResultLauncher<Intent> cameraLauncher
+~ String base64Pic
+~ ImageButton btnBack
+~ ImageView ivProfilePicture
+~ Dialog d
+~ Dialog progressDialog
+~ DatabaseReference mDatabase
+# void onCreate(Bundle)
+- void initializeCameraAndGallery()
+- void createAccount(String,String,String)
+- void writeNewUser(String,String,String)
+- void showProgressDialog(String)
+- void hideProgressDialog()
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.StorageBackAdapter {
+- List<StorageItem> backgroundsList
+- Context context
+- String equippedBackgroundId
++ void setEquippedBackground(String)
++ StorageBackAdapter.ViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(ViewHolder,int)
++ int getItemCount()
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.StorageBackAdapter$ViewHolder {
+~ ImageView imageView
+~ TextView nameView
+~ LinearLayout contentLayout
+}
+
+class com.example.spikedash_singleplayer.Adapters.BackgroundAdapter {
+- List<StoreItem> backgrounds
+- Context context
+- Dialog dialog
+- OnBackgroundRefreshRequest refreshListener
++ void setOnBackgroundRefreshRequest(OnBackgroundRefreshRequest)
++ BackgroundViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(BackgroundViewHolder,int)
++ void createBuyDialog(StoreItem)
++ int getItemCount()
+}
+
+
+interface com.example.spikedash_singleplayer.Adapters.BackgroundAdapter$OnBackgroundRefreshRequest {
+~ void refresh()
+}
+
+class com.example.spikedash_singleplayer.Adapters.BackgroundAdapter$BackgroundViewHolder {
+~ TextView name
+~ ImageView image
+}
+
+class com.example.spikedash_singleplayer.Entitys.Spike {
++ int getX()
++ int getY()
++ int getWidth()
++ int getHeight()
++ void move()
+}
+
+class com.example.spikedash_singleplayer.Fragments.FriendsLeaderFragment {
+~ List<PlayerStats> friendsList
+~ FriendsLeaderAdapter adapter
+~ RecyclerView recyclerView
+~ Dialog progressDialog
+~ String currentUid
+- void loadFriends()
+- void errorHandler(Exception)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.FriendsLeaderAdapter {
+- Context context
+- List<PlayerStats> statsList
+- String loggedInUid
++ ViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(ViewHolder,int)
++ int getItemCount()
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.FriendsLeaderAdapter$ViewHolder {
+~ TextView tvName
+~ RelativeLayout root
+}
+
+class com.example.spikedash_singleplayer.Activities.StorageActivity {
+~ TextView skinsTab
+~ View skinsIndicator
+~ User user
+~ ImageButton btnBack
+# void onCreate(Bundle)
+- void loadFragment(Fragment)
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.GameController {
+~ TextView tvScore
+~ ImageButton btnPause
+- Context context
+- User user
+- long countdownStartTime
+- boolean tookCandy
+- Candy candy
+- Walls walls
+- Plus plus
+- CountDown currentNumber
+- int candies
+- boolean isRunning
+- boolean isCountingDown
+- long lastCountdownTickTime
+- int wallScore
+- GameView gameView
+- int currentCount
+- Bird bird
+- Dialog d
++ void initializeGame(Bitmap,Bitmap,Bitmap,Bitmap)
++ void start()
++ void stop()
++ void run()
++ void count()
++ void eatCandies()
++ boolean handleCollisions()
+- void handleCollision()
+- void createGameOverDialog()
+- void createPauseDialog()
++ float scaleX(float)
++ float scaleY(float)
++ void resumeGame()
+}
+
+
+class com.example.spikedash_singleplayer.Activities.DifficultyActivity {
+~ Button easyButton
+~ User user
+~ String uid
+# void onCreate(Bundle)
+- void setDifficulty(float)
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.SettingsManager {
++ {static} void applySavedBgmVolume(Context,String)
+}
+
+class com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter {
+- List<User> requestList
+- Context context
+- OnRequestActionListener listener
++ RequestViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(RequestViewHolder,int)
+- void uploadImage(User,ImageView)
++ int getItemCount()
+}
+
+
+interface com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter$OnRequestActionListener {
+~ void onAccept(User)
+~ void onDecline(User)
+}
+
+class com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter$RequestViewHolder {
+~ TextView tvName
+~ ImageButton btnAccept
+~ ImageView ivProfilePicture
+}
+
+class com.example.spikedash_singleplayer.SoundManager {
+- {static} SoundPool soundPool
+- {static} float globalVolume
+- {static} HashMap<String,Integer> soundMap
++ {static} void init(Context)
++ {static} void play(String)
++ {static} void setVolume(float)
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.StorageSkinAdapter {
+- List<StorageItem> skinsList
+- Context context
+- String equippedSkinId
++ void setEquippedSkin(String)
++ StorageSkinAdapter.ViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(ViewHolder,int)
++ int getItemCount()
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.StorageSkinAdapter$ViewHolder {
+~ ImageView imageView
+~ TextView nameView
+~ LinearLayout contentLayout
+}
+
+class com.example.spikedash_singleplayer.Fragments.FriendsListFragment {
+~ RecyclerView recyclerView
+~ FriendAdapter adapter
+~ String currentUid
+~ TextView tvFriendsCount
+~ LinearLayout btnFriendRequests
+~ List<User> friendsList
+~ Dialog d
+~ Dialog progressDialog
+- void loadFriends()
+- void errorHandler(Exception)
+- void acceptFriendRequest(String)
+- void declineFriendRequest(String)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.Entitys.CountDown {
+- int number
+- float scale
+- int alpha
+- boolean isFinished
+- Paint paint
++ void draw(Canvas)
++ void move()
++ boolean isFinished()
+}
+
+
+class com.example.spikedash_singleplayer.Activities.LeaderboardActivity {
+~ ImageButton btnBack
+~ TextView friendsTab
+~ View gamesInidcator
+# void onCreate(Bundle)
+- void loadFragment(Fragment)
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.GlobalLeaderAdapter {
+- Context context
+- List<PlayerStats> statsList
+- String loggedInUid
++ ViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(ViewHolder,int)
++ int getItemCount()
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.GlobalLeaderAdapter$ViewHolder {
+~ TextView tvName
+~ RelativeLayout root
+}
+
+class com.example.spikedash_singleplayer.PlayerStats {
+- String username
+- int highScore
+- String uid
++ String getUsername()
++ int getHighScore()
++ String getUid()
++ void setUid(String)
+}
+
+
+class com.example.spikedash_singleplayer.Activities.ProfileActivity {
+~ ImageButton btnBack
+~ User user
+~ String base64Pic
+~ TextView tvEmail
+~ EditText etUsername
+~ ImageView imProfilePicture
+~ Button btnConfirm
+~ ImageButton btnEditPicture
+~ LinearLayout btnChangePassword
+~ ActivityResultLauncher<Intent> cameraLauncher
+~ Dialog d
+~ boolean hasUsernameChange
+~ boolean hasImageChange
+# void onCreate(Bundle)
+- void uploadImage()
+- void initializeCameraAndGallery()
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.Fragments.GlobalLeaderFragment {
+~ List<PlayerStats> userList
+~ GlobalLeaderAdapter adapter
+~ RecyclerView recyclerView
+~ Dialog progressDialog
+~ String currentUid
+- void loadPlayers()
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.Fragments.BackgroundsFragment {
+~ RecyclerView recyclerView
+~ BackgroundAdapter adapter
+~ List<StoreItem> backgroundList
+~ Dialog progressDialog
+- void loadBackgrounds()
+- void errorHandler(Exception)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.MainActivity {
+- LinearLayout btnStart
+- ImageButton btnLeaderBoard
+- FirebaseDatabase db
+- DatabaseReference ref
+- FirebaseAuth auth
+- User currentUser
+- ImageView backgroundImage
+- String uid
+- ActivityResultLauncher<Intent> gameLauncher
+- boolean isAccountFound
+# void onCreate(Bundle)
++ void onBackPressed()
++ void onClick(View)
+- void handleClick(Class<?>,boolean)
+- void handleClick(Class<?>,boolean,int,boolean)
+- void loadImage(String,String,ImageView,String)
++ void currentUser()
+}
+
+
+class com.example.spikedash_singleplayer.GameActivity {
+~ FrameLayout frm
+~ GameView gameView
+~ GameController gameController
+~ TextView tvScore
+~ ImageButton btnPause
+~ ImageView backgroundImage
+~ User user
+~ String uid
+# void onCreate(Bundle)
+- void loadGameBackground()
+- void loadEquippedSkin()
+}
+
+
+class com.example.spikedash_singleplayer.VibrationManager {
+- {static} boolean isEnabled
++ {static} void setEnabled(boolean)
++ {static} void vibrate(Context,int)
++ {static} void syncWithFirebase()
+}
+
+
+class com.example.spikedash_singleplayer.Activities.MenuActivity {
+~ LinearLayout btnLogin
+# void onCreate(Bundle)
++ void onClick(View)
+}
+
+
+class com.example.spikedash_singleplayer.User {
+- String username
+- String email
+- String uid
+- int balance
+- int highScore
+- int games
+- String base64Image
++ {static} Creator<User> CREATOR
++ void writeToParcel(Parcel,int)
++ int describeContents()
++ String getBase64Image()
++ void setBase64Image(String)
++ void add(int)
++ int getBalance()
++ String getUid()
++ void setUid(String)
++ String getUsername()
++ void setUsername(String)
++ String getEmail()
++ void setEmail(String)
++ int getGames()
++ void addGame()
++ int getHighScore()
++ void setHighScore(int)
+}
+
+
+class com.example.spikedash_singleplayer.Fragments.SkinsFragment {
+~ RecyclerView recyclerView
+~ SkinAdapter adapter
+~ Dialog progressDialog
+~ List<StoreItem> skinList
+- void loadSkins()
+- void errorHandler(Exception)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class com.example.spikedash_singleplayer.StoreItem {
+- String Id
+- String name
+- String imageUrl
+- int price
++ String getId()
++ void setId(String)
++ String getName()
++ void setName(String)
++ String getImageUrl()
++ void setImageUrl(String)
++ int getPrice()
++ void setPrice(int)
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.SkinAdapter {
+- List<StoreItem> skins
+- Context context
+- Dialog dialog
+- OnSkinRefreshRequest refreshListener
++ void setOnSkinRefreshRequest(OnSkinRefreshRequest)
++ SkinViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(SkinViewHolder,int)
++ void createBuyDialog(StoreItem)
++ int getItemCount()
+}
+
+
+interface com.example.spikedash_singleplayer.Adapters.SkinAdapter$OnSkinRefreshRequest {
+~ void refresh()
+}
+
+class com.example.spikedash_singleplayer.Adapters.SkinAdapter$SkinViewHolder {
+~ TextView name
+~ ImageView image
+}
+
+class com.example.spikedash_singleplayer.Adapters.FriendAdapter {
+- List<User> users
+- Context context
++ FriendAdapter.FriendViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(FriendViewHolder,int)
+- void uploadImage(User,ImageView)
++ int getItemCount()
+}
+
+
+class com.example.spikedash_singleplayer.Adapters.FriendAdapter$FriendViewHolder {
+~ TextView tvName
+~ ImageView ivProfilePicture
+}
+
+class com.example.spikedash_singleplayer.Activities.GiftActivity {
+~ TextView tvTimer
+~ Button spinButton
+~ ImageButton btnReturnMenu
+~ LuckyWheel luckyWheel
+~ User user
+~ String pointsAmount
+~ List<WheelItem> wheelItemList
+~ String points
+~ DatabaseReference userRef
+~ CountDownTimer countdownTimer
+~ long TWENTY_FOUR_HOURS_MS
+# void onCreate(Bundle)
+- void setupWheelItems()
+- void configureWheelListener()
+- void checkSpinCooldown()
+- void startCooldown(long)
++ void onClick(View)
+}
+
+
+abstract class com.example.spikedash_singleplayer.Entitys.Entity {
+# int x
+# int y
+# int ScreenWidth
+# int ScreenHeight
+# Bitmap bitmap
++ void draw(Canvas)
+# float scaleX(float)
+# float scaleY(float)
++ int getX()
++ int getY()
++ {abstract}void move()
+}
+
+
+class com.example.spikedash_singleplayer.StorageItem {
+- String id
+- String name
+- String imageUrl
++ String getId()
++ String getName()
++ String getImageUrl()
++ void setId(String)
++ void setName(String)
+}
+
+
+
+
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.ForgotActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.ForgotActivity
+com.example.spikedash_singleplayer.Callback <|.. com.example.spikedash_singleplayer.GameView
+android.view.SurfaceView <|-- com.example.spikedash_singleplayer.GameView
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.StorageSkinFragment
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.StorageBackFragment
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.ShopActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.ShopActivity
+com.example.spikedash_singleplayer.Entitys.Entity <|-- com.example.spikedash_singleplayer.Entitys.Candy
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.FriendsActivity
+com.example.spikedash_singleplayer.Activities.FriendsActivity +.. com.example.spikedash_singleplayer.Activities.FriendsActivity$FriendsPagerAdapter
+com.example.spikedash_singleplayer.Activities.FragmentStateAdapter <|-- com.example.spikedash_singleplayer.Activities.FriendsActivity$FriendsPagerAdapter
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.SettingsActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.SettingsActivity
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.UsersAdapter
+com.example.spikedash_singleplayer.Adapters.UsersAdapter +.. com.example.spikedash_singleplayer.Adapters.UsersAdapter$OnSendRequestListener
+com.example.spikedash_singleplayer.Adapters.UsersAdapter +.. com.example.spikedash_singleplayer.Adapters.UsersAdapter$UserViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.UsersAdapter$UserViewHolder
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.StatsActivity
+com.example.spikedash_singleplayer.Entitys.Entity <|-- com.example.spikedash_singleplayer.Entitys.Plus
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.SearchFragment
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.LoginActicvity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.LoginActicvity
+com.example.spikedash_singleplayer.Entitys.Entity <|-- com.example.spikedash_singleplayer.Entitys.Bird
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.AllPlayersFragment
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.SignupActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.SignupActivity
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.StorageBackAdapter
+com.example.spikedash_singleplayer.Adapters.StorageBackAdapter +.. com.example.spikedash_singleplayer.Adapters.StorageBackAdapter$ViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.StorageBackAdapter$ViewHolder
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.BackgroundAdapter
+com.example.spikedash_singleplayer.Adapters.BackgroundAdapter +.. com.example.spikedash_singleplayer.Adapters.BackgroundAdapter$OnBackgroundRefreshRequest
+com.example.spikedash_singleplayer.Adapters.BackgroundAdapter +.. com.example.spikedash_singleplayer.Adapters.BackgroundAdapter$BackgroundViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.BackgroundAdapter$BackgroundViewHolder
+com.example.spikedash_singleplayer.Entitys.Entity <|-- com.example.spikedash_singleplayer.Entitys.Spike
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.FriendsLeaderFragment
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.FriendsLeaderAdapter
+com.example.spikedash_singleplayer.Adapters.FriendsLeaderAdapter +.. com.example.spikedash_singleplayer.Adapters.FriendsLeaderAdapter$ViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.FriendsLeaderAdapter$ViewHolder
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.StorageActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.StorageActivity
+com.example.spikedash_singleplayer.Runnable <|.. com.example.spikedash_singleplayer.GameController
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.DifficultyActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.DifficultyActivity
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter
+com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter +.. com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter$OnRequestActionListener
+com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter +.. com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter$RequestViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.FriendRequestAdapter$RequestViewHolder
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.StorageSkinAdapter
+com.example.spikedash_singleplayer.Adapters.StorageSkinAdapter +.. com.example.spikedash_singleplayer.Adapters.StorageSkinAdapter$ViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.StorageSkinAdapter$ViewHolder
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.FriendsListFragment
+com.example.spikedash_singleplayer.Entitys.Entity <|-- com.example.spikedash_singleplayer.Entitys.CountDown
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.LeaderboardActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.LeaderboardActivity
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.GlobalLeaderAdapter
+com.example.spikedash_singleplayer.Adapters.GlobalLeaderAdapter +.. com.example.spikedash_singleplayer.Adapters.GlobalLeaderAdapter$ViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.GlobalLeaderAdapter$ViewHolder
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.ProfileActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.ProfileActivity
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.GlobalLeaderFragment
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.BackgroundsFragment
+com.example.spikedash_singleplayer.OnClickListener <|.. com.example.spikedash_singleplayer.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.GameActivity
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.MenuActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.MenuActivity
+android.os.Parcelable <|.. com.example.spikedash_singleplayer.User
+androidx.fragment.app.Fragment <|-- com.example.spikedash_singleplayer.Fragments.SkinsFragment
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.SkinAdapter
+com.example.spikedash_singleplayer.Adapters.SkinAdapter +.. com.example.spikedash_singleplayer.Adapters.SkinAdapter$OnSkinRefreshRequest
+com.example.spikedash_singleplayer.Adapters.SkinAdapter +.. com.example.spikedash_singleplayer.Adapters.SkinAdapter$SkinViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.SkinAdapter$SkinViewHolder
+com.example.spikedash_singleplayer.Adapters.Adapter <|-- com.example.spikedash_singleplayer.Adapters.FriendAdapter
+com.example.spikedash_singleplayer.Adapters.FriendAdapter +.. com.example.spikedash_singleplayer.Adapters.FriendAdapter$FriendViewHolder
+com.example.spikedash_singleplayer.Adapters.ViewHolder <|-- com.example.spikedash_singleplayer.Adapters.FriendAdapter$FriendViewHolder
+com.example.spikedash_singleplayer.Activities.OnClickListener <|.. com.example.spikedash_singleplayer.Activities.GiftActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.spikedash_singleplayer.Activities.GiftActivity
+@enduml

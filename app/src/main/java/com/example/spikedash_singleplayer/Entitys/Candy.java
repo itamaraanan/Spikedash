@@ -46,14 +46,27 @@ public class Candy extends Entity {
     }
 
     public void takesCandy() {
-        // Reset position to a new random location
-        int marginX = (int) scaleX(75);
-        int marginYTop = (int) scaleY(275);
-        int marginYBottom = (int) scaleY(550);
-        // Resetting the position of the candy
+        int candyWidth = (int) scaleX(100);
+        int candyHeight = (int) scaleY(100);
+        int floatRange = (int) scaleY(100);
+
+        int spikeSafeMarginX = (int) scaleX(150);
+        int wallMarginY = (int) scaleY(250);
+        int safetyBuffer = (int) scaleY(30);
+
+        int marginX = spikeSafeMarginX + candyWidth / 2;
         x = marginX + random.nextInt(ScreenWidth - 2 * marginX);
-        y = marginYTop + random.nextInt(ScreenHeight - marginYBottom);
+
+        int marginYTop = wallMarginY + floatRange + candyHeight + safetyBuffer;
+        int marginYBottom = ScreenHeight - wallMarginY - floatRange - candyHeight - safetyBuffer;
+
+        y = marginYTop + random.nextInt(Math.max(1, marginYBottom - marginYTop));
     }
+
+
+
+
+
 
     @Override
     public void move() {

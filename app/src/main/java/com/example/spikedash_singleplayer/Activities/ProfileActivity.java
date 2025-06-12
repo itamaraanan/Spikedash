@@ -117,7 +117,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 // If we have a bitmap, convert it to base64 and set it to the ImageView
                 if (bitmap != null) {
                     base64Pic = ImageUtils.encodeImage(bitmap);
-                    Log.d("img base64", "Image encoded successfully");
                     // Show preview
                     imProfilePicture.setImageBitmap(bitmap);
                 }
@@ -136,7 +135,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                         // Convert to base64
                         base64Pic = ImageUtils.encodeImage(bitmap);
-                        Log.d("img base64", "Image encoded successfully");
 
                         // Show preview
                         imProfilePicture.setImageBitmap(bitmap);
@@ -154,6 +152,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         SoundManager.play("click");
 
         if(v == btnBack) {
+            setResult(RESULT_OK);
             finish();
         }
 

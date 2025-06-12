@@ -68,10 +68,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
             return;
         }
-        SettingsManager.applySavedBgmVolume(this, uid);
+
+        SettingsManager.applySavedBgmVolume(uid);
+        SettingsManager.applySavedSoundVolume(uid);
+        VibrationManager.syncWithFirebase();
         SoundManager.init(this);
         MusicManager.start(this, R.raw.bgm_music);
-        VibrationManager.syncWithFirebase();
+
 
 
         btnLeaderBoard.setOnClickListener(this);

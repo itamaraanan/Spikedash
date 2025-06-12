@@ -31,8 +31,8 @@ public class StatsActivity extends AppCompatActivity {
             VibrationManager.vibrate(this, 25);
             SoundManager.play("click");
             // Return to MainActivity
-            Intent intent = new Intent(StatsActivity.this, MainActivity.class);
-            startActivity(intent);
+            setResult(RESULT_OK);
+            finish();
         });
         user = getIntent().getParcelableExtra("user");
         init();
