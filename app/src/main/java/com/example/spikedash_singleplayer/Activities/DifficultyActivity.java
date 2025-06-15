@@ -14,7 +14,7 @@ import com.example.spikedash_singleplayer.Managers.VibrationManager;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class DifficultyActivity extends AppCompatActivity implements View.OnClickListener {
-
+    // Difficulty buttons
     Button easyButton, mediumButton, hardButton, insaneButton, returnButton;
     User user;
     String uid;

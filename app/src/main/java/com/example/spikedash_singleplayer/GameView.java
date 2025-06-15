@@ -9,6 +9,9 @@ import android.graphics.Color;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.spikedash_singleplayer.Entitys.Bird;
 import com.example.spikedash_singleplayer.Entitys.Candy;
 import com.example.spikedash_singleplayer.Entitys.CountDown;
@@ -26,6 +29,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Plus plus;
     private Walls walls;
     private CountDown countDown;
+    private boolean touched = false;
     private GameController controller;
 
 
@@ -46,8 +50,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (event.getAction() == MotionEvent.ACTION_DOWN && bird != null) {
             SoundManager.play("jump");
             bird.jump();
+            //handle first touch
+            if (!touched) {
+                touched = true;
+                if (controller != null) {
+                    controller.onFirstTouch();
+                }
+            }
             return true;
         }
+
         return false;
     }
 

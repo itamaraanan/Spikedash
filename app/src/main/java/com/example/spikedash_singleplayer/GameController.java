@@ -272,7 +272,12 @@ public class GameController implements Runnable {
         return !isCollide;
 
     }
-
+    // Handle the first touch event
+    public void onFirstTouch() {
+        ((AppCompatActivity) context).runOnUiThread(() -> {
+            tvScore.setText("Score: 0");
+        });
+    }
 
     private void handleCollision() {
         // Handle the collision with the wall or spike
